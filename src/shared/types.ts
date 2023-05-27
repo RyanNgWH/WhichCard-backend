@@ -13,10 +13,4 @@ type User = {
   updatedAt: number;
 };
 
-type PostUser = {
-  name: string;
-  email: string;
-  password: string;
-};
-
-export { User, PostUser };
+export default User;
