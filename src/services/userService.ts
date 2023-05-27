@@ -16,9 +16,7 @@ const getAllUsers = () => UserDatabase.getAllUsers();
 /**
  * Get a user by id
  */
-const getUserById = () => {
-  return;
-};
+const getUserById = (userId: string) => UserDatabase.getUserById(userId);
 
 /**
  * Create a new user

@@ -19,8 +19,13 @@ const getAllUsers = (req: Request, res: Response) => {
  * Get a user by id
  */
 const getUserById = (req: Request, res: Response) => {
-  const user = userService.getUserById();
-  res.send(`Get an existing user with ID:${req.params.userId}`);
+  // Extract userId from request parameters
+  const { userId } = req.params;
+
+  // Pass userId to service to get user from database
+  const user = userService.getUserById(userId);
+
+  res.send({ status: 'OK', data: user });
 };
 
 /**

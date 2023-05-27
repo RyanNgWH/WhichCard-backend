@@ -8,8 +8,25 @@ import DB from './db.json';
 import saveToDatabase from './utils';
 import { User } from '../shared/types';
 
+/**
+ * Return all users in database
+ * @returns All users in database
+ */
 const getAllUsers = () => DB.users;
 
+/**
+ * Get a user by id
+ * @param userId Id of user to get
+ * @returns The user with the given id, or null if user does not exist
+ */
+const getUserById = (userId: string) =>
+  DB.users.find(user => user.id === userId);
+
+/**
+ * Create a new user and save to database
+ * @param newUser User to create
+ * @returns The created user, or null if user already exists
+ */
 const createUser = (newUser: User) => {
   // Check if user already exists in database
   const userExists =
@@ -26,4 +43,4 @@ const createUser = (newUser: User) => {
   return newUser;
 };
 
-export { getAllUsers, createUser };
+export { getAllUsers, getUserById, createUser };
