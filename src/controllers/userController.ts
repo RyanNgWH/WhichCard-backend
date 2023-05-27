@@ -32,6 +32,7 @@ const getUserById = (req: Request, res: Response) => {
  * Create a new user
  */
 const createUser = (req: Request, res: Response) => {
+  // Extract request body
   const { body } = req;
 
   // Check if request body is valid
@@ -58,8 +59,20 @@ const createUser = (req: Request, res: Response) => {
  * Update a user by id
  */
 const updateUserById = (req: Request, res: Response) => {
-  const updatedUser = userService.updateUserById();
-  res.send(`Update an existing user with ID:${req.params.userId}`);
+  // Extract body and userId from request/request parameters
+  const {
+    body,
+    params: { userId },
+  } = req;
+
+  // Check if request body is valid
+  if (!userId) {
+    // TODO: Add invalid request body error (express-validator?)
+    return;
+  }
+
+  const updatedUser = userService.updateUserById(userId, body);
+  res.send({ status: 'OK', data: updatedUser });
 };
 
 /**

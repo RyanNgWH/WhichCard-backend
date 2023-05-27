@@ -6,7 +6,7 @@
 
 import DB from './db.json';
 import saveToDatabase from './utils';
-import { User } from '../shared/types';
+import User from '../shared/types';
 
 /**
  * Return all users in database
@@ -43,4 +43,28 @@ const createUser = (newUser: User) => {
   return newUser;
 };
 
-export { getAllUsers, getUserById, createUser };
+/**
+ * Update a user by id
+ * @param userId Id of user to update
+ * @param updates Updates to apply to user
+ * @returns The updated user, or null if user does not exist
+ */
+const updateUserById = (userId: string, updates: Partial<User>) => {
+  // Find index of user to update
+  const userIndex = DB.users.findIndex(user => user.id === userId);
+
+  // Create updated user object
+  const updatedUser = {
+    ...DB.users[userIndex],
+    ...updates,
+    updatedAt: new Date().getTime(),
+  };
+
+  // Update user in database
+  DB.users[userIndex] = updatedUser;
+  saveToDatabase(DB);
+
+  return updatedUser;
+};
+
+export { getAllUsers, getUserById, createUser, updateUserById };

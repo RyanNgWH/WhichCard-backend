@@ -6,7 +6,7 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import * as UserDatabase from '../database/UserDatabase';
-import { PostUser } from '../shared/types';
+import User from '../shared/types';
 
 /**
  * Get all users
@@ -21,7 +21,7 @@ const getUserById = (userId: string) => UserDatabase.getUserById(userId);
 /**
  * Create a new user
  */
-const createUser = (newUser: PostUser) => {
+const createUser = (newUser: Pick<User, 'name' | 'email' | 'password'>) => {
   const userToAdd = {
     ...newUser,
     id: uuidv4(),
@@ -36,9 +36,8 @@ const createUser = (newUser: PostUser) => {
 /**
  * Update a user by id
  */
-const updateUserById = () => {
-  return;
-};
+const updateUserById = (userId: string, updates: Partial<User>) =>
+  UserDatabase.updateUserById(userId, updates);
 
 /**
  * Delete a user by id
