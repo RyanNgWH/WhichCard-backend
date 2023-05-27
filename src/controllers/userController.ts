@@ -27,8 +27,26 @@ const getUserById = (req: Request, res: Response) => {
  * Create a new user
  */
 const createUser = (req: Request, res: Response) => {
-  const newUser = userService.createUser();
-  res.send('Create a user');
+  const { body } = req;
+
+  // Check if request body is valid
+  if (!body.name || !body.email || !body.password) {
+    // TODO: Add invalid request body error (express-validator?)
+    return;
+  }
+
+  // Create new user
+  const newUser = {
+    name: body.name,
+    email: body.email,
+    password: body.password,
+  };
+
+  // Pass new user to service to save user to database
+  const createdUser = userService.createUser(newUser);
+
+  // Respond with created user
+  res.status(201).send({ status: 'OK', data: createdUser });
 };
 
 /**

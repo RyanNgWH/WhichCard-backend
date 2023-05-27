@@ -4,12 +4,14 @@
  * @format
  */
 
-import * as User from '../database/User';
+import { v4 as uuidv4 } from 'uuid';
+import * as UserDatabase from '../database/UserDatabase';
+import { PostUser } from '../shared/types';
 
 /**
  * Get all users
  */
-const getAllUsers = () => User.getAllUsers();
+const getAllUsers = () => UserDatabase.getAllUsers();
 
 /**
  * Get a user by id
@@ -21,8 +23,16 @@ const getUserById = () => {
 /**
  * Create a new user
  */
-const createUser = () => {
-  return;
+const createUser = (newUser: PostUser) => {
+  const userToAdd = {
+    ...newUser,
+    id: uuidv4(),
+    createdAt: new Date().getTime(),
+    updatedAt: new Date().getTime(),
+  };
+
+  const createdUser = UserDatabase.createUser(userToAdd);
+  return createdUser;
 };
 
 /**
