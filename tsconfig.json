@@ -1,0 +1,4 @@
+// Utilise base node 16 tsconfig
+{
+  "extends": "@tsconfig/node16/tsconfig.json"
+}
