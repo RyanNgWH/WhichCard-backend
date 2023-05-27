@@ -9,6 +9,8 @@ import * as userService from '../services/userService';
 
 /**
  * Get all users
+ * @param req GET request for all users
+ * @param res Response to send back
  */
 const getAllUsers = (req: Request, res: Response) => {
   const allUsers = userService.getAllUsers();
@@ -17,6 +19,8 @@ const getAllUsers = (req: Request, res: Response) => {
 
 /**
  * Get a user by id
+ * @param req GET request for user by id
+ * @param res Response to send back
  */
 const getUserById = (req: Request, res: Response) => {
   // Extract userId from request parameters
@@ -30,6 +34,8 @@ const getUserById = (req: Request, res: Response) => {
 
 /**
  * Create a new user
+ * @param req POST request for new user
+ * @param res Response to send back
  */
 const createUser = (req: Request, res: Response) => {
   // Extract request body
@@ -57,6 +63,8 @@ const createUser = (req: Request, res: Response) => {
 
 /**
  * Update a user by id
+ * @param req PATCH request for user by id
+ * @param res Response to send back
  */
 const updateUserById = (req: Request, res: Response) => {
   // Extract body and userId from request/request parameters
@@ -77,6 +85,8 @@ const updateUserById = (req: Request, res: Response) => {
 
 /**
  * Delete a user by id
+ * @param req DELETE request for user by id
+ * @param res Response to send back
  */
 const deleteUserById = (req: Request, res: Response) => {
   userService.deleteUserById();

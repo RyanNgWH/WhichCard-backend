@@ -8,6 +8,7 @@ import fs from 'fs';
 
 /**
  * Save database to file
+ * @param db Database to save
  */
 const saveToDatabase = (db: Object) => {
   fs.writeFileSync('./src/database/db.json', JSON.stringify(db, null, 2), {
