@@ -5,6 +5,13 @@
  */
 
 import express from 'express';
+import {
+  createUser,
+  deleteUserById,
+  getAllUsers,
+  getUserById,
+  updateUserById,
+} from '../../controllers/userController';
 
 const router = express.Router();
 
@@ -18,14 +25,14 @@ router
    * GET /api/v1/users
    */
   .get((req, res) => {
-    res.send('Get all users');
+    getAllUsers(req, res);
   })
   /**
    * Create a new User
    * POST /api/v1/users
    */
   .post((req, res) => {
-    res.send('Create a user');
+    createUser(req, res);
   });
 
 /**
@@ -38,20 +45,20 @@ router
    * GET /api/v1/users/:userId
    */
   .get((req, res) => {
-    res.send(`Get an existing user with ID:${req.params.userId}`);
+    getUserById(req, res);
   })
   /**
    * Update a User by id
    * PATCH /api/v1/users/:userId
    */
   .patch((req, res) => {
-    res.send(`Update an existing user with ID:${req.params.userId}`);
+    updateUserById(req, res);
   })
   /**
    * Delete a User by id
    */
   .delete((req, res) => {
-    res.send(`Delete an existing user with ID:${req.params.userId}`);
+    deleteUserById(req, res);
   });
 
 export default router;
