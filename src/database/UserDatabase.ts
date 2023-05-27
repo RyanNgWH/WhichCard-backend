@@ -33,7 +33,7 @@ const createUser = (newUser: User) => {
     DB.users.findIndex(user => user.email === newUser.email) > -1;
   if (userExists) {
     // TODO: Add user already exists error
-    return null;
+    return undefined;
   }
 
   // Add new user to database
