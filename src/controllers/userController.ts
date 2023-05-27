@@ -12,7 +12,7 @@ import * as userService from '../services/userService';
  */
 const getAllUsers = (req: Request, res: Response) => {
   const allUsers = userService.getAllUsers();
-  res.send('Get all users');
+  res.send({ status: 'OK', data: allUsers });
 };
 
 /**

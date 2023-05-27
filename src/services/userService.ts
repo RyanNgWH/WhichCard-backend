@@ -4,12 +4,12 @@
  * @format
  */
 
+import * as User from '../database/User';
+
 /**
  * Get all users
  */
-const getAllUsers = () => {
-  return;
-};
+const getAllUsers = () => User.getAllUsers();
 
 /**
  * Get a user by id
