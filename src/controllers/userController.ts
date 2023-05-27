@@ -73,7 +73,7 @@ const updateUserById = (req: Request, res: Response) => {
     params: { userId },
   } = req;
 
-  // Check if request body is valid
+  // Check if userId is present
   if (!userId) {
     // TODO: Add invalid request body error (express-validator?)
     return;
@@ -89,8 +89,18 @@ const updateUserById = (req: Request, res: Response) => {
  * @param res Response to send back
  */
 const deleteUserById = (req: Request, res: Response) => {
-  userService.deleteUserById();
-  res.send(`Delete an existing user with ID:${req.params.userId}`);
+  // Extract userId from request parameters
+  const { userId } = req.params;
+
+  // Check if userId
+  if (!userId) {
+    // TODO: Add invalid request body error (express-validator?)
+    return;
+  }
+
+  // Pass userId to service to delete user from database
+  userService.deleteUserById(userId);
+  res.status(204).send({ status: 'OK' });
 };
 
 export { getAllUsers, getUserById, createUser, updateUserById, deleteUserById };

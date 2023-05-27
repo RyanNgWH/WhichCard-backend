@@ -44,16 +44,15 @@ const createUser = (newUser: Pick<User, 'name' | 'email' | 'password'>) => {
  * Update a user by id
  * @param userId Id of user to update
  * @param updates Updates to apply to user
- * @returns The updated user
+ * @returns The updated user, or undefined if user does not exist
  */
 const updateUserById = (userId: string, updates: Partial<User>) =>
   UserDatabase.updateUserById(userId, updates);
 
 /**
  * Delete a user by id
+ * @param userId Id of user to delete
  */
-const deleteUserById = () => {
-  return;
-};
+const deleteUserById = (userId: string) => UserDatabase.deleteUserById(userId);
 
 export { getAllUsers, getUserById, createUser, updateUserById, deleteUserById };

@@ -47,11 +47,16 @@ const createUser = (newUser: User) => {
  * Update a user by id
  * @param userId Id of user to update
  * @param updates Updates to apply to user
- * @returns The updated user, or null if user does not exist
+ * @returns The updated user, or undefined if user does not exist
  */
 const updateUserById = (userId: string, updates: Partial<User>) => {
   // Find index of user to update
   const userIndex = DB.users.findIndex(user => user.id === userId);
+
+  // Check if user exists
+  if (userIndex === -1) {
+    return undefined;
+  }
 
   // Create updated user object
   const updatedUser = {
@@ -67,4 +72,23 @@ const updateUserById = (userId: string, updates: Partial<User>) => {
   return updatedUser;
 };
 
-export { getAllUsers, getUserById, createUser, updateUserById };
+/**
+ * Delete a user by id
+ * @param userId Id of user to delete
+ */
+const deleteUserById = (userId: string) => {
+  // Find index of user to delete
+  const userIndex = DB.users.findIndex(user => user.id === userId);
+
+  // Check if user exists
+  if (userIndex === -1) {
+    // TODO: Add user not found error
+    return;
+  }
+
+  // Delete user from database
+  DB.users.splice(userIndex, 1);
+  saveToDatabase(DB);
+};
+
+export { getAllUsers, getUserById, createUser, updateUserById, deleteUserById };
