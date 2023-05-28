@@ -92,7 +92,7 @@ const deleteUserById = (req: Request, res: Response) => {
   // Extract userId from request parameters
   const { userId } = req.params;
 
-  // Check if userId
+  // Check if userId is present
   if (!userId) {
     // TODO: Add invalid request body error (express-validator?)
     return;
@@ -103,4 +103,37 @@ const deleteUserById = (req: Request, res: Response) => {
   res.status(204).send({ status: 'OK' });
 };
 
-export { getAllUsers, getUserById, createUser, updateUserById, deleteUserById };
+/**
+ * Login a user
+ * @param req POST request for user login
+ * @param res Response to send back (200 with user data or 401)
+ */
+const login = (req: Request, res: Response) => {
+  // Extract email and password from request body
+  const { email, password } = req.body;
+
+  // Check if email and password are present
+  if (!email || !password) {
+    // TODO: Add invalid request body error (express-validator?)
+    return;
+  }
+
+  // Pass email and password to service to login user
+  const user = userService.login(email, password);
+
+  // Check if user was found
+  if (user) {
+    res.send({ status: 'OK', data: user });
+  } else {
+    res.status(401).send({ status: 'Unauthorized' });
+  }
+};
+
+export {
+  getAllUsers,
+  getUserById,
+  createUser,
+  updateUserById,
+  deleteUserById,
+  login,
+};
