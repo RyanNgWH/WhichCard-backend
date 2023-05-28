@@ -55,4 +55,20 @@ const updateUserById = (userId: string, updates: Partial<User>) =>
  */
 const deleteUserById = (userId: string) => UserDatabase.deleteUserById(userId);
 
-export { getAllUsers, getUserById, createUser, updateUserById, deleteUserById };
+/**
+ * Login a user
+ * @param email Email of user to login
+ * @param password Password of user to login
+ * @returns The logged in user, or undefined if user does not exist
+ */
+const login = (email: string, password: string) =>
+  UserDatabase.login(email, password);
+
+export {
+  getAllUsers,
+  getUserById,
+  createUser,
+  updateUserById,
+  deleteUserById,
+  login,
+};

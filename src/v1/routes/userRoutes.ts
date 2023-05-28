@@ -61,4 +61,15 @@ router
     userController.deleteUserById(req, res);
   });
 
+// Methods for logging in
+router
+  .route('/login')
+  /**
+   * Login a User
+   * POST /api/v1/users/login
+   */
+  .post((req, res) => {
+    userController.login(req, res);
+  });
+
 export default router;

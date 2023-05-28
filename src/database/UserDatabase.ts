@@ -91,4 +91,29 @@ const deleteUserById = (userId: string) => {
   saveToDatabase(DB);
 };
 
-export { getAllUsers, getUserById, createUser, updateUserById, deleteUserById };
+/**
+ * Login a user
+ * @param email User email
+ * @param password User password
+ * @returns The logged in user, or undefined if user does not exist or password is incorrect
+ */
+const login = (email: string, password: string) => {
+  // Find user with matching email
+  const user = DB.users.find(dbUser => dbUser.email === email);
+
+  // Check if user exists and password matches
+  if (!user || user.password !== password) {
+    return undefined;
+  }
+
+  return user;
+};
+
+export {
+  getAllUsers,
+  getUserById,
+  createUser,
+  updateUserById,
+  deleteUserById,
+  login,
+};
