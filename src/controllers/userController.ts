@@ -10,7 +10,7 @@ import * as userService from '../services/userService';
 /**
  * Get all users
  * @param req GET request for all users
- * @param res Response to send back
+ * @param res Status code 200 and all users in database
  */
 const getAllUsers = (req: Request, res: Response) => {
   const allUsers = userService.getAllUsers();
@@ -20,7 +20,7 @@ const getAllUsers = (req: Request, res: Response) => {
 /**
  * Get a user by id
  * @param req GET request for user by id
- * @param res Response to send back
+ * @param res Status code 200 and user with given id or 404 if user does not exist
  */
 const getUserById = (req: Request, res: Response) => {
   // Extract userId from request parameters
@@ -29,13 +29,18 @@ const getUserById = (req: Request, res: Response) => {
   // Pass userId to service to get user from database
   const user = userService.getUserById(userId);
 
-  res.send({ status: 'OK', data: user });
+  // Check if user exists
+  if (user) {
+    res.send({ status: 'OK', data: user });
+  } else {
+    res.status(404).send({ status: 'Not Found' });
+  }
 };
 
 /**
  * Create a new user
  * @param req POST request for new user
- * @param res Response to send back
+ * @param res Status code 201 and created user or 422 if user already exists
  */
 const createUser = (req: Request, res: Response) => {
   // Extract request body
@@ -57,14 +62,18 @@ const createUser = (req: Request, res: Response) => {
   // Pass new user to service to save user to database
   const createdUser = userService.createUser(newUser);
 
-  // Respond with created user
-  res.status(201).send({ status: 'OK', data: createdUser });
+  // Check if user already exists
+  if (createdUser) {
+    res.status(201).send({ status: 'OK', data: createdUser });
+  } else {
+    res.status(422).send({ status: 'Unprocessable Entity' });
+  }
 };
 
 /**
  * Update a user by id
  * @param req PATCH request for user by id
- * @param res Response to send back
+ * @param res Status code 200 and updated user or 404 if user does not exist
  */
 const updateUserById = (req: Request, res: Response) => {
   // Extract body and userId from request/request parameters
@@ -79,14 +88,21 @@ const updateUserById = (req: Request, res: Response) => {
     return;
   }
 
+  // Pass userId and updates to service to update user in database
   const updatedUser = userService.updateUserById(userId, body);
-  res.send({ status: 'OK', data: updatedUser });
+
+  // Check if user exists
+  if (updatedUser) {
+    res.send({ status: 'OK', data: updatedUser });
+  } else {
+    res.status(404).send({ status: 'Not Found' });
+  }
 };
 
 /**
  * Delete a user by id
  * @param req DELETE request for user by id
- * @param res Response to send back
+ * @param res Status code 204 and empty body
  */
 const deleteUserById = (req: Request, res: Response) => {
   // Extract userId from request parameters
