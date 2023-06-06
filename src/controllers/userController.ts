@@ -5,7 +5,9 @@
  */
 
 import { Request, Response } from 'express';
+import { body, validationResult } from 'express-validator';
 import * as userService from '../services/userService';
+import toApplicationError from '../shared/errors/errors';
 
 /**
  * Get all users
@@ -43,30 +45,29 @@ const getUserById = (req: Request, res: Response) => {
  * @param res Status code 201 and created user or 422 if user already exists
  */
 const createUser = (req: Request, res: Response) => {
-  // Extract request body
-  const { body } = req;
-
-  // Check if request body is valid
-  if (!body.name || !body.email || !body.password) {
-    // TODO: Add invalid request body error (express-validator?)
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
     return;
   }
 
   // Create new user
   const newUser = {
-    name: body.name,
-    email: body.email,
-    password: body.password,
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
   };
 
-  // Pass new user to service to save user to database
-  const createdUser = userService.createUser(newUser);
-
-  // Check if user already exists
-  if (createdUser) {
+  try {
+    // Pass new user to service to save user to database
+    const createdUser = userService.createUser(newUser);
     res.status(201).send({ status: 'OK', data: createdUser });
-  } else {
-    res.status(422).send({ status: 'Unprocessable Entity' });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
   }
 };
 
@@ -145,6 +146,36 @@ const login = (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Validate request body
+ * @param method Method to validate
+ * @returns Array of validation checks
+ */
+function validate(method: String) {
+  switch (method) {
+    case 'createUser':
+      return [
+        body('name', 'Invalid Name')
+          .notEmpty()
+          .withMessage('Name is required')
+          .isAlphanumeric()
+          .withMessage('Name must be alphanumeric'),
+        body('email', 'Invalid email')
+          .notEmpty()
+          .withMessage('Email is required')
+          .isEmail()
+          .normalizeEmail(),
+        body('password', 'Invalid Password')
+          .notEmpty()
+          .withMessage('Password is required')
+          .isStrongPassword()
+          .withMessage('Password does not meet requirements'),
+      ];
+    default:
+      return [];
+  }
+}
+
 export {
   getAllUsers,
   getUserById,
@@ -152,4 +183,5 @@ export {
   updateUserById,
   deleteUserById,
   login,
+  validate,
 };

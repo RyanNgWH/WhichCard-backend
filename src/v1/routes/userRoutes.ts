@@ -4,7 +4,7 @@
  * @format
  */
 
-import express from 'express';
+import express, { Request, Response } from 'express';
 import * as userController from '../../controllers/userController';
 
 const router = express.Router();
@@ -18,7 +18,7 @@ router
    * @param req GET request for all users
    * @param res Response to send back
    */
-  .get((req, res) => {
+  .get((req: Request, res: Response) => {
     userController.getAllUsers(req, res);
   })
   /**
@@ -27,9 +27,12 @@ router
    * @param req POST request for new user
    * @param res Response to send back
    */
-  .post((req, res) => {
-    userController.createUser(req, res);
-  });
+  .post(
+    userController.validate('createUser'),
+    (req: Request, res: Response) => {
+      userController.createUser(req, res);
+    },
+  );
 
 // Methods for specific user
 router
@@ -40,7 +43,7 @@ router
    * @param req GET request for user by id
    * @param res Response to send back
    */
-  .get((req, res) => {
+  .get((req: Request, res: Response) => {
     userController.getUserById(req, res);
   })
   /**
@@ -49,7 +52,7 @@ router
    * @param req PATCH request for user by id
    * @param res Response to send back
    */
-  .patch((req, res) => {
+  .patch((req: Request, res: Response) => {
     userController.updateUserById(req, res);
   })
   /**
@@ -57,7 +60,7 @@ router
    * DELETE /api/v1/users/:userId
    * @param req DELETE request for user by id
    */
-  .delete((req, res) => {
+  .delete((req: Request, res: Response) => {
     userController.deleteUserById(req, res);
   });
 
@@ -68,7 +71,7 @@ router
    * Login a User
    * POST /api/v1/users/login
    */
-  .post((req, res) => {
+  .post((req: Request, res: Response) => {
     userController.login(req, res);
   });
 

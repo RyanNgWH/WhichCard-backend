@@ -7,6 +7,9 @@
 import DB from './db.json';
 import saveToDatabase from './utils';
 import User from '../shared/types';
+import UserExistsError from '../shared/errors/database/userExistsError';
+import DatabaseError from '../shared/errors/database/databaseError';
+import toApplicationError from '../shared/errors/errors';
 
 /**
  * Return all users in database
@@ -25,22 +28,30 @@ const getUserById = (userId: string) =>
 /**
  * Create a new user and save to database
  * @param newUser User to create
- * @returns The created user, or null if user already exists
+ * @returns The created user, or throws an error if user already exists
  */
 const createUser = (newUser: User) => {
-  // Check if user already exists in database
+  // Check if user already exists in database (using email as unique identifier)
   const userExists =
     DB.users.findIndex(user => user.email === newUser.email) > -1;
   if (userExists) {
-    // TODO: Add user already exists error
-    return undefined;
+    throw new UserExistsError(
+      `User with email ${newUser.email} already exists.`,
+    );
   }
 
-  // Add new user to database
-  DB.users.push(newUser);
-  saveToDatabase(DB);
+  try {
+    // Add new user to database
+    DB.users.push(newUser);
+    saveToDatabase(DB);
 
-  return newUser;
+    return newUser;
+  } catch (error) {
+    const appError = toApplicationError(error);
+
+    // Throw error to controller for handling
+    throw new DatabaseError(appError.message, appError.code);
+  }
 };
 
 /**
