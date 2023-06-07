@@ -5,7 +5,7 @@
  */
 
 import { Request, Response } from 'express';
-import { body, validationResult } from 'express-validator';
+import { body, param, validationResult } from 'express-validator';
 import * as userService from '../services/userService';
 import toApplicationError from '../shared/errors/errors';
 
@@ -32,17 +32,25 @@ const getAllUsers = (req: Request, res: Response) => {
  * @param res Status code 200 and user with given id or 404 if user does not exist
  */
 const getUserById = (req: Request, res: Response) => {
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
+    return;
+  }
+
   // Extract userId from request parameters
   const { userId } = req.params;
 
-  // Pass userId to service to get user from database
-  const user = userService.getUserById(userId);
-
-  // Check if user exists
-  if (user) {
+  try {
+    // Pass userId to service to get user from database
+    const user = userService.getUserById(userId);
     res.send({ status: 'OK', data: user });
-  } else {
-    res.status(404).send({ status: 'Not Found' });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
   }
 };
 
@@ -177,6 +185,14 @@ function validate(method: String) {
           .withMessage('Password is required')
           .isStrongPassword()
           .withMessage('Password does not meet requirements'),
+      ];
+    case 'getUserById':
+      return [
+        param('userId', 'Invalid userId')
+          .notEmpty()
+          .withMessage('userId is required')
+          .isUUID()
+          .withMessage('userId must be a UUID'),
       ];
     default:
       return [];

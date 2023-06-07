@@ -10,6 +10,7 @@ import User from '../shared/types';
 import UserExistsError from '../shared/errors/database/userExistsError';
 import DatabaseError from '../shared/errors/database/databaseError';
 import toApplicationError from '../shared/errors/errors';
+import UserNotFoundError from '../shared/errors/database/userNotFoundError';
 
 /**
  * Return all users in database
@@ -29,10 +30,19 @@ const getAllUsers = () => {
 /**
  * Get a user by id
  * @param userId Id of user to get
- * @returns The user with the given id, or null if user does not exist
+ * @returns The user with the given id, or throws an error if user does not exist
  */
-const getUserById = (userId: string) =>
-  DB.users.find(user => user.id === userId);
+const getUserById = (userId: string) => {
+  // Find user with matching id from database
+  const foundUser = DB.users.find(user => user.id === userId);
+
+  // Check if user exists
+  if (!foundUser) {
+    throw new UserNotFoundError(`User with id ${userId} not found.`);
+  }
+
+  return foundUser;
+};
 
 /**
  * Create a new user and save to database

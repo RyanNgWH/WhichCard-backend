@@ -13,6 +13,7 @@ interface IStatusCodes {
 const statusCodes: IStatusCodes = {
   500: 'Internal Server Error',
   422: 'Unprocessable Entity',
+  404: 'Not Found',
 };
 
 class ApplicationError extends Error {

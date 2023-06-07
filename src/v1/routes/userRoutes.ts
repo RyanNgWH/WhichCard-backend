@@ -43,9 +43,12 @@ router
    * @param req GET request for user by id
    * @param res Response to send back
    */
-  .get((req: Request, res: Response) => {
-    userController.getUserById(req, res);
-  })
+  .get(
+    userController.validate('getUserById'),
+    (req: Request, res: Response) => {
+      userController.getUserById(req, res);
+    },
+  )
   /**
    * Update a User by id
    * PATCH /api/v1/users/:userId
