@@ -15,8 +15,15 @@ import toApplicationError from '../shared/errors/errors';
  * @param res Status code 200 and all users in database
  */
 const getAllUsers = (req: Request, res: Response) => {
-  const allUsers = userService.getAllUsers();
-  res.send({ status: 'OK', data: allUsers });
+  try {
+    const allUsers = userService.getAllUsers();
+    res.send({ status: 'OK', data: allUsers });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
+  }
 };
 
 /**

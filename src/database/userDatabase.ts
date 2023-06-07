@@ -15,7 +15,16 @@ import toApplicationError from '../shared/errors/errors';
  * Return all users in database
  * @returns All users in database
  */
-const getAllUsers = () => DB.users;
+const getAllUsers = () => {
+  try {
+    return DB.users;
+  } catch (error) {
+    const appError = toApplicationError(error);
+
+    // Throw error to controller for handling
+    throw new DatabaseError(appError.message, appError.code);
+  }
+};
 
 /**
  * Get a user by id
