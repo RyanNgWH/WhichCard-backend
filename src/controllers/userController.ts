@@ -5,9 +5,16 @@
  */
 
 import { Request, Response } from 'express';
-import { body, param, validationResult } from 'express-validator';
+import { checkSchema, validationResult } from 'express-validator';
 import * as userService from '../services/userService';
 import toApplicationError from '../shared/errors/errors';
+import {
+  emailSchema,
+  nameSchema,
+  passwordSchema,
+  userIdSchema,
+} from '../shared/schemas/userSchemas';
+import { createSchema } from '../shared/schemas/schemas';
 
 /**
  * Get all users
@@ -169,31 +176,23 @@ const login = (req: Request, res: Response) => {
 function validate(method: String) {
   switch (method) {
     case 'createUser':
-      return [
-        body('name', 'Invalid Name')
-          .notEmpty()
-          .withMessage('Name is required')
-          .isAlphanumeric()
-          .withMessage('Name must be alphanumeric'),
-        body('email', 'Invalid email')
-          .notEmpty()
-          .withMessage('Email is required')
-          .isEmail()
-          .normalizeEmail(),
-        body('password', 'Invalid Password')
-          .notEmpty()
-          .withMessage('Password is required')
-          .isStrongPassword()
-          .withMessage('Password does not meet requirements'),
-      ];
+      return checkSchema(
+        createSchema([
+          { fieldSchema: nameSchema, optional: false, in: ['body'] },
+          { fieldSchema: emailSchema, optional: false, in: ['body'] },
+          { fieldSchema: passwordSchema, optional: false, in: ['body'] },
+        ]),
+      );
     case 'getUserById':
-      return [
-        param('userId', 'Invalid userId')
-          .notEmpty()
-          .withMessage('userId is required')
-          .isUUID()
-          .withMessage('userId must be a UUID'),
-      ];
+      return checkSchema(
+        createSchema([
+          { fieldSchema: userIdSchema, optional: false, in: ['params'] },
+        ]),
+      );
+    // case 'updateUserById':
+    //   return checkSchema({
+    //     userId: userIdSchema,
+
     default:
       return [];
   }
