@@ -125,6 +125,8 @@ const deleteUserById = (req: Request, res: Response) => {
  * @param res Response to send back (200 with user data or 401)
  */
 const login = (req: Request, res: Response) => {
+  // TODO: Implement JWT authentication?
+
   // Extract email and password from request body
   const { email, password } = req.body;
 
