@@ -142,7 +142,7 @@ const deleteUserById = (req: Request, res: Response) => {
   try {
     // Pass userId to service to delete user from database
     userService.deleteUserById(params.userId);
-    res.status(204).send({ status: 'OK' });
+    res.status(204).send();
   } catch (error) {
     const appError = toApplicationError(error);
     res
