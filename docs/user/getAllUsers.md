@@ -22,23 +22,20 @@ Get all users in the database.
 
 ## Responses
 
-### 200 OK - Successfully return all users in the database
+### 200 OK - Succesfully returns all users in the database
+
+Returns all users in the database.
 
 #### Schema
 
-```json
-"status": "OK",
-"data": [
-  {
-    "id": "string",
-    "name": "string",
-    "email": "string",
-    "password": "string",
-    "createdAt": "string",
-    "updatedAt": "string"
-  }
-]
-```
+| Field       | Type   | Description                                       |
+| ----------- | ------ | ------------------------------------------------- |
+| `id`        | string | ID of the user (UUID)                             |
+| `name`      | string | Full name of the user                             |
+| `email`     | string | Email of the user                                 |
+| `password`  | string | Password of the user                              |
+| `createdAt` | number | Timestamp of when the user was created (in epoch) |
+| `updatedAt` | number | Timestamp of when the user was updated (in epoch) |
 
 #### Example
 
