@@ -85,7 +85,7 @@ const createUser = (req: Request, res: Response) => {
   try {
     // Pass new user to service to save user to database
     const createdUser = userService.createUser(newUser);
-    res.status(201).send({ status: 'OK', data: createdUser });
+    res.status(201).send({ status: 'Created', data: createdUser });
   } catch (error) {
     const appError = toApplicationError(error);
     res
