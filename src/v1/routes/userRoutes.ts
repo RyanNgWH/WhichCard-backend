@@ -55,9 +55,12 @@ router
    * @param req PATCH request for user by id
    * @param res Response to send back
    */
-  .patch((req: Request, res: Response) => {
-    userController.updateUserById(req, res);
-  })
+  .patch(
+    userController.validate('updateUserById'),
+    (req: Request, res: Response) => {
+      userController.updateUserById(req, res);
+    },
+  )
   /**
    * Delete a User by id
    * DELETE /api/v1/users/:userId

@@ -77,7 +77,7 @@ const createUser = (newUser: User) => {
  * Update a user by id
  * @param userId Id of user to update
  * @param updates Updates to apply to user
- * @returns The updated user, or undefined if user does not exist
+ * @returns The updated user, or throws an error if user does not exist
  */
 const updateUserById = (userId: string, updates: Partial<User>) => {
   // Find index of user to update
@@ -85,7 +85,19 @@ const updateUserById = (userId: string, updates: Partial<User>) => {
 
   // Check if user exists
   if (userIndex === -1) {
-    return undefined;
+    throw new UserNotFoundError(`User with id ${userId} not found.`);
+  }
+
+  // Check if email is being updated
+  if (updates.email) {
+    // Check if email already exists in database
+    const emailExists =
+      DB.users.findIndex(user => user.email === updates.email) > -1;
+    if (emailExists) {
+      throw new UserExistsError(
+        `The email ${updates.email} is already in use.`,
+      );
+    }
   }
 
   // Create updated user object
@@ -95,11 +107,18 @@ const updateUserById = (userId: string, updates: Partial<User>) => {
     updatedAt: new Date().getTime(),
   };
 
-  // Update user in database
-  DB.users[userIndex] = updatedUser;
-  saveToDatabase(DB);
+  try {
+    // Update user in database
+    DB.users[userIndex] = updatedUser;
+    saveToDatabase(DB);
 
-  return updatedUser;
+    return updatedUser;
+  } catch (error) {
+    const appError = toApplicationError(error);
+
+    // Throw error to controller for handling
+    throw new DatabaseError(appError.message, appError.code);
+  }
 };
 
 /**

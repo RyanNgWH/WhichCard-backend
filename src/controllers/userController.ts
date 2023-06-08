@@ -5,7 +5,7 @@
  */
 
 import { Request, Response } from 'express';
-import { checkSchema, validationResult } from 'express-validator';
+import { checkSchema, matchedData, validationResult } from 'express-validator';
 import * as userService from '../services/userService';
 import toApplicationError from '../shared/errors/errors';
 import {
@@ -99,26 +99,32 @@ const createUser = (req: Request, res: Response) => {
  * @param res Status code 200 and updated user or 404 if user does not exist
  */
 const updateUserById = (req: Request, res: Response) => {
-  // Extract body and userId from request/request parameters
-  const {
-    body,
-    params: { userId },
-  } = req;
-
-  // Check if userId is present
-  if (!userId) {
-    // TODO: Add invalid request body error (express-validator?)
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
     return;
   }
 
-  // Pass userId and updates to service to update user in database
-  const updatedUser = userService.updateUserById(userId, body);
+  // Extract body and userId from request/request parameters
+  // const {
+  //   body,
+  //   params: { userId },
+  // } = req;
 
-  // Check if user exists
-  if (updatedUser) {
+  // Extract body and userId from verified request/request parameters
+  const params = matchedData(req, { locations: ['params'] });
+  const body = matchedData(req, { locations: ['body'] });
+
+  try {
+    // Pass userId and updates to service to update user in database
+    const updatedUser = userService.updateUserById(params.userId, body);
     res.send({ status: 'OK', data: updatedUser });
-  } else {
-    res.status(404).send({ status: 'Not Found' });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
   }
 };
 
@@ -189,10 +195,16 @@ function validate(method: String) {
           { fieldSchema: userIdSchema, optional: false, in: ['params'] },
         ]),
       );
-    // case 'updateUserById':
-    //   return checkSchema({
-    //     userId: userIdSchema,
-
+    case 'updateUserById':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: userIdSchema, optional: false, in: ['params'] },
+          { fieldSchema: nameSchema, optional: true, in: ['body'] },
+          // TODO: Decide if email should be updatable
+          // { fieldSchema: emailSchema, optional: true, in: ['body'] },
+          { fieldSchema: passwordSchema, optional: true, in: ['body'] },
+        ]),
+      );
     default:
       return [];
   }
