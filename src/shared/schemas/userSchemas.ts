@@ -31,7 +31,7 @@ const emailSchema: FieldSchema = {
   },
 };
 
-const passwordSchema: FieldSchema = {
+const newPasswordSchema: FieldSchema = {
   name: 'password',
   options: {
     notEmpty: {
@@ -39,6 +39,15 @@ const passwordSchema: FieldSchema = {
     },
     isStrongPassword: {
       errorMessage: 'Password does not meet requirements',
+    },
+  },
+};
+
+const passwordSchema: FieldSchema = {
+  name: 'password',
+  options: {
+    notEmpty: {
+      errorMessage: 'Password is required',
     },
   },
 };
@@ -55,4 +64,10 @@ const userIdSchema: FieldSchema = {
   },
 };
 
-export { nameSchema, emailSchema, passwordSchema, userIdSchema };
+export {
+  nameSchema,
+  emailSchema,
+  newPasswordSchema,
+  passwordSchema,
+  userIdSchema,
+};

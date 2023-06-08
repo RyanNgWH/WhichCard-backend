@@ -11,6 +11,7 @@ import UserExistsError from '../shared/errors/database/userExistsError';
 import DatabaseError from '../shared/errors/database/databaseError';
 import toApplicationError from '../shared/errors/errors';
 import UserNotFoundError from '../shared/errors/database/userNotFoundError';
+import IncorrectCredentialsError from '../shared/errors/database/incorrectPasswordError';
 
 /**
  * Return all users in database
@@ -150,9 +151,9 @@ const login = (email: string, password: string) => {
   // Find user with matching email
   const user = DB.users.find(dbUser => dbUser.email === email);
 
-  // Check if user exists and password matches
+  // Check if user exists and password is correct
   if (!user || user.password !== password) {
-    return undefined;
+    throw new IncorrectCredentialsError('Incorrect credentials.');
   }
 
   return user;

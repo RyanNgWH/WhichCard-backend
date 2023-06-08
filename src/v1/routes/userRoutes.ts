@@ -82,7 +82,7 @@ router
    * Login a User
    * POST /api/v1/users/login
    */
-  .post((req: Request, res: Response) => {
+  .post(userController.validate('login'), (req: Request, res: Response) => {
     userController.login(req, res);
   });
 

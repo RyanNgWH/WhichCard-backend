@@ -11,6 +11,7 @@ interface IStatusCodes {
 
 // Status codes and their corresponding status messages
 const statusCodes: IStatusCodes = {
+  401: 'Unauthorized',
   404: 'Not Found',
   422: 'Unprocessable Entity',
   500: 'Internal Server Error',

@@ -11,6 +11,7 @@ import toApplicationError from '../shared/errors/errors';
 import {
   emailSchema,
   nameSchema,
+  newPasswordSchema,
   passwordSchema,
   userIdSchema,
 } from '../shared/schemas/userSchemas';
@@ -156,23 +157,25 @@ const deleteUserById = (req: Request, res: Response) => {
  * @param res Response to send back (200 with user data or 401)
  */
 const login = (req: Request, res: Response) => {
-  // Extract email and password from request body
-  const { email, password } = req.body;
-
-  // Check if email and password are present
-  if (!email || !password) {
-    // TODO: Add invalid request body error (express-validator?)
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
     return;
   }
 
-  // Pass email and password to service to login user
-  const user = userService.login(email, password);
+  // Extract request body
+  const body = matchedData(req, { locations: ['body'] });
 
-  // Check if user was found
-  if (user) {
+  try {
+    // Pass email and password to service to login user
+    const user = userService.login(body.email, body.password);
     res.send({ status: 'OK', data: user });
-  } else {
-    res.status(401).send({ status: 'Unauthorized' });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
   }
 };
 
@@ -188,7 +191,7 @@ function validate(method: String) {
         createSchema([
           { fieldSchema: nameSchema, optional: false, in: ['body'] },
           { fieldSchema: emailSchema, optional: false, in: ['body'] },
-          { fieldSchema: passwordSchema, optional: false, in: ['body'] },
+          { fieldSchema: newPasswordSchema, optional: false, in: ['body'] },
         ]),
       );
     case 'getUserById':
@@ -204,13 +207,20 @@ function validate(method: String) {
           { fieldSchema: nameSchema, optional: true, in: ['body'] },
           // TODO: Decide if email should be updatable
           // { fieldSchema: emailSchema, optional: true, in: ['body'] },
-          { fieldSchema: passwordSchema, optional: true, in: ['body'] },
+          { fieldSchema: newPasswordSchema, optional: true, in: ['body'] },
         ]),
       );
     case 'deleteUserById':
       return checkSchema(
         createSchema([
           { fieldSchema: userIdSchema, optional: false, in: ['params'] },
+        ]),
+      );
+    case 'login':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: emailSchema, optional: false, in: ['body'] },
+          { fieldSchema: passwordSchema, optional: false, in: ['body'] },
         ]),
       );
     default:
