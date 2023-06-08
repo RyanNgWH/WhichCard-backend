@@ -4,13 +4,13 @@
  * @format
  */
 
-import DatabaseError from './databaseError';
+import UserFacingError from './userFacingError';
 
 /**
  * Error for when a user already exists in the database.
  * @extends DatabaseError
  */
-class IncorrectCredentialsError extends DatabaseError {
+class IncorrectCredentialsError extends UserFacingError {
   constructor(message: string) {
     super(message, 401);
   }

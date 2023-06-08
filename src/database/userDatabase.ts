@@ -9,9 +9,9 @@ import saveToDatabase from './utils';
 import User from '../shared/types';
 import UserExistsError from '../shared/errors/database/userExistsError';
 import DatabaseError from '../shared/errors/database/databaseError';
-import toApplicationError from '../shared/errors/errors';
+import toApplicationError from '../shared/errors/errorHelpers';
 import UserNotFoundError from '../shared/errors/database/userNotFoundError';
-import IncorrectCredentialsError from '../shared/errors/database/incorrectPasswordError';
+import IncorrectCredentialsError from '../shared/errors/user/incorrectPasswordError';
 
 /**
  * Return all users in database
