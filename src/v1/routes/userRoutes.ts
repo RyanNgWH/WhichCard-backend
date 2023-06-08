@@ -9,6 +9,8 @@ import * as userController from '../../controllers/userController';
 
 const router = express.Router();
 
+// TODO: Implement validation for invalid routes
+
 // Methods for all users
 router
   .route('/')
@@ -66,9 +68,12 @@ router
    * DELETE /api/v1/users/:userId
    * @param req DELETE request for user by id
    */
-  .delete((req: Request, res: Response) => {
-    userController.deleteUserById(req, res);
-  });
+  .delete(
+    userController.validate('deleteUserById'),
+    (req: Request, res: Response) => {
+      userController.deleteUserById(req, res);
+    },
+  );
 
 // Methods for logging in
 router

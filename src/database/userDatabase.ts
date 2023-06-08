@@ -131,7 +131,7 @@ const deleteUserById = (userId: string) => {
 
   // Check if user exists
   if (userIndex === -1) {
-    // TODO: Add user not found error
+    // No error thrown if user does not exist as the user does not exist in the database
     return;
   }
 

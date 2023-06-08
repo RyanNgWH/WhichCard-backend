@@ -106,12 +106,6 @@ const updateUserById = (req: Request, res: Response) => {
     return;
   }
 
-  // Extract body and userId from request/request parameters
-  // const {
-  //   body,
-  //   params: { userId },
-  // } = req;
-
   // Extract body and userId from verified request/request parameters
   const params = matchedData(req, { locations: ['params'] });
   const body = matchedData(req, { locations: ['body'] });
@@ -134,18 +128,26 @@ const updateUserById = (req: Request, res: Response) => {
  * @param res Status code 204 and empty body
  */
 const deleteUserById = (req: Request, res: Response) => {
-  // Extract userId from request parameters
-  const { userId } = req.params;
-
-  // Check if userId is present
-  if (!userId) {
-    // TODO: Add invalid request body error (express-validator?)
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
     return;
   }
 
-  // Pass userId to service to delete user from database
-  userService.deleteUserById(userId);
-  res.status(204).send({ status: 'OK' });
+  // Extract parameters from request parameters
+  const params = matchedData(req, { locations: ['params'] });
+
+  try {
+    // Pass userId to service to delete user from database
+    userService.deleteUserById(params.userId);
+    res.status(204).send({ status: 'OK' });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
+  }
 };
 
 /**
@@ -203,6 +205,12 @@ function validate(method: String) {
           // TODO: Decide if email should be updatable
           // { fieldSchema: emailSchema, optional: true, in: ['body'] },
           { fieldSchema: passwordSchema, optional: true, in: ['body'] },
+        ]),
+      );
+    case 'deleteUserById':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: userIdSchema, optional: false, in: ['params'] },
         ]),
       );
     default:
