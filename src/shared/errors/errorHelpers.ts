@@ -1,5 +1,5 @@
 /**
- * Methods for handling errors
+ * Helper methods for handling errors
  *
  * @format
  */

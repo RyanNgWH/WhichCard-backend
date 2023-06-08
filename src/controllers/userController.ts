@@ -7,7 +7,7 @@
 import { Request, Response } from 'express';
 import { checkSchema, matchedData, validationResult } from 'express-validator';
 import * as userService from '../services/userService';
-import toApplicationError from '../shared/errors/errors';
+import toApplicationError from '../shared/errors/errorHelpers';
 import {
   emailSchema,
   nameSchema,
