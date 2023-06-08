@@ -27,7 +27,7 @@ Updates a user by id
 
 ### 200 OK - Succesfully updates the user
 
-Successfully updates and returns the user with the given id.
+Successfully updates and returns the updated user with the given id.
 
 #### Schema
 
