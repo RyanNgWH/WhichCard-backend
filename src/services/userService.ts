@@ -61,7 +61,11 @@ async function updateUserById(userId: string, updates: Partial<User>) {
  * Delete a user by id
  * @param userId Id of user to delete
  */
-const deleteUserById = (userId: string) => UserDatabase.deleteUserById(userId);
+async function deleteUserById(userId: string) {
+  UserDatabase.deleteUserById(userId).catch(error => {
+    throw error;
+  });
+}
 
 /**
  * Login a user

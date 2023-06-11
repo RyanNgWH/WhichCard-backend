@@ -5,12 +5,13 @@
  */
 
 import DB from './db.json';
-import saveToDatabase from './utils';
 import User from '../shared/types';
 import UserExistsError from '../shared/errors/database/userExistsError';
 import UserNotFoundError from '../shared/errors/database/userNotFoundError';
 import IncorrectCredentialsError from '../shared/errors/user/incorrectPasswordError';
 import UserModel from './models/userModels';
+import DatabaseError from '../shared/errors/database/databaseError';
+import toApplicationError from '../shared/errors/errorHelpers';
 
 /**
  * Return all users in database
@@ -94,20 +95,12 @@ async function updateUserById(userId: string, updates: Partial<User>) {
  * Delete a user by id
  * @param userId Id of user to delete
  */
-const deleteUserById = (userId: string) => {
-  // Find index of user to delete
-  const userIndex = DB.users.findIndex(user => user.id === userId);
-
-  // Check if user exists
-  if (userIndex === -1) {
-    // No error thrown if user does not exist as the user does not exist in the database
-    return;
-  }
-
-  // Delete user from database
-  DB.users.splice(userIndex, 1);
-  saveToDatabase(DB);
-};
+async function deleteUserById(userId: string) {
+  UserModel.findByIdAndDelete(userId).catch(error => {
+    const appError = toApplicationError(error);
+    throw new DatabaseError(appError.message, appError.code);
+  });
+}
 
 /**
  * Login a user

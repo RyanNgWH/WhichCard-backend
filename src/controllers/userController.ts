@@ -128,7 +128,7 @@ async function updateUserById(req: Request, res: Response) {
  * @param req DELETE request for user by id
  * @param res Status code 204 and empty body
  */
-const deleteUserById = (req: Request, res: Response) => {
+async function deleteUserById(req: Request, res: Response) {
   // Check if validation errors exist
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -141,7 +141,9 @@ const deleteUserById = (req: Request, res: Response) => {
 
   try {
     // Pass userId to service to delete user from database
-    userService.deleteUserById(params.userId);
+    userService.deleteUserById(params.userId).catch(error => {
+      throw error;
+    });
     res.status(204).send();
   } catch (error) {
     const appError = toApplicationError(error);
@@ -149,7 +151,7 @@ const deleteUserById = (req: Request, res: Response) => {
       .status(appError.code)
       .send({ status: appError.status, data: { error: appError.message } });
   }
-};
+}
 
 /**
  * Login a user
