@@ -5,7 +5,7 @@
  */
 
 import { v4 as uuidv4 } from 'uuid';
-import * as UserDatabase from '../database/UserDatabase';
+import * as UserDatabase from '../database/userDatabase';
 import User from '../shared/types';
 
 /**
@@ -24,7 +24,7 @@ const getUserById = (userId: string) => UserDatabase.getUserById(userId);
 /**
  * Create a new user
  * @param newUser User to create
- * @returns The created user, or undefined if user already exists
+ * @returns The created user, or throws an error if user already exists
  */
 const createUser = (newUser: Pick<User, 'name' | 'email' | 'password'>) => {
   // Create new user object with id and timestamps
