@@ -130,17 +130,22 @@ async function deleteUserById(userId: string) {
  * @param password User password
  * @returns The logged in user, or undefined if user does not exist or password is incorrect
  */
-const login = (email: string, password: string) => {
-  // Find user with matching email
-  const user = DB.users.find(dbUser => dbUser.email === email);
+async function login(email: string, password: string) {
+  try {
+    // Find user with matching email
+    const user = await UserModel.findOne({ email });
 
-  // Check if user exists and password is correct
-  if (!user || user.password !== password) {
-    throw new IncorrectCredentialsError('Incorrect credentials.');
+    // Check if user exists and password is correct
+    if (!user || user.password !== password) {
+      throw new IncorrectCredentialsError('Incorrect credentials.');
+    }
+
+    return user;
+  } catch (error) {
+    const appError = toApplicationError(error);
+    throw new DatabaseError(appError.message, appError.code);
   }
-
-  return user;
-};
+}
 
 export {
   getAllUsers,

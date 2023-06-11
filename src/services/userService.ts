@@ -71,8 +71,10 @@ async function deleteUserById(userId: string) {
  * @param password Password of user to login
  * @returns The logged in user, or undefined if user does not exist
  */
-const login = (email: string, password: string) =>
-  UserDatabase.login(email, password);
+async function login(email: string, password: string) {
+  const user = await UserDatabase.login(email, password);
+  return user;
+}
 
 export {
   getAllUsers,

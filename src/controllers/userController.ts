@@ -156,7 +156,7 @@ async function deleteUserById(req: Request, res: Response) {
  * @param req POST request for user login
  * @param res Response to send back (200 with user data or 401)
  */
-const login = (req: Request, res: Response) => {
+async function login(req: Request, res: Response) {
   // TODO: Implement JWT authentication?
 
   // Check if validation errors exist
@@ -171,7 +171,7 @@ const login = (req: Request, res: Response) => {
 
   try {
     // Pass email and password to service to login user
-    const user = userService.login(body.email, body.password);
+    const user = await userService.login(body.email, body.password);
     res.send({ status: 'OK', data: user });
   } catch (error) {
     const appError = toApplicationError(error);
@@ -179,7 +179,7 @@ const login = (req: Request, res: Response) => {
       .status(appError.code)
       .send({ status: appError.status, data: { error: appError.message } });
   }
-};
+}
 
 /**
  * Validate request body
