@@ -4,7 +4,6 @@
  * @format
  */
 
-import DB from './db.json';
 import User from '../shared/types';
 import UserExistsError from '../shared/errors/database/userExistsError';
 import UserNotFoundError from '../shared/errors/database/userNotFoundError';
