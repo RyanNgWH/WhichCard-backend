@@ -13,6 +13,8 @@ const nameSchema: FieldSchema = {
       errorMessage: 'Name is required',
     },
     isAlphanumeric: {
+      // eslint-disable-next-line no-sparse-arrays
+      options: [, { ignore: ' -' }],
       errorMessage: 'Name must be alphanumeric',
     },
   },
