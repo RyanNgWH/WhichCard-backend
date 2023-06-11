@@ -6,10 +6,13 @@
 
 import { Schema, model } from 'mongoose';
 
-const userModel = model(
+const UserModel = model(
   'User',
   new Schema({
-    _id: String,
+    _id: {
+      type: String,
+      required: [true, 'Id is required'],
+    },
     name: {
       type: String,
       required: [true, 'Name is required'],
@@ -33,4 +36,4 @@ const userModel = model(
   }),
 );
 
-export default userModel;
+export default UserModel;
