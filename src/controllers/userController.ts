@@ -157,6 +157,8 @@ const deleteUserById = (req: Request, res: Response) => {
  * @param res Response to send back (200 with user data or 401)
  */
 const login = (req: Request, res: Response) => {
+  // TODO: Implement JWT authentication?
+
   // Check if validation errors exist
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
