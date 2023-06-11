@@ -67,7 +67,7 @@ const getUserById = (req: Request, res: Response) => {
  * @param req POST request for new user
  * @param res Status code 201 and created user or 422 if user already exists
  */
-const createUser = (req: Request, res: Response) => {
+async function createUser(req: Request, res: Response) {
   // Check if validation errors exist
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -84,7 +84,7 @@ const createUser = (req: Request, res: Response) => {
 
   try {
     // Pass new user to service to save user to database
-    const createdUser = userService.createUser(newUser);
+    const createdUser = await userService.createUser(newUser);
     res.status(201).send({ status: 'Created', data: createdUser });
   } catch (error) {
     const appError = toApplicationError(error);
@@ -92,7 +92,7 @@ const createUser = (req: Request, res: Response) => {
       .status(appError.code)
       .send({ status: appError.status, data: { error: appError.message } });
   }
-};
+}
 
 /**
  * Update a user by id

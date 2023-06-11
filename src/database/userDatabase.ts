@@ -12,6 +12,7 @@ import DatabaseError from '../shared/errors/database/databaseError';
 import toApplicationError from '../shared/errors/errorHelpers';
 import UserNotFoundError from '../shared/errors/database/userNotFoundError';
 import IncorrectCredentialsError from '../shared/errors/user/incorrectPasswordError';
+import UserModel from './models/userModels';
 
 /**
  * Return all users in database
@@ -50,29 +51,17 @@ const getUserById = (userId: string) => {
  * @param newUser User to create
  * @returns The created user, or throws an error if user already exists
  */
-const createUser = (newUser: User) => {
+async function createUser(newUser: User) {
   // Check if user already exists in database (using email as unique identifier)
-  const userExists =
-    DB.users.findIndex(user => user.email === newUser.email) > -1;
-  if (userExists) {
+  if (await UserModel.exists({ email: newUser.email })) {
     throw new UserExistsError(
       `User with email ${newUser.email} already exists.`,
     );
   }
 
-  try {
-    // Add new user to database
-    DB.users.push(newUser);
-    saveToDatabase(DB);
-
-    return newUser;
-  } catch (error) {
-    const appError = toApplicationError(error);
-
-    // Throw error to controller for handling
-    throw new DatabaseError(appError.message, appError.code);
-  }
-};
+  const createdUser = await UserModel.create(newUser);
+  return createdUser;
+}
 
 /**
  * Update a user by id

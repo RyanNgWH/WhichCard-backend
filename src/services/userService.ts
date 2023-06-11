@@ -26,19 +26,19 @@ const getUserById = (userId: string) => UserDatabase.getUserById(userId);
  * @param newUser User to create
  * @returns The created user, or throws an error if user already exists
  */
-const createUser = (newUser: Pick<User, 'name' | 'email' | 'password'>) => {
+async function createUser(newUser: Pick<User, 'name' | 'email' | 'password'>) {
   // Create new user object with id and timestamps
   const userToAdd = {
     ...newUser,
-    id: uuidv4(),
+    _id: uuidv4(),
     createdAt: new Date().getTime(),
     updatedAt: new Date().getTime(),
   };
 
   // Pass new user to database to save user to database
-  const createdUser = UserDatabase.createUser(userToAdd);
+  const createdUser = await UserDatabase.createUser(userToAdd);
   return createdUser;
-};
+}
 
 /**
  * Update a user by id
