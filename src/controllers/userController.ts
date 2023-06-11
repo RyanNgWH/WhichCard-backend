@@ -5,7 +5,17 @@
  */
 
 import { Request, Response } from 'express';
+import { checkSchema, matchedData, validationResult } from 'express-validator';
 import * as userService from '../services/userService';
+import toApplicationError from '../shared/errors/errorHelpers';
+import {
+  emailSchema,
+  nameSchema,
+  newPasswordSchema,
+  passwordSchema,
+  userIdSchema,
+} from '../shared/schemas/userSchemas';
+import { createSchema } from '../shared/schemas/schemas';
 
 /**
  * Get all users
@@ -13,8 +23,15 @@ import * as userService from '../services/userService';
  * @param res Status code 200 and all users in database
  */
 const getAllUsers = (req: Request, res: Response) => {
-  const allUsers = userService.getAllUsers();
-  res.send({ status: 'OK', data: allUsers });
+  try {
+    const allUsers = userService.getAllUsers();
+    res.send({ status: 'OK', data: allUsers });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
+  }
 };
 
 /**
@@ -23,17 +40,25 @@ const getAllUsers = (req: Request, res: Response) => {
  * @param res Status code 200 and user with given id or 404 if user does not exist
  */
 const getUserById = (req: Request, res: Response) => {
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
+    return;
+  }
+
   // Extract userId from request parameters
   const { userId } = req.params;
 
-  // Pass userId to service to get user from database
-  const user = userService.getUserById(userId);
-
-  // Check if user exists
-  if (user) {
+  try {
+    // Pass userId to service to get user from database
+    const user = userService.getUserById(userId);
     res.send({ status: 'OK', data: user });
-  } else {
-    res.status(404).send({ status: 'Not Found' });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
   }
 };
 
@@ -43,30 +68,29 @@ const getUserById = (req: Request, res: Response) => {
  * @param res Status code 201 and created user or 422 if user already exists
  */
 const createUser = (req: Request, res: Response) => {
-  // Extract request body
-  const { body } = req;
-
-  // Check if request body is valid
-  if (!body.name || !body.email || !body.password) {
-    // TODO: Add invalid request body error (express-validator?)
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
     return;
   }
 
   // Create new user
   const newUser = {
-    name: body.name,
-    email: body.email,
-    password: body.password,
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
   };
 
-  // Pass new user to service to save user to database
-  const createdUser = userService.createUser(newUser);
-
-  // Check if user already exists
-  if (createdUser) {
-    res.status(201).send({ status: 'OK', data: createdUser });
-  } else {
-    res.status(422).send({ status: 'Unprocessable Entity' });
+  try {
+    // Pass new user to service to save user to database
+    const createdUser = userService.createUser(newUser);
+    res.status(201).send({ status: 'Created', data: createdUser });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
   }
 };
 
@@ -76,26 +100,26 @@ const createUser = (req: Request, res: Response) => {
  * @param res Status code 200 and updated user or 404 if user does not exist
  */
 const updateUserById = (req: Request, res: Response) => {
-  // Extract body and userId from request/request parameters
-  const {
-    body,
-    params: { userId },
-  } = req;
-
-  // Check if userId is present
-  if (!userId) {
-    // TODO: Add invalid request body error (express-validator?)
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
     return;
   }
 
-  // Pass userId and updates to service to update user in database
-  const updatedUser = userService.updateUserById(userId, body);
+  // Extract body and userId from verified request/request parameters
+  const params = matchedData(req, { locations: ['params'] });
+  const body = matchedData(req, { locations: ['body'] });
 
-  // Check if user exists
-  if (updatedUser) {
+  try {
+    // Pass userId and updates to service to update user in database
+    const updatedUser = userService.updateUserById(params.userId, body);
     res.send({ status: 'OK', data: updatedUser });
-  } else {
-    res.status(404).send({ status: 'Not Found' });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
   }
 };
 
@@ -105,18 +129,26 @@ const updateUserById = (req: Request, res: Response) => {
  * @param res Status code 204 and empty body
  */
 const deleteUserById = (req: Request, res: Response) => {
-  // Extract userId from request parameters
-  const { userId } = req.params;
-
-  // Check if userId is present
-  if (!userId) {
-    // TODO: Add invalid request body error (express-validator?)
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
     return;
   }
 
-  // Pass userId to service to delete user from database
-  userService.deleteUserById(userId);
-  res.status(204).send({ status: 'OK' });
+  // Extract parameters from request parameters
+  const params = matchedData(req, { locations: ['params'] });
+
+  try {
+    // Pass userId to service to delete user from database
+    userService.deleteUserById(params.userId);
+    res.status(204).send();
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
+  }
 };
 
 /**
@@ -127,25 +159,76 @@ const deleteUserById = (req: Request, res: Response) => {
 const login = (req: Request, res: Response) => {
   // TODO: Implement JWT authentication?
 
-  // Extract email and password from request body
-  const { email, password } = req.body;
-
-  // Check if email and password are present
-  if (!email || !password) {
-    // TODO: Add invalid request body error (express-validator?)
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
     return;
   }
 
-  // Pass email and password to service to login user
-  const user = userService.login(email, password);
+  // Extract request body
+  const body = matchedData(req, { locations: ['body'] });
 
-  // Check if user was found
-  if (user) {
+  try {
+    // Pass email and password to service to login user
+    const user = userService.login(body.email, body.password);
     res.send({ status: 'OK', data: user });
-  } else {
-    res.status(401).send({ status: 'Unauthorized' });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
   }
 };
+
+/**
+ * Validate request body
+ * @param method Method to validate
+ * @returns Array of validation checks
+ */
+function validate(method: String) {
+  switch (method) {
+    case 'createUser':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: nameSchema, optional: false, in: ['body'] },
+          { fieldSchema: emailSchema, optional: false, in: ['body'] },
+          { fieldSchema: newPasswordSchema, optional: false, in: ['body'] },
+        ]),
+      );
+    case 'getUserById':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: userIdSchema, optional: false, in: ['params'] },
+        ]),
+      );
+    case 'updateUserById':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: userIdSchema, optional: false, in: ['params'] },
+          { fieldSchema: nameSchema, optional: true, in: ['body'] },
+          // TODO: Decide if email should be updatable
+          // { fieldSchema: emailSchema, optional: true, in: ['body'] },
+          { fieldSchema: newPasswordSchema, optional: true, in: ['body'] },
+        ]),
+      );
+    case 'deleteUserById':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: userIdSchema, optional: false, in: ['params'] },
+        ]),
+      );
+    case 'login':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: emailSchema, optional: false, in: ['body'] },
+          { fieldSchema: passwordSchema, optional: false, in: ['body'] },
+        ]),
+      );
+    default:
+      return [];
+  }
+}
 
 export {
   getAllUsers,
@@ -154,4 +237,5 @@ export {
   updateUserById,
   deleteUserById,
   login,
+  validate,
 };
