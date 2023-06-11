@@ -62,9 +62,7 @@ async function updateUserById(userId: string, updates: Partial<User>) {
  * @param userId Id of user to delete
  */
 async function deleteUserById(userId: string) {
-  UserDatabase.deleteUserById(userId).catch(error => {
-    throw error;
-  });
+  UserDatabase.deleteUserById(userId);
 }
 
 /**
