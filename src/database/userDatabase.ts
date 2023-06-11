@@ -18,8 +18,13 @@ import toApplicationError from '../shared/errors/errorHelpers';
  * @returns All users in database
  */
 async function getAllUsers() {
-  const users = await UserModel.find();
-  return users;
+  try {
+    const users = await UserModel.find();
+    return users;
+  } catch (error) {
+    const appError = toApplicationError(error);
+    throw new DatabaseError(appError.message, appError.code);
+  }
 }
 
 /**
@@ -28,15 +33,20 @@ async function getAllUsers() {
  * @returns The user with the given id, or throws an error if user does not exist
  */
 async function getUserById(userId: string) {
-  // Find user with matching id from database
-  const user = await UserModel.findById(userId);
+  try {
+    // Find user with matching id from database
+    const user = await UserModel.findById(userId);
 
-  // Check if user exists
-  if (!user) {
-    throw new UserNotFoundError(`User with id ${userId} not found.`);
+    // Check if user exists
+    if (!user) {
+      throw new UserNotFoundError(`User with id ${userId} not found.`);
+    }
+
+    return user;
+  } catch (error) {
+    const appError = toApplicationError(error);
+    throw new DatabaseError(appError.message, appError.code);
   }
-
-  return user;
 }
 
 /**
@@ -45,15 +55,20 @@ async function getUserById(userId: string) {
  * @returns The created user, or throws an error if user already exists
  */
 async function createUser(newUser: User) {
-  // Check if user already exists in database (using email as unique identifier)
-  if (await UserModel.exists({ email: newUser.email })) {
-    throw new UserExistsError(
-      `User with email ${newUser.email} already exists.`,
-    );
-  }
+  try {
+    // Check if user already exists in database (using email as unique identifier)
+    if (await UserModel.exists({ email: newUser.email })) {
+      throw new UserExistsError(
+        `User with email ${newUser.email} already exists.`,
+      );
+    }
 
-  const createdUser = await UserModel.create(newUser);
-  return createdUser;
+    const createdUser = await UserModel.create(newUser);
+    return createdUser;
+  } catch (error) {
+    const appError = toApplicationError(error);
+    throw new DatabaseError(appError.message, appError.code);
+  }
 }
 
 /**
@@ -63,32 +78,38 @@ async function createUser(newUser: User) {
  * @returns The updated user, or throws an error if user does not exist
  */
 async function updateUserById(userId: string, updates: Partial<User>) {
-  // Find the user to update
-  const user = await UserModel.findById(userId);
+  try {
+    // Find the user to update
+    const user = await UserModel.findById(userId);
 
-  // Check if user exists
-  if (!user) {
-    throw new UserNotFoundError(`User with id ${userId} not found.`);
-  }
-
-  // Check if email is being updated
-  if (updates.email) {
-    // Check if email already exists in database
-    const userWithEmail = await UserModel.findOne({ email: updates.email });
-    if (userWithEmail) {
-      throw new UserExistsError(
-        `The email ${updates.email} is already in use.`,
-      );
+    // Check if user exists
+    if (!user) {
+      throw new UserNotFoundError(`User with id ${userId} not found.`);
     }
+
+    // Check if email is being updated
+    if (updates.email) {
+      // Check if email already exists in database
+      const userWithEmail = await UserModel.findOne({ email: updates.email });
+      if (userWithEmail) {
+        throw new UserExistsError(
+          `The email ${updates.email} is already in use.`,
+        );
+      }
+    }
+
+    // Update user with new values
+    user.set(updates);
+    user.updatedAt = new Date().getTime();
+
+    // Save updated user to database
+    const updatedUser = await user.save();
+    return updatedUser;
+  } catch (error) {
+    // TODO: Implement logging
+    const appError = toApplicationError(error);
+    throw new DatabaseError(appError.message, appError.code);
   }
-
-  // Update user with new values
-  user.set(updates);
-  user.updatedAt = new Date().getTime();
-
-  // Save updated user to database
-  const updatedUser = await user.save();
-  return updatedUser;
 }
 
 /**
@@ -97,6 +118,7 @@ async function updateUserById(userId: string, updates: Partial<User>) {
  */
 async function deleteUserById(userId: string) {
   UserModel.findByIdAndDelete(userId).catch(error => {
+    // TODO: Implement logging
     const appError = toApplicationError(error);
     throw new DatabaseError(appError.message, appError.code);
   });
