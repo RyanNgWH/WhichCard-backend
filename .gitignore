@@ -134,3 +134,6 @@ dist
 
 # VSCode workspace configuration files
 .vscode/
+
+# MongoDB files
+db/
