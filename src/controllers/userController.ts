@@ -99,7 +99,7 @@ async function createUser(req: Request, res: Response) {
  * @param req PATCH request for user by id
  * @param res Status code 200 and updated user or 404 if user does not exist
  */
-const updateUserById = (req: Request, res: Response) => {
+async function updateUserById(req: Request, res: Response) {
   // Check if validation errors exist
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -113,7 +113,7 @@ const updateUserById = (req: Request, res: Response) => {
 
   try {
     // Pass userId and updates to service to update user in database
-    const updatedUser = userService.updateUserById(params.userId, body);
+    const updatedUser = await userService.updateUserById(params.userId, body);
     res.send({ status: 'OK', data: updatedUser });
   } catch (error) {
     const appError = toApplicationError(error);
@@ -121,7 +121,7 @@ const updateUserById = (req: Request, res: Response) => {
       .status(appError.code)
       .send({ status: appError.status, data: { error: appError.message } });
   }
-};
+}
 
 /**
  * Delete a user by id

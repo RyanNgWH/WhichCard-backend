@@ -50,10 +50,12 @@ async function createUser(newUser: Pick<User, 'name' | 'email' | 'password'>) {
  * Update a user by id
  * @param userId Id of user to update
  * @param updates Updates to apply to user
- * @returns The updated user, or undefined if user does not exist
+ * @returns The updated user, or throws an error user does not exist
  */
-const updateUserById = (userId: string, updates: Partial<User>) =>
-  UserDatabase.updateUserById(userId, updates);
+async function updateUserById(userId: string, updates: Partial<User>) {
+  const user = await UserDatabase.updateUserById(userId, updates);
+  return user;
+}
 
 /**
  * Delete a user by id
