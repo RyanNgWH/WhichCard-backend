@@ -28,17 +28,17 @@ async function getAllUsers() {
  * @param userId Id of user to get
  * @returns The user with the given id, or throws an error if user does not exist
  */
-const getUserById = (userId: string) => {
+async function getUserById(userId: string) {
   // Find user with matching id from database
-  const foundUser = DB.users.find(user => user.id === userId);
+  const user = await UserModel.findById(userId);
 
   // Check if user exists
-  if (!foundUser) {
+  if (!user) {
     throw new UserNotFoundError(`User with id ${userId} not found.`);
   }
 
-  return foundUser;
-};
+  return user;
+}
 
 /**
  * Create a new user and save to database

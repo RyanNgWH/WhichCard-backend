@@ -30,12 +30,13 @@ Successfully returns the user with the given id.
 
 | Field       | Type   | Description                                       |
 | ----------- | ------ | ------------------------------------------------- |
-| `id`        | string | ID of the user (UUID)                             |
+| `_id`       | string | ID of the user (UUID)                             |
 | `name`      | string | Full name of the user                             |
 | `email`     | string | Email of the user                                 |
 | `password`  | string | Password of the user                              |
 | `createdAt` | number | Timestamp of when the user was created (in epoch) |
 | `updatedAt` | number | Timestamp of when the user was updated (in epoch) |
+| `__v`       | number | Version of the user                               |
 
 #### Example
 
@@ -43,12 +44,13 @@ Successfully returns the user with the given id.
 {
   "status": "OK",
   "data": {
-    "name": "Luna",
+    "_id": "75cfda89-cded-416b-9704-9debdb17e3ab",
+    "name": "Tiny Luna",
     "email": "luna@tinynamoo.com",
     "password": "P@ssw0rd",
-    "id": "d2d827db-4095-4a4a-a12d-5bcf2c77eeaa",
-    "createdAt": 1686230808254,
-    "updatedAt": 1686230808254
+    "createdAt": 1686468544825,
+    "updatedAt": 1686468544825,
+    "__v": 0
   }
 }
 ```

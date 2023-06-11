@@ -39,7 +39,7 @@ async function getAllUsers(req: Request, res: Response) {
  * @param req GET request for user by id
  * @param res Status code 200 and user with given id or 404 if user does not exist
  */
-const getUserById = (req: Request, res: Response) => {
+async function getUserById(req: Request, res: Response) {
   // Check if validation errors exist
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -52,7 +52,7 @@ const getUserById = (req: Request, res: Response) => {
 
   try {
     // Pass userId to service to get user from database
-    const user = userService.getUserById(userId);
+    const user = await userService.getUserById(userId);
     res.send({ status: 'OK', data: user });
   } catch (error) {
     const appError = toApplicationError(error);
@@ -60,7 +60,7 @@ const getUserById = (req: Request, res: Response) => {
       .status(appError.code)
       .send({ status: appError.status, data: { error: appError.message } });
   }
-};
+}
 
 /**
  * Create a new user

@@ -22,7 +22,10 @@ async function getAllUsers() {
  * @param userId Id of user to get
  * @returns The user with the given id, or undefined if user does not exist
  */
-const getUserById = (userId: string) => UserDatabase.getUserById(userId);
+async function getUserById(userId: string) {
+  const user = await UserDatabase.getUserById(userId);
+  return user;
+}
 
 /**
  * Create a new user
