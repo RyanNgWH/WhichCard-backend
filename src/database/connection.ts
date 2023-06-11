@@ -5,6 +5,7 @@
  */
 
 import mongoose from 'mongoose';
+import DatabaseConnectionFailedError from '../shared/errors/database/databaseConnectionFailedError';
 
 function connectToDatabase() {
   const MONGO_URL = process.env.MONGO_URL || '';
@@ -13,8 +14,8 @@ function connectToDatabase() {
   const database = mongoose.connection;
 
   database.on('error', error => {
-    // TODO: Add logging & error handling
-    console.error('Error connecting to database:', error);
+    // TODO: Add logging
+    throw new DatabaseConnectionFailedError(error.message);
   });
 }
 
