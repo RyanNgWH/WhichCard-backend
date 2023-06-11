@@ -18,16 +18,10 @@ import UserModel from './models/userModels';
  * Return all users in database
  * @returns All users in database
  */
-const getAllUsers = () => {
-  try {
-    return DB.users;
-  } catch (error) {
-    const appError = toApplicationError(error);
-
-    // Throw error to controller for handling
-    throw new DatabaseError(appError.message, appError.code);
-  }
-};
+async function getAllUsers() {
+  const users = await UserModel.find();
+  return users;
+}
 
 /**
  * Get a user by id

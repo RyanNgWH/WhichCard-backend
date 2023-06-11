@@ -30,12 +30,13 @@ Returns all users in the database.
 
 | Field       | Type   | Description                                       |
 | ----------- | ------ | ------------------------------------------------- |
-| `id`        | string | ID of the user (UUID)                             |
+| `_id`       | string | ID of the user (UUID)                             |
 | `name`      | string | Full name of the user                             |
 | `email`     | string | Email of the user                                 |
 | `password`  | string | Password of the user                              |
 | `createdAt` | number | Timestamp of when the user was created (in epoch) |
 | `updatedAt` | number | Timestamp of when the user was updated (in epoch) |
+| `__v`       | number | Version of the user                               |
 
 #### Example
 
@@ -44,28 +45,31 @@ Returns all users in the database.
   "status": "OK",
   "data": [
     {
-      "id": "61dbae02-c147-4e28-863c-db7bd402b2d6",
+      "_id": "e92f852d-06e7-4572-baa3-ef105918e15e",
       "name": "Jang Man Wol",
       "email": "jmwl160493@kakaot.com",
       "password": "P@ssw0rd",
-      "createdAt": 1685203200000,
-      "updatedAt": 1685203200000
+      "createdAt": 1686467427069,
+      "updatedAt": 1686467427069,
+      "__v": 0
     },
     {
-      "id": "4a3d9aaa-608c-49a7-a004-66305ad4ab50",
+      "_id": "ee942760-9582-4bdf-a4d8-1df3ef8e4dd3",
       "name": "Sanchez",
       "email": "sanchez@pizzaalvolo.com",
-      "password": "veronica123",
-      "createdAt": 1685203502000,
-      "updatedAt": 1685203502000
+      "password": "Veronica@123",
+      "createdAt": 1686467492406,
+      "updatedAt": 1686467492406,
+      "__v": 0
     },
     {
-      "id": "d8be2362-7b68-4ea4-a1f6-03f8bc4eede7",
+      "_id": "2b92ed5f-08ff-42e4-8437-6cf4fb2901d3",
       "name": "Sunny",
       "email": "kimsun@goblinchiken.com",
-      "password": "kimwoobin",
-      "createdAt": 1685203572000,
-      "updatedAt": 1685211240000
+      "password": "KimW00B$n",
+      "createdAt": 1686467522267,
+      "updatedAt": 1686467522267,
+      "__v": 0
     }
   ]
 }

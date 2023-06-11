@@ -12,7 +12,10 @@ import User from '../shared/types';
  * Get all users
  * @returns All users
  */
-const getAllUsers = () => UserDatabase.getAllUsers();
+async function getAllUsers() {
+  const users = await UserDatabase.getAllUsers();
+  return users;
+}
 
 /**
  * Get a user by id

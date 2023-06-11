@@ -22,9 +22,9 @@ import { createSchema } from '../shared/schemas/schemas';
  * @param req GET request for all users
  * @param res Status code 200 and all users in database
  */
-const getAllUsers = (req: Request, res: Response) => {
+async function getAllUsers(req: Request, res: Response) {
   try {
-    const allUsers = userService.getAllUsers();
+    const allUsers = await userService.getAllUsers();
     res.send({ status: 'OK', data: allUsers });
   } catch (error) {
     const appError = toApplicationError(error);
@@ -32,7 +32,7 @@ const getAllUsers = (req: Request, res: Response) => {
       .status(appError.code)
       .send({ status: appError.status, data: { error: appError.message } });
   }
-};
+}
 
 /**
  * Get a user by id
