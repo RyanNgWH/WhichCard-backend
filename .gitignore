@@ -132,7 +132,7 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-# VSCode workspace configuration files
+## VSCode workspace configuration files
 .vscode/
 
 ## MacOS specific
@@ -162,3 +162,6 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+## MongoDB files
+db/

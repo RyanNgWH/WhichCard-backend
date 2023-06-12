@@ -22,9 +22,9 @@ import { createSchema } from '../shared/schemas/schemas';
  * @param req GET request for all users
  * @param res Status code 200 and all users in database
  */
-const getAllUsers = (req: Request, res: Response) => {
+async function getAllUsers(req: Request, res: Response) {
   try {
-    const allUsers = userService.getAllUsers();
+    const allUsers = await userService.getAllUsers();
     res.send({ status: 'OK', data: allUsers });
   } catch (error) {
     const appError = toApplicationError(error);
@@ -32,14 +32,14 @@ const getAllUsers = (req: Request, res: Response) => {
       .status(appError.code)
       .send({ status: appError.status, data: { error: appError.message } });
   }
-};
+}
 
 /**
  * Get a user by id
  * @param req GET request for user by id
  * @param res Status code 200 and user with given id or 404 if user does not exist
  */
-const getUserById = (req: Request, res: Response) => {
+async function getUserById(req: Request, res: Response) {
   // Check if validation errors exist
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -52,7 +52,7 @@ const getUserById = (req: Request, res: Response) => {
 
   try {
     // Pass userId to service to get user from database
-    const user = userService.getUserById(userId);
+    const user = await userService.getUserById(userId);
     res.send({ status: 'OK', data: user });
   } catch (error) {
     const appError = toApplicationError(error);
@@ -60,14 +60,14 @@ const getUserById = (req: Request, res: Response) => {
       .status(appError.code)
       .send({ status: appError.status, data: { error: appError.message } });
   }
-};
+}
 
 /**
  * Create a new user
  * @param req POST request for new user
  * @param res Status code 201 and created user or 422 if user already exists
  */
-const createUser = (req: Request, res: Response) => {
+async function createUser(req: Request, res: Response) {
   // Check if validation errors exist
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -84,7 +84,7 @@ const createUser = (req: Request, res: Response) => {
 
   try {
     // Pass new user to service to save user to database
-    const createdUser = userService.createUser(newUser);
+    const createdUser = await userService.createUser(newUser);
     res.status(201).send({ status: 'Created', data: createdUser });
   } catch (error) {
     const appError = toApplicationError(error);
@@ -92,14 +92,14 @@ const createUser = (req: Request, res: Response) => {
       .status(appError.code)
       .send({ status: appError.status, data: { error: appError.message } });
   }
-};
+}
 
 /**
  * Update a user by id
  * @param req PATCH request for user by id
  * @param res Status code 200 and updated user or 404 if user does not exist
  */
-const updateUserById = (req: Request, res: Response) => {
+async function updateUserById(req: Request, res: Response) {
   // Check if validation errors exist
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -113,7 +113,7 @@ const updateUserById = (req: Request, res: Response) => {
 
   try {
     // Pass userId and updates to service to update user in database
-    const updatedUser = userService.updateUserById(params.userId, body);
+    const updatedUser = await userService.updateUserById(params.userId, body);
     res.send({ status: 'OK', data: updatedUser });
   } catch (error) {
     const appError = toApplicationError(error);
@@ -121,14 +121,14 @@ const updateUserById = (req: Request, res: Response) => {
       .status(appError.code)
       .send({ status: appError.status, data: { error: appError.message } });
   }
-};
+}
 
 /**
  * Delete a user by id
  * @param req DELETE request for user by id
  * @param res Status code 204 and empty body
  */
-const deleteUserById = (req: Request, res: Response) => {
+async function deleteUserById(req: Request, res: Response) {
   // Check if validation errors exist
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -141,7 +141,7 @@ const deleteUserById = (req: Request, res: Response) => {
 
   try {
     // Pass userId to service to delete user from database
-    userService.deleteUserById(params.userId);
+    await userService.deleteUserById(params.userId);
     res.status(204).send();
   } catch (error) {
     const appError = toApplicationError(error);
@@ -149,14 +149,14 @@ const deleteUserById = (req: Request, res: Response) => {
       .status(appError.code)
       .send({ status: appError.status, data: { error: appError.message } });
   }
-};
+}
 
 /**
  * Login a user
  * @param req POST request for user login
  * @param res Response to send back (200 with user data or 401)
  */
-const login = (req: Request, res: Response) => {
+async function login(req: Request, res: Response) {
   // TODO: Implement JWT authentication?
 
   // Check if validation errors exist
@@ -171,7 +171,7 @@ const login = (req: Request, res: Response) => {
 
   try {
     // Pass email and password to service to login user
-    const user = userService.login(body.email, body.password);
+    const user = await userService.login(body.email, body.password);
     res.send({ status: 'OK', data: user });
   } catch (error) {
     const appError = toApplicationError(error);
@@ -179,7 +179,7 @@ const login = (req: Request, res: Response) => {
       .status(appError.code)
       .send({ status: appError.status, data: { error: appError.message } });
   }
-};
+}
 
 /**
  * Validate request body
