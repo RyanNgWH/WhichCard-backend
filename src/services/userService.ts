@@ -6,7 +6,7 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import * as userDatabase from '../database/userDatabase';
-import User from '../shared/types';
+import { User } from '../shared/types';
 
 /**
  * Get all users
