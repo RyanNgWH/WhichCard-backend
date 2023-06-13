@@ -13,4 +13,20 @@ type User = {
   updatedAt: number;
 };
 
-export default User;
+type Card = {
+  _id: string;
+  type: string;
+  issuer: string;
+  benefits: {
+    category: string;
+    mccs: number[];
+    cashback: number;
+  }[];
+  exclusions: number[];
+  cashbackLimit: number;
+  minimumSpend: number;
+  createdAt: number;
+  updatedAt: number;
+};
+
+export { User, Card };

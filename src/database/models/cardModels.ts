@@ -23,6 +23,7 @@ const CardModel = model(
     },
     benefits: [
       {
+        _id: false,
         category: String,
         mccs: [Number],
         cashback: Number,

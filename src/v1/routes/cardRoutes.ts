@@ -20,6 +20,18 @@ router
    */
   .get((req: Request, res: Response) => {
     cardController.getAllCards(req, res);
-  });
+  })
+  /**
+   * Create a new Card
+   * POST /api/v1/cards
+   * @param req POST request for new card
+   * @param res Response to send back
+   */
+  .post(
+    cardController.validate('createCard'),
+    (req: Request, res: Response) => {
+      cardController.createCard(req, res);
+    },
+  );
 
 export default router;
