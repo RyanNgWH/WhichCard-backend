@@ -15,8 +15,9 @@ const nameSchema: FieldSchema = {
     isAlphanumeric: {
       // eslint-disable-next-line no-sparse-arrays
       options: [, { ignore: ' -' }],
-      errorMessage: 'Name must be alphanumeric',
+      errorMessage: 'Name must be alphanumeric, spaces and dashes allowed',
     },
+    trim: true,
   },
 };
 
