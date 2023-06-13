@@ -5,7 +5,7 @@
  */
 
 import { v4 as uuidv4 } from 'uuid';
-import * as UserDatabase from '../database/userDatabase';
+import * as userDatabase from '../database/userDatabase';
 import User from '../shared/types';
 
 /**
@@ -13,7 +13,7 @@ import User from '../shared/types';
  * @returns All users
  */
 async function getAllUsers() {
-  const users = await UserDatabase.getAllUsers();
+  const users = await userDatabase.getAllUsers();
   return users;
 }
 
@@ -23,7 +23,7 @@ async function getAllUsers() {
  * @returns The user with the given id, or undefined if user does not exist
  */
 async function getUserById(userId: string) {
-  const user = await UserDatabase.getUserById(userId);
+  const user = await userDatabase.getUserById(userId);
   return user;
 }
 
@@ -42,7 +42,7 @@ async function createUser(newUser: Pick<User, 'name' | 'email' | 'password'>) {
   };
 
   // Pass new user to database to save user to database
-  const createdUser = await UserDatabase.createUser(userToAdd);
+  const createdUser = await userDatabase.createUser(userToAdd);
   return createdUser;
 }
 
@@ -53,7 +53,7 @@ async function createUser(newUser: Pick<User, 'name' | 'email' | 'password'>) {
  * @returns The updated user, or throws an error user does not exist
  */
 async function updateUserById(userId: string, updates: Partial<User>) {
-  const user = await UserDatabase.updateUserById(userId, updates);
+  const user = await userDatabase.updateUserById(userId, updates);
   return user;
 }
 
@@ -62,7 +62,7 @@ async function updateUserById(userId: string, updates: Partial<User>) {
  * @param userId Id of user to delete
  */
 async function deleteUserById(userId: string) {
-  UserDatabase.deleteUserById(userId);
+  userDatabase.deleteUserById(userId);
 }
 
 /**
@@ -72,7 +72,7 @@ async function deleteUserById(userId: string) {
  * @returns The logged in user, or undefined if user does not exist
  */
 async function login(email: string, password: string) {
-  const user = await UserDatabase.login(email, password);
+  const user = await userDatabase.login(email, password);
   return user;
 }
 
