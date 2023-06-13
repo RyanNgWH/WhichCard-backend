@@ -184,7 +184,7 @@ async function login(req: Request, res: Response) {
 /**
  * Validate request body
  * @param method Method to validate
- * @returns Array of validation checks
+ * @returns Array of validation chains
  */
 function validate(method: String) {
   switch (method) {
