@@ -4,9 +4,9 @@
  * @format
  */
 
-import User from '../shared/types';
-import UserExistsError from '../shared/errors/database/userExistsError';
-import UserNotFoundError from '../shared/errors/database/userNotFoundError';
+import { User } from '../shared/types';
+import UserExistsError from '../shared/errors/database/user/userExistsError';
+import UserNotFoundError from '../shared/errors/database/user/userNotFoundError';
 import IncorrectCredentialsError from '../shared/errors/user/incorrectPasswordError';
 import UserModel from './models/userModels';
 import DatabaseError from '../shared/errors/database/databaseError';

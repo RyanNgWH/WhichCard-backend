@@ -4,7 +4,7 @@
  * @format
  */
 
-import DatabaseError from './databaseError';
+import DatabaseError from '../databaseError';
 
 /**
  * Error for when a user is not found in the database.
