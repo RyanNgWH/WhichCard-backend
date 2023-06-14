@@ -20,7 +20,7 @@ async function getAllUsers() {
 /**
  * Get a user by id
  * @param userId Id of user to get
- * @returns The user with the given id, or undefined if user does not exist
+ * @returns The user with the given id, or throws an error if user does not exist
  */
 async function getUserById(userId: string) {
   const user = await userDatabase.getUserById(userId);
