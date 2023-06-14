@@ -144,6 +144,18 @@ const minimumSpendSchema: FieldSchema = {
   },
 };
 
+const cardIdSchema: FieldSchema = {
+  name: 'cardId',
+  options: {
+    notEmpty: {
+      errorMessage: 'Card ID is required',
+    },
+    isUUID: {
+      errorMessage: 'Card ID must be a UUID',
+    },
+  },
+};
+
 export {
   typeSchema,
   issuerSchema,
@@ -154,4 +166,5 @@ export {
   exclusionsSchema,
   cashbackLimitSchema,
   minimumSpendSchema,
+  cardIdSchema,
 };

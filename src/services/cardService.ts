@@ -18,6 +18,16 @@ async function getAllCards() {
 }
 
 /**
+ * Get a card by id
+ * @param cardId Id of card to get
+ * @returns The card with the given id, or throws and error if card does not exist
+ */
+async function getCardById(cardId: string) {
+  const card = await cardDatabase.getCardById(cardId);
+  return card;
+}
+
+/**
  * Create a new card
  * @param newCard Card to create
  * @returns The created card, or throws an error if card already exists
@@ -46,4 +56,4 @@ async function createCard(
   return createdCard;
 }
 
-export { getAllCards, createCard };
+export { getAllCards, getCardById, createCard };

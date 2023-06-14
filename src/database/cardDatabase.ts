@@ -5,6 +5,7 @@
  */
 
 import CardExistsError from '../shared/errors/database/card/cardExistsError';
+import CardNotFoundError from '../shared/errors/database/card/cardNotFoundError';
 import DatabaseError from '../shared/errors/database/databaseError';
 import toApplicationError from '../shared/errors/errorHelpers';
 import { Card } from '../shared/types';
@@ -18,6 +19,28 @@ async function getAllCards() {
   try {
     const cards = await CardModel.find();
     return cards;
+  } catch (error) {
+    const appError = toApplicationError(error);
+    throw new DatabaseError(appError.message, appError.code);
+  }
+}
+
+/**
+ * Get a card by id
+ * @param cardId Id of card to get
+ * @returns The card with the given id, or throws an error if card does not exist
+ */
+async function getCardById(cardId: string) {
+  try {
+    // Find card with matching id from database
+    const card = await CardModel.findById(cardId);
+
+    // Check if card exists
+    if (!card) {
+      throw new CardNotFoundError(`Card with id ${cardId} not found.`);
+    }
+
+    return card;
   } catch (error) {
     const appError = toApplicationError(error);
     throw new DatabaseError(appError.message, appError.code);
@@ -49,4 +72,4 @@ async function createCard(newCard: Card) {
   }
 }
 
-export { getAllCards, createCard };
+export { getAllCards, getCardById, createCard };

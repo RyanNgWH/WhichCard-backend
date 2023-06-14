@@ -34,4 +34,20 @@ router
     },
   );
 
+// Methods for a specific card
+router
+  .route('/:cardId')
+  /**
+   * Get a Card by id
+   * GET /api/v1/cards/:cardId
+   * @param req GET request for card by id
+   * @param res Response to send back
+   */
+  .get(
+    cardController.validate('getCardById'),
+    (req: Request, res: Response) => {
+      cardController.getCardById(req, res);
+    },
+  );
+
 export default router;

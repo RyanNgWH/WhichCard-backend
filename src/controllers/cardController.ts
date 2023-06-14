@@ -14,6 +14,7 @@ import {
   benefitsCategorySchema,
   benefitsMccsSchema,
   benefitsSchema,
+  cardIdSchema,
   cashbackLimitSchema,
   exclusionsSchema,
   issuerSchema,
@@ -30,6 +31,34 @@ async function getAllCards(req: Request, res: Response) {
   try {
     const allCards = await cardService.getAllCards();
     res.send({ status: 'OK', data: allCards });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
+  }
+}
+
+/**
+ * Get a card by id
+ * @param req GET request for card by id
+ * @param res Status code 200 and card with given id or 404 if card does not exist
+ */
+async function getCardById(req: Request, res: Response) {
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
+    return;
+  }
+
+  // Extract card id from validated request parameters
+  const { cardId } = matchedData(req, { locations: ['params'] });
+
+  try {
+    // Pass cardId to service to get card from database
+    const card = await cardService.getCardById(cardId);
+    res.send({ status: 'OK', data: card });
   } catch (error) {
     const appError = toApplicationError(error);
     res
@@ -97,9 +126,15 @@ function validate(method: string) {
           { fieldSchema: minimumSpendSchema, optional: true, in: ['body'] },
         ]),
       );
+    case 'getCardById':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: cardIdSchema, optional: false, in: ['params'] },
+        ]),
+      );
     default:
       return [];
   }
 }
 
-export { getAllCards, createCard, validate };
+export { getAllCards, getCardById, createCard, validate };
