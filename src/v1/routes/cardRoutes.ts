@@ -60,6 +60,18 @@ router
     (req: Request, res: Response) => {
       cardController.updateCardById(req, res);
     },
+  )
+  /**
+   * Delete a Card by id
+   * DELETE /api/v1/cards/:cardId
+   * @param req DELETE request for card by id
+   * @param res Response to send back
+   */
+  .delete(
+    cardController.validate('deleteCardById'),
+    (req: Request, res: Response) => {
+      cardController.deleteCardById(req, res);
+    },
   );
 
 export default router;

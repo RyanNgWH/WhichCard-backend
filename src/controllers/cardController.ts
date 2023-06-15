@@ -135,6 +135,34 @@ async function updateCardById(req: Request, res: Response) {
 }
 
 /**
+ * Delete a card by id
+ * @param req DELETE request for deleting a card by id
+ * @param res Status code 200 and deleted card or error message if card could not be deleted
+ */
+async function deleteCardById(req: Request, res: Response) {
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
+    return;
+  }
+
+  // Extract card id from validated request parameters
+  const { cardId } = matchedData(req, { locations: ['params'] });
+
+  try {
+    // Pass cardId to service to delete card from database
+    await cardService.deleteCardById(cardId);
+    res.status(204).send();
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
+  }
+}
+
+/**
  * Validate request body
  * @param method Method to validate
  * @returns Array of validation chains
@@ -176,9 +204,22 @@ function validate(method: string) {
           { fieldSchema: minimumSpendSchema, optional: true, in: ['body'] },
         ]),
       );
+    case 'deleteCardById':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: cardIdSchema, optional: false, in: ['params'] },
+        ]),
+      );
     default:
       return [];
   }
 }
 
-export { getAllCards, getCardById, createCard, updateCardById, validate };
+export {
+  getAllCards,
+  getCardById,
+  createCard,
+  updateCardById,
+  deleteCardById,
+  validate,
+};

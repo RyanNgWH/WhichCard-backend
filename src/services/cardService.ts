@@ -67,4 +67,12 @@ async function updateCardById(cardId: string, updates: Partial<Card>) {
   return card;
 }
 
-export { getAllCards, getCardById, createCard, updateCardById };
+/**
+ * Delete a card by id
+ * @param cardId Id of card to delete
+ */
+async function deleteCardById(cardId: string) {
+  await cardDatabase.deleteCardById(cardId);
+}
+
+export { getAllCards, getCardById, createCard, updateCardById, deleteCardById };

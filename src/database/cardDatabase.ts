@@ -112,4 +112,15 @@ async function updateCardById(cardId: string, updates: Partial<Card>) {
   }
 }
 
-export { getAllCards, getCardById, createCard, updateCardById };
+/**
+ * Delete a card from database
+ * @param cardId Id of card to delete
+ */
+async function deleteCardById(cardId: string) {
+  CardModel.findByIdAndDelete(cardId).catch(error => {
+    const appError = toApplicationError(error);
+    throw new DatabaseError(appError.message, appError.code);
+  });
+}
+
+export { getAllCards, getCardById, createCard, updateCardById, deleteCardById };
