@@ -10,7 +10,7 @@ import toApplicationError from '../shared/errors/errorHelpers';
 import * as cardService from '../services/cardService';
 import { createSchema } from '../shared/schemas/schemas';
 import {
-  benefitsCashbackSchema,
+  benefitsCashbackRateSchema,
   benefitsCategorySchema,
   benefitsMccsSchema,
   benefitsSchema,
@@ -177,7 +177,11 @@ function validate(method: string) {
           { fieldSchema: benefitsSchema, optional: true, in: ['body'] },
           { fieldSchema: benefitsCategorySchema, optional: true, in: ['body'] },
           { fieldSchema: benefitsMccsSchema, optional: true, in: ['body'] },
-          { fieldSchema: benefitsCashbackSchema, optional: true, in: ['body'] },
+          {
+            fieldSchema: benefitsCashbackRateSchema,
+            optional: true,
+            in: ['body'],
+          },
           { fieldSchema: exclusionsSchema, optional: true, in: ['body'] },
           { fieldSchema: cashbackLimitSchema, optional: true, in: ['body'] },
           { fieldSchema: minimumSpendSchema, optional: true, in: ['body'] },
@@ -198,7 +202,11 @@ function validate(method: string) {
           { fieldSchema: benefitsSchema, optional: true, in: ['body'] },
           { fieldSchema: benefitsCategorySchema, optional: true, in: ['body'] },
           { fieldSchema: benefitsMccsSchema, optional: true, in: ['body'] },
-          { fieldSchema: benefitsCashbackSchema, optional: true, in: ['body'] },
+          {
+            fieldSchema: benefitsCashbackRateSchema,
+            optional: true,
+            in: ['body'],
+          },
           { fieldSchema: exclusionsSchema, optional: true, in: ['body'] },
           { fieldSchema: cashbackLimitSchema, optional: true, in: ['body'] },
           { fieldSchema: minimumSpendSchema, optional: true, in: ['body'] },

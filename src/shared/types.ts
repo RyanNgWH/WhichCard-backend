@@ -20,7 +20,7 @@ type Card = {
   benefits: {
     category: string;
     mccs: number[];
-    cashback: number;
+    cashbackRate: number;
   }[];
   exclusions: number[];
   cashbackLimit: number;

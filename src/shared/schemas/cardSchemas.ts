@@ -50,10 +50,10 @@ const benefitsSchema: FieldSchema = {
         }
 
         // Check if each object in the array has the required fields
-        return value.every(benefit => benefit.category && benefit.cashback);
+        return value.every(benefit => benefit.category && benefit.cashbackRate);
       },
       errorMessage:
-        'Benefits must be an array of objects with category and cashback',
+        'Benefits must be an array of objects with category and cashback rate',
     },
   },
 };
@@ -93,14 +93,14 @@ const benefitsMccsSchema: FieldSchema = {
   },
 };
 
-const benefitsCashbackSchema: FieldSchema = {
-  name: 'benefits.*.cashback',
+const benefitsCashbackRateSchema: FieldSchema = {
+  name: 'benefits.*.cashbackRate',
   options: {
     notEmpty: {
-      errorMessage: 'Benefits cashback is required',
+      errorMessage: 'Benefits cashback rate is required',
     },
     isFloat: {
-      errorMessage: 'Benefits cashback must be a float',
+      errorMessage: 'Benefits cashback rate must be a float',
     },
   },
 };
@@ -162,7 +162,7 @@ export {
   benefitsSchema,
   benefitsCategorySchema,
   benefitsMccsSchema,
-  benefitsCashbackSchema,
+  benefitsCashbackRateSchema,
   exclusionsSchema,
   cashbackLimitSchema,
   minimumSpendSchema,

@@ -26,7 +26,7 @@ const CardModel = model(
         _id: false,
         category: String,
         mccs: [Number],
-        cashback: Number,
+        cashbackRate: Number,
       },
     ],
     exclusions: [Number],
