@@ -11,6 +11,7 @@ import IncorrectCredentialsError from '../shared/errors/user/incorrectPasswordEr
 import UserModel from './models/userModels';
 import DatabaseError from '../shared/errors/database/databaseError';
 import toApplicationError from '../shared/errors/errorHelpers';
+import CardExistsError from '../shared/errors/database/card/cardExistsError';
 
 /**
  * Return all users in database
@@ -124,6 +125,63 @@ async function deleteUserById(userId: string) {
 }
 
 /**
+ * Get a user's cards
+ * @param userId Id of user to get cards for
+ * @returns The user's cards, or throws an error if user does not exist
+ */
+async function getAllUserCards(userId: string) {
+  try {
+    // Find the user to get cards for
+    const user = await UserModel.findById(userId).populate('cards.card');
+
+    // Check if user exists
+    if (!user) {
+      throw new UserNotFoundError(`User with id ${userId} not found.`);
+    }
+
+    // Return user's cards
+    return user.cards;
+  } catch (error) {
+    const appError = toApplicationError(error);
+    throw new DatabaseError(appError.message, appError.code);
+  }
+}
+
+/**
+ * Add a card to a user's cards
+ * @param userId Id of user to add card to
+ * @param card Card to add
+ * @returns The updated user, or throws an error if user does not exist
+ */
+async function addUserCard(userId: string, card: User['cards'][number]) {
+  try {
+    // Find the user to update
+    const user = await UserModel.findById(userId);
+
+    // Check if user exists
+    if (!user) {
+      throw new UserNotFoundError(`User with id ${userId} not found.`);
+    }
+
+    if (user.cards.find(userCard => userCard.cardName === card.cardName)) {
+      throw new CardExistsError(
+        `Card with name '${card.cardName}' already exists in user's cards.`,
+      );
+    }
+
+    // Add card to user's cards
+    user.cards.push(card);
+
+    // Save updated user to database
+    const updatedUser = await user.save();
+    return updatedUser;
+  } catch (error) {
+    const appError = toApplicationError(error);
+    throw new DatabaseError(appError.message, appError.code);
+  }
+}
+
+/**
  * Login a user
  * @param email User email
  * @param password User password
@@ -152,5 +210,7 @@ export {
   createUser,
   updateUserById,
   deleteUserById,
+  getAllUserCards,
+  addUserCard,
   login,
 };

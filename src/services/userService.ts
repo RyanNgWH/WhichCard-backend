@@ -5,6 +5,7 @@
  */
 
 import { v4 as uuidv4 } from 'uuid';
+import * as cardDatabase from '../database/cardDatabase';
 import * as userDatabase from '../database/userDatabase';
 import { User } from '../shared/types';
 
@@ -73,10 +74,35 @@ async function deleteUserById(userId: string) {
  * @returns All cards for the user or throws an error if user does not exist
  */
 async function getAllUserCards(userId: string) {
-  const user = await userDatabase.getUserById(userId);
-  return user.cards;
+  const cards = await userDatabase.getAllUserCards(userId);
+  return cards;
 }
 
+/**
+ * Add a card to a user
+ * @param userId Id of user to add card to
+ * @param cardName Name of card to add
+ * @param cardExpiry Expiry date of card to add
+ * @param cardIssuer Issuer of card to add
+ * @param cardType Type of card to add
+ * @returns The updated user, or throws an error if user or card does not exist
+ */
+async function addUserCard(
+  userId: string,
+  cardName: string,
+  cardExpiry: Date,
+  cardIssuer: string,
+  cardType: string,
+) {
+  const cardToAdd = {
+    cardName,
+    cardExpiry,
+    card: await cardDatabase.getCardId(cardIssuer, cardType),
+  };
+
+  const user = await userDatabase.addUserCard(userId, cardToAdd);
+  return user;
+}
 /**
  * Login a user
  * @param email Email of user to login
@@ -95,5 +121,6 @@ export {
   updateUserById,
   deleteUserById,
   getAllUserCards,
+  addUserCard,
   login,
 };

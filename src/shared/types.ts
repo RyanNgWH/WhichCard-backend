@@ -9,7 +9,11 @@ type User = {
   name: string;
   email: string;
   password: string;
-  cards: string[];
+  cards: {
+    cardName: string;
+    cardExpiry: Date;
+    cardId: string;
+  }[];
   createdAt: number;
   updatedAt: number;
 };

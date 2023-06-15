@@ -90,6 +90,18 @@ router
     (req: Request, res: Response) => {
       userController.getAllUserCards(req, res);
     },
+  )
+  /**
+   * Add a Card to a User
+   * POST /api/v1/users/:userId/cards
+   * @param req POST request for adding a card to a user
+   * @param res Response to send back
+   */
+  .post(
+    userController.validate('addUserCard'),
+    (req: Request, res: Response) => {
+      userController.addUserCard(req, res);
+    },
   );
 
 // Methods for logging in

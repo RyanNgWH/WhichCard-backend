@@ -48,6 +48,30 @@ async function getCardById(cardId: string) {
 }
 
 /**
+ * Get a card id by type and issuer
+ * @param type Type of card to get
+ * @param issuer Issuer of card to get
+ * @returns The id of the card with the given type and issuer, or throws an error if card does not exist
+ */
+async function getCardId(issuer: string, type: string) {
+  try {
+    // Find card with matching type and issuer from database
+    const card = await CardModel.findOne({ type, issuer });
+    if (!card) {
+      throw new CardNotFoundError(
+        `Card with type ${type} and issuer ${issuer} not found.`,
+      );
+    }
+
+    // eslint-disable-next-line no-underscore-dangle
+    return card._id;
+  } catch (error) {
+    const appError = toApplicationError(error);
+    throw new DatabaseError(appError.message, appError.code);
+  }
+}
+
+/**
  * Create a new card and save to database
  * @param newCard Card to create
  * @returns The created card, or throws an error if card already exists
@@ -123,4 +147,11 @@ async function deleteCardById(cardId: string) {
   });
 }
 
-export { getAllCards, getCardById, createCard, updateCardById, deleteCardById };
+export {
+  getAllCards,
+  getCardById,
+  createCard,
+  updateCardById,
+  deleteCardById,
+  getCardId,
+};

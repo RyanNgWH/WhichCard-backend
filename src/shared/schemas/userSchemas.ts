@@ -81,22 +81,85 @@ const cardsArraySchema: FieldSchema = {
         }
 
         // Check if each object in the array has the required fields
-        return value.every(card => typeof card === 'string');
+        return value.every(
+          card => card.cardName && card.cardExpiry && card.cardId,
+        );
       },
-      errorMessage: 'Cards must be an array of strings',
+      errorMessage:
+        'Cards must be an array of objects with cardName, cardExpiry and cardId',
     },
   },
 };
 
-const cardsSchema: FieldSchema = {
-  name: 'cards.*',
+const cardArrayNameScema: FieldSchema = {
+  name: 'cards.*.cardName',
   options: {
     notEmpty: {
-      errorMessage: 'Card uuid is required',
+      errorMessage: 'Card name is required',
+    },
+    isAlphanumeric: {
+      // eslint-disable-next-line no-sparse-arrays
+      options: [, { ignore: ' -' }],
+      errorMessage: 'Card name must be alphanumeric, spaces and dashes allowed',
+    },
+    trim: true,
+  },
+};
+
+const cardArrayExpirySchema: FieldSchema = {
+  name: 'cards.*.cardExpiry',
+  options: {
+    notEmpty: {
+      errorMessage: 'Card expiry is required',
+    },
+    isISO8601: {
+      strict: true,
+      errorMessage: 'Card expiry must be a valid date in YYYY-MM-DD format',
+    },
+    trim: true,
+    toDate: true,
+  },
+};
+
+const cardArrayIdSchema: FieldSchema = {
+  name: 'cards.*.cardId',
+  options: {
+    notEmpty: {
+      errorMessage: 'Card ID is required',
     },
     isUUID: {
-      errorMessage: 'Card uuid must be a UUID',
+      errorMessage: 'Card ID must be a UUID',
     },
+  },
+};
+
+const cardNameSchema: FieldSchema = {
+  name: 'cardName',
+  options: {
+    notEmpty: {
+      errorMessage: 'Card name is required',
+    },
+    isAlphanumeric: {
+      // eslint-disable-next-line no-sparse-arrays
+      options: [, { ignore: ' -' }],
+      errorMessage: 'Card name must be alphanumeric, spaces and dashes allowed',
+    },
+    trim: true,
+  },
+};
+
+const cardExpirySchema: FieldSchema = {
+  name: 'cardExpiry',
+  options: {
+    notEmpty: {
+      errorMessage: 'Card expiry is required',
+    },
+    isISO8601: {
+      strict: true,
+      errorMessage: 'Card expiry must be a valid date in YYYY-MM-DD format',
+    },
+    trim: true,
+    toDate: true,
   },
 };
 
@@ -107,5 +170,9 @@ export {
   passwordSchema,
   userIdSchema,
   cardsArraySchema,
-  cardsSchema,
+  cardArrayNameScema,
+  cardArrayExpirySchema,
+  cardArrayIdSchema,
+  cardNameSchema,
+  cardExpirySchema,
 };

@@ -9,8 +9,12 @@ import { checkSchema, matchedData, validationResult } from 'express-validator';
 import * as userService from '../services/userService';
 import toApplicationError from '../shared/errors/errorHelpers';
 import {
+  cardArrayExpirySchema,
+  cardArrayIdSchema,
+  cardArrayNameScema,
+  cardExpirySchema,
+  cardNameSchema,
   cardsArraySchema,
-  cardsSchema,
   emailSchema,
   nameSchema,
   newPasswordSchema,
@@ -18,6 +22,7 @@ import {
   userIdSchema,
 } from '../shared/schemas/userSchemas';
 import { createSchema } from '../shared/schemas/schemas';
+import { issuerSchema, typeSchema } from '../shared/schemas/cardSchemas';
 
 /**
  * Get all users
@@ -186,6 +191,43 @@ async function getAllUserCards(req: Request, res: Response) {
 }
 
 /**
+ * Add a card to a user
+ * @param req POST request for adding a card to a user
+ * @param res Status code 200 and updated user or 404 if user does not exist
+ */
+async function addUserCard(req: Request, res: Response) {
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
+    return;
+  }
+
+  // Extract userId and body from validated request
+  const { userId } = matchedData(req, { locations: ['params'] });
+  const { type, issuer, cardName, cardExpiry } = matchedData(req, {
+    locations: ['body'],
+  });
+
+  try {
+    // Pass userId and card details to service to add card to user in database
+    const updatedUser = await userService.addUserCard(
+      userId,
+      cardName,
+      cardExpiry,
+      issuer,
+      type,
+    );
+    res.send({ status: 'OK', data: updatedUser });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
+  }
+}
+
+/**
  * Login a user
  * @param req POST request for user login
  * @param res Response to send back (200 with user data or 401)
@@ -228,8 +270,10 @@ function validate(method: String) {
           { fieldSchema: nameSchema, optional: false, in: ['body'] },
           { fieldSchema: emailSchema, optional: false, in: ['body'] },
           { fieldSchema: newPasswordSchema, optional: false, in: ['body'] },
-          { fieldSchema: cardsSchema, optional: true, in: ['body'] },
+          { fieldSchema: cardArrayNameScema, optional: true, in: ['body'] },
+          { fieldSchema: cardArrayExpirySchema, optional: true, in: ['body'] },
           { fieldSchema: cardsArraySchema, optional: true, in: ['body'] },
+          { fieldSchema: cardArrayIdSchema, optional: true, in: ['body'] },
         ]),
       );
     case 'getUserById':
@@ -246,8 +290,6 @@ function validate(method: String) {
           // TODO: Decide if email should be updatable
           // { fieldSchema: emailSchema, optional: true, in: ['body'] },
           { fieldSchema: newPasswordSchema, optional: true, in: ['body'] },
-          { fieldSchema: cardsSchema, optional: true, in: ['body'] },
-          { fieldSchema: cardsArraySchema, optional: true, in: ['body'] },
         ]),
       );
     case 'deleteUserById':
@@ -260,6 +302,16 @@ function validate(method: String) {
       return checkSchema(
         createSchema([
           { fieldSchema: userIdSchema, optional: false, in: ['params'] },
+        ]),
+      );
+    case 'addUserCard':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: userIdSchema, optional: false, in: ['params'] },
+          { fieldSchema: typeSchema, optional: false, in: ['body'] },
+          { fieldSchema: issuerSchema, optional: false, in: ['body'] },
+          { fieldSchema: cardNameSchema, optional: false, in: ['body'] },
+          { fieldSchema: cardExpirySchema, optional: false, in: ['body'] },
         ]),
       );
     case 'login':
@@ -281,6 +333,7 @@ export {
   updateUserById,
   deleteUserById,
   getAllUserCards,
+  addUserCard,
   login,
   validate,
 };
