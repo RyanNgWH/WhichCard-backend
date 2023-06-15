@@ -67,6 +67,7 @@ router
    * Delete a User by id
    * DELETE /api/v1/users/:userId
    * @param req DELETE request for user by id
+   * @param res Response to send back
    */
   .delete(
     userController.validate('deleteUserById'),
