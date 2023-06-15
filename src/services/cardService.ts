@@ -56,4 +56,15 @@ async function createCard(
   return createdCard;
 }
 
-export { getAllCards, getCardById, createCard };
+/**
+ * Update a card by id
+ * @param cardId Id of card to update
+ * @param updates Updates to apply to card
+ * @returns The updated card, or throws an error if card does not exist
+ */
+async function updateCardById(cardId: string, updates: Partial<Card>) {
+  const card = await cardDatabase.updateCardById(cardId, updates);
+  return card;
+}
+
+export { getAllCards, getCardById, createCard, updateCardById };

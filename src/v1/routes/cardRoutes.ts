@@ -48,6 +48,18 @@ router
     (req: Request, res: Response) => {
       cardController.getCardById(req, res);
     },
+  )
+  /**
+   * Update a Card by id
+   * PATCH /api/v1/cards/:cardId
+   * @param req PATCH request for card by id
+   * @param res Response to send back
+   */
+  .patch(
+    cardController.validate('updateCardById'),
+    (req: Request, res: Response) => {
+      cardController.updateCardById(req, res);
+    },
   );
 
 export default router;

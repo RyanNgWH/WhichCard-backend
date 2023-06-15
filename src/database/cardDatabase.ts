@@ -72,4 +72,44 @@ async function createCard(newCard: Card) {
   }
 }
 
-export { getAllCards, getCardById, createCard };
+/**
+ * Update a card in database
+ * @param cardId Id of card to update
+ * @param updates Updates to apply to card
+ * @returns The updated card, or throws an error if card does not exist
+ */
+async function updateCardById(cardId: string, updates: Partial<Card>) {
+  try {
+    // Find card with matching id from database
+    const card = await CardModel.findById(cardId);
+
+    // Check if card exists
+    if (!card) {
+      throw new CardNotFoundError(`Card with id ${cardId} not found.`);
+    }
+
+    // Check if updates would cause card to be a duplicate
+    if (updates.issuer && updates.type) {
+      if (
+        await CardModel.exists({ type: updates.type, issuer: updates.issuer })
+      ) {
+        throw new CardExistsError(
+          `Card with type ${updates.type} and issuer ${updates.issuer} already exists.`,
+        );
+      }
+    }
+
+    // Update card with new values
+    card.set(updates);
+    card.updatedAt = new Date().getTime();
+
+    // Save updated card to database
+    const updatedCard = await card.save();
+    return updatedCard;
+  } catch (error) {
+    const appError = toApplicationError(error);
+    throw new DatabaseError(appError.message, appError.code);
+  }
+}
+
+export { getAllCards, getCardById, createCard, updateCardById };

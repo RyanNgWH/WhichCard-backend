@@ -106,6 +106,35 @@ async function createCard(req: Request, res: Response) {
 }
 
 /**
+ * Update a card by id
+ * @param req PATCH request for updating a card by id
+ * @param res Status code 200 and updated card or error message if card could not be updated
+ */
+async function updateCardById(req: Request, res: Response) {
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
+    return;
+  }
+
+  // Extract card id and body from validated request parameters and body
+  const { cardId } = matchedData(req, { locations: ['params'] });
+  const body = matchedData(req, { locations: ['body'] });
+
+  try {
+    // Pass cardId and body to service to update card in database
+    const updatedCard = await cardService.updateCardById(cardId, body);
+    res.send({ status: 'OK', data: updatedCard });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
+  }
+}
+
+/**
  * Validate request body
  * @param method Method to validate
  * @returns Array of validation chains
@@ -132,9 +161,24 @@ function validate(method: string) {
           { fieldSchema: cardIdSchema, optional: false, in: ['params'] },
         ]),
       );
+    case 'updateCardById':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: cardIdSchema, optional: false, in: ['params'] },
+          { fieldSchema: typeSchema, optional: true, in: ['body'] },
+          { fieldSchema: issuerSchema, optional: true, in: ['body'] },
+          { fieldSchema: benefitsSchema, optional: true, in: ['body'] },
+          { fieldSchema: benefitsCategorySchema, optional: true, in: ['body'] },
+          { fieldSchema: benefitsMccsSchema, optional: true, in: ['body'] },
+          { fieldSchema: benefitsCashbackSchema, optional: true, in: ['body'] },
+          { fieldSchema: exclusionsSchema, optional: true, in: ['body'] },
+          { fieldSchema: cashbackLimitSchema, optional: true, in: ['body'] },
+          { fieldSchema: minimumSpendSchema, optional: true, in: ['body'] },
+        ]),
+      );
     default:
       return [];
   }
 }
 
-export { getAllCards, getCardById, createCard, validate };
+export { getAllCards, getCardById, createCard, updateCardById, validate };
