@@ -122,7 +122,7 @@ const cardArrayExpirySchema: FieldSchema = {
 };
 
 const cardArrayIdSchema: FieldSchema = {
-  name: 'cards.*.cardId',
+  name: 'cards.*.card',
   options: {
     notEmpty: {
       errorMessage: 'Card ID is required',

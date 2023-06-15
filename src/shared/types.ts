@@ -12,7 +12,7 @@ type User = {
   cards: {
     cardName: string;
     cardExpiry: Date;
-    cardId: string;
+    card: string;
   }[];
   createdAt: number;
   updatedAt: number;

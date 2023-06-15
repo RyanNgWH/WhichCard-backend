@@ -25,7 +25,17 @@ const UserModel = model(
       type: String,
       required: [true, 'Password is required'],
     },
-    cards: [String],
+    cards: [
+      {
+        _id: false,
+        cardName: String,
+        cardExpiry: Date,
+        card: {
+          type: String,
+          ref: 'Card',
+        },
+      },
+    ],
     createdAt: {
       type: Number,
       required: [true, 'Created at timestamp is required'],
