@@ -76,6 +76,22 @@ router
     },
   );
 
+// Methods for user cards
+router
+  .route('/:userId/cards')
+  /**
+   * Get all Cards for a User
+   * GET /api/v1/users/:userId/cards
+   * @param req GET request for all cards for a user
+   * @param res Response to send back
+   */
+  .get(
+    userController.validate('getAllUserCards'),
+    (req: Request, res: Response) => {
+      userController.getAllUserCards(req, res);
+    },
+  );
+
 // Methods for logging in
 router
   .route('/login')

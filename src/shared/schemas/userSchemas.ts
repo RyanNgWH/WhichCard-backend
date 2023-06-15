@@ -67,10 +67,45 @@ const userIdSchema: FieldSchema = {
   },
 };
 
+const cardsArraySchema: FieldSchema = {
+  name: 'cards',
+  options: {
+    isArray: {
+      errorMessage: 'Cards must be an array',
+    },
+    custom: {
+      options: (value: any[]) => {
+        // Check if array is empty
+        if (value.length === 0) {
+          return false;
+        }
+
+        // Check if each object in the array has the required fields
+        return value.every(card => typeof card === 'string');
+      },
+      errorMessage: 'Cards must be an array of strings',
+    },
+  },
+};
+
+const cardsSchema: FieldSchema = {
+  name: 'cards.*',
+  options: {
+    notEmpty: {
+      errorMessage: 'Card uuid is required',
+    },
+    isUUID: {
+      errorMessage: 'Card uuid must be a UUID',
+    },
+  },
+};
+
 export {
   nameSchema,
   emailSchema,
   newPasswordSchema,
   passwordSchema,
   userIdSchema,
+  cardsArraySchema,
+  cardsSchema,
 };

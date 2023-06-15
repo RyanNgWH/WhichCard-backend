@@ -32,7 +32,9 @@ async function getUserById(userId: string) {
  * @param newUser User to create
  * @returns The created user, or throws an error if user already exists
  */
-async function createUser(newUser: Pick<User, 'name' | 'email' | 'password'>) {
+async function createUser(
+  newUser: Pick<User, 'name' | 'email' | 'password' | 'cards'>,
+) {
   // Create new user object with id and timestamps
   const userToAdd = {
     ...newUser,
@@ -66,6 +68,16 @@ async function deleteUserById(userId: string) {
 }
 
 /**
+ * Get all cards for a user
+ * @param userId Id of user to get cards for
+ * @returns All cards for the user or throws an error if user does not exist
+ */
+async function getAllUserCards(userId: string) {
+  const user = await userDatabase.getUserById(userId);
+  return user.cards;
+}
+
+/**
  * Login a user
  * @param email Email of user to login
  * @param password Password of user to login
@@ -82,5 +94,6 @@ export {
   createUser,
   updateUserById,
   deleteUserById,
+  getAllUserCards,
   login,
 };
