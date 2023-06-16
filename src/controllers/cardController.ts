@@ -122,6 +122,25 @@ async function updateCardById(req: Request, res: Response) {
   const { cardId } = matchedData(req, { locations: ['params'] });
   const body = matchedData(req, { locations: ['body'] });
 
+  // Check that body must contain both type and issuer or neither
+  if (body.type || body.issuer) {
+    if (!body.type || !body.issuer) {
+      res.status(400).send({
+        status: 'Bad Request',
+        errors: [
+          {
+            type: 'field',
+            value: body,
+            msg: 'If updating type or issuer, both must be provided',
+            param: 'issuer/type',
+            location: 'body',
+          },
+        ],
+      });
+      return;
+    }
+  }
+
   try {
     // Pass cardId and body to service to update card in database
     const updatedCard = await cardService.updateCardById(cardId, body);
