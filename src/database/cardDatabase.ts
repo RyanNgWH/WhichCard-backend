@@ -4,6 +4,7 @@
  * @format
  */
 
+import ApplicationError from '../shared/errors/application/applicationError';
 import CardExistsError from '../shared/errors/database/card/cardExistsError';
 import CardNotFoundError from '../shared/errors/database/card/cardNotFoundError';
 import DatabaseError from '../shared/errors/database/databaseError';
@@ -21,8 +22,12 @@ async function getAllCards() {
     const cards = await CardModel.find();
     return cards;
   } catch (error) {
-    const appError = toApplicationError(error);
-    throw new DatabaseError(appError.message, appError.code);
+    if (!(error instanceof ApplicationError)) {
+      const appError = toApplicationError(error);
+      throw new DatabaseError(appError.message, appError.code);
+    } else {
+      throw error;
+    }
   }
 }
 
@@ -43,8 +48,12 @@ async function getCardById(cardId: string) {
 
     return card;
   } catch (error) {
-    const appError = toApplicationError(error);
-    throw new DatabaseError(appError.message, appError.code);
+    if (!(error instanceof ApplicationError)) {
+      const appError = toApplicationError(error);
+      throw new DatabaseError(appError.message, appError.code);
+    } else {
+      throw error;
+    }
   }
 }
 
@@ -67,8 +76,12 @@ async function getCardId(issuer: string, type: string) {
     // eslint-disable-next-line no-underscore-dangle
     return card._id;
   } catch (error) {
-    const appError = toApplicationError(error);
-    throw new DatabaseError(appError.message, appError.code);
+    if (!(error instanceof ApplicationError)) {
+      const appError = toApplicationError(error);
+      throw new DatabaseError(appError.message, appError.code);
+    } else {
+      throw error;
+    }
   }
 }
 
@@ -92,8 +105,12 @@ async function createCard(newCard: Card) {
     const createdCard = await CardModel.create(newCard);
     return createdCard;
   } catch (error) {
-    const appError = toApplicationError(error);
-    throw new DatabaseError(appError.message, appError.code);
+    if (!(error instanceof ApplicationError)) {
+      const appError = toApplicationError(error);
+      throw new DatabaseError(appError.message, appError.code);
+    } else {
+      throw error;
+    }
   }
 }
 
@@ -132,8 +149,12 @@ async function updateCardById(cardId: string, updates: Partial<Card>) {
     const updatedCard = await card.save();
     return updatedCard;
   } catch (error) {
-    const appError = toApplicationError(error);
-    throw new DatabaseError(appError.message, appError.code);
+    if (!(error instanceof ApplicationError)) {
+      const appError = toApplicationError(error);
+      throw new DatabaseError(appError.message, appError.code);
+    } else {
+      throw error;
+    }
   }
 }
 
@@ -156,8 +177,12 @@ async function deleteCardById(cardId: string) {
     // Delete card from database
     await CardModel.findByIdAndDelete(cardId);
   } catch (error) {
-    const appError = toApplicationError(error);
-    throw new DatabaseError(appError.message, appError.code);
+    if (!(error instanceof ApplicationError)) {
+      const appError = toApplicationError(error);
+      throw new DatabaseError(appError.message, appError.code);
+    } else {
+      throw error;
+    }
   }
 }
 
