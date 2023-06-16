@@ -83,7 +83,7 @@ async function createCard(newCard: Card) {
       await CardModel.exists({ type: newCard.type, issuer: newCard.issuer })
     ) {
       throw new CardExistsError(
-        `Card with type ${newCard.type} and issuer ${newCard.issuer} already exists.`,
+        `Card with type '${newCard.type}' and issuer '${newCard.issuer}' already exists.`,
       );
     }
 
@@ -141,6 +141,7 @@ async function updateCardById(cardId: string, updates: Partial<Card>) {
  * @param cardId Id of card to delete
  */
 async function deleteCardById(cardId: string) {
+  // TODO: Ensure that card is not referenced by any users before deleting
   CardModel.findByIdAndDelete(cardId).catch(error => {
     const appError = toApplicationError(error);
     throw new DatabaseError(appError.message, appError.code);
