@@ -11,8 +11,8 @@ import DatabaseError from './databaseError';
  * @extends DatabaseError
  */
 class DatabaseConnectionFailedError extends DatabaseError {
-  constructor(message: string) {
-    super(message, 500);
+  constructor(message: string, code?: number) {
+    super(message, code || 500);
   }
 }
 

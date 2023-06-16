@@ -15,8 +15,9 @@ const nameSchema: FieldSchema = {
     isAlphanumeric: {
       // eslint-disable-next-line no-sparse-arrays
       options: [, { ignore: ' -' }],
-      errorMessage: 'Name must be alphanumeric',
+      errorMessage: 'Name must be alphanumeric, spaces and dashes allowed',
     },
+    trim: true,
   },
 };
 
@@ -66,10 +67,112 @@ const userIdSchema: FieldSchema = {
   },
 };
 
+const cardsArraySchema: FieldSchema = {
+  name: 'cards',
+  options: {
+    isArray: {
+      errorMessage: 'Cards must be an array',
+    },
+    custom: {
+      options: (value: any[]) => {
+        // Check if array is empty
+        if (value.length === 0) {
+          return false;
+        }
+
+        // Check if each object in the array has the required fields
+        return value.every(
+          card => card.cardName && card.cardExpiry && card.cardId,
+        );
+      },
+      errorMessage:
+        'Cards must be an array of objects with cardName, cardExpiry and cardId',
+    },
+  },
+};
+
+const cardArrayNameScema: FieldSchema = {
+  name: 'cards.*.cardName',
+  options: {
+    notEmpty: {
+      errorMessage: 'Card name is required',
+    },
+    isAlphanumeric: {
+      // eslint-disable-next-line no-sparse-arrays
+      options: [, { ignore: ' -' }],
+      errorMessage: 'Card name must be alphanumeric, spaces and dashes allowed',
+    },
+    trim: true,
+  },
+};
+
+const cardArrayExpirySchema: FieldSchema = {
+  name: 'cards.*.cardExpiry',
+  options: {
+    notEmpty: {
+      errorMessage: 'Card expiry is required',
+    },
+    isISO8601: {
+      strict: true,
+      errorMessage: 'Card expiry must be a valid date in YYYY-MM-DD format',
+    },
+    trim: true,
+    toDate: true,
+  },
+};
+
+const cardArrayIdSchema: FieldSchema = {
+  name: 'cards.*.card',
+  options: {
+    notEmpty: {
+      errorMessage: 'Card ID is required',
+    },
+    isUUID: {
+      errorMessage: 'Card ID must be a UUID',
+    },
+  },
+};
+
+const cardNameSchema: FieldSchema = {
+  name: 'cardName',
+  options: {
+    notEmpty: {
+      errorMessage: 'Card name is required',
+    },
+    isAlphanumeric: {
+      // eslint-disable-next-line no-sparse-arrays
+      options: [, { ignore: ' -' }],
+      errorMessage: 'Card name must be alphanumeric, spaces and dashes allowed',
+    },
+    trim: true,
+  },
+};
+
+const cardExpirySchema: FieldSchema = {
+  name: 'cardExpiry',
+  options: {
+    notEmpty: {
+      errorMessage: 'Card expiry is required',
+    },
+    isISO8601: {
+      strict: true,
+      errorMessage: 'Card expiry must be a valid date in YYYY-MM-DD format',
+    },
+    trim: true,
+    toDate: true,
+  },
+};
+
 export {
   nameSchema,
   emailSchema,
   newPasswordSchema,
   passwordSchema,
   userIdSchema,
+  cardsArraySchema,
+  cardArrayNameScema,
+  cardArrayExpirySchema,
+  cardArrayIdSchema,
+  cardNameSchema,
+  cardExpirySchema,
 };

@@ -98,7 +98,7 @@ Request body valid. However, the user is unable to be created. This is usually d
 {
   "status": "Unprocessable Entity",
   "data": {
-    "error": "User with email luna@tinynamoo.com already exists."
+    "error": "User with email 'luna@tinynamoo.com' already exists."
   }
 }
 ```

@@ -99,7 +99,7 @@ Request body valid. However, the user is unable to be found in the database.
 {
   "status": "Not Found",
   "data": {
-    "error": "User with id d2d827db-4095-4a4a-a12d-5bcf2c77eeab not found."
+    "error": "User with id 'd2d827db-4095-4a4a-a12d-5bcf2c77eeab' not found."
   }
 }
 ```
@@ -120,7 +120,7 @@ Request body valid. However, the user is unable to be updated. This is usually d
 {
   "status": "Unprocessable Entity",
   "data": {
-    "error": "The email luna@tinynamoo.com is already in use."
+    "error": "The email 'luna@tinynamoo.com' is already in use."
   }
 }
 ```

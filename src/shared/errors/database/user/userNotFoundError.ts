@@ -4,15 +4,15 @@
  * @format
  */
 
-import DatabaseError from './databaseError';
+import DatabaseError from '../databaseError';
 
 /**
  * Error for when a user is not found in the database.
  * @extends DatabaseError
  */
 class UserNotFoundError extends DatabaseError {
-  constructor(message: string) {
-    super(message, 404);
+  constructor(message: string, code?: number) {
+    super(message, code || 404);
   }
 }
 
