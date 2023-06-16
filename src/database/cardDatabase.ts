@@ -148,8 +148,8 @@ async function deleteCardById(cardId: string) {
 
     // Remove card from each user
     users.forEach(async user => {
-      const index = user.cards.findIndex(card => card.card === cardId);
-      user.cards.splice(index, 1);
+      // eslint-disable-next-line no-param-reassign
+      user.cards = user.cards.filter(card => card.card !== cardId);
       await user.save();
     });
 
