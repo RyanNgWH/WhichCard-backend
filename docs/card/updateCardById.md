@@ -185,7 +185,7 @@ Request body valid. However, the card is unable to be updated. This is usually d
 {
   "status": "Unprocessable Entity",
   "data": {
-    "error": "Card with type 365 credit and issuer ocbc already exists."
+    "error": "Card with type '365 credit' and issuer 'ocbc' already exists."
   }
 }
 ```

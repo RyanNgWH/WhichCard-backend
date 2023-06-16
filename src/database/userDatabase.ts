@@ -46,7 +46,7 @@ async function getUserById(userId: string) {
 
     // Check if user exists
     if (!user) {
-      throw new UserNotFoundError(`User with id ${userId} not found.`);
+      throw new UserNotFoundError(`User with id '${userId}' not found.`);
     }
 
     return user;
@@ -70,7 +70,7 @@ async function createUser(newUser: User) {
     // Check if user already exists in database (using email as unique identifier)
     if (await UserModel.exists({ email: newUser.email })) {
       throw new UserExistsError(
-        `User with email ${newUser.email} already exists.`,
+        `User with email '${newUser.email}' already exists.`,
       );
     }
 
@@ -99,7 +99,7 @@ async function updateUserById(userId: string, updates: Partial<User>) {
 
     // Check if user exists
     if (!user) {
-      throw new UserNotFoundError(`User with id ${userId} not found.`);
+      throw new UserNotFoundError(`User with id '${userId}' not found.`);
     }
 
     // Check if email is being updated
@@ -108,7 +108,7 @@ async function updateUserById(userId: string, updates: Partial<User>) {
       const userWithEmail = await UserModel.findOne({ email: updates.email });
       if (userWithEmail) {
         throw new UserExistsError(
-          `The email ${updates.email} is already in use.`,
+          `The email '${updates.email}' is already in use.`,
         );
       }
     }
@@ -155,7 +155,7 @@ async function getAllUserCards(userId: string) {
 
     // Check if user exists
     if (!user) {
-      throw new UserNotFoundError(`User with id ${userId} not found.`);
+      throw new UserNotFoundError(`User with id '${userId}' not found.`);
     }
 
     // Return user's cards
@@ -183,7 +183,7 @@ async function addUserCard(userId: string, card: User['cards'][number]) {
 
     // Check if user exists
     if (!user) {
-      throw new UserNotFoundError(`User with id ${userId} not found.`);
+      throw new UserNotFoundError(`User with id '${userId}' not found.`);
     }
 
     if (

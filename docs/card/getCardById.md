@@ -150,7 +150,7 @@ Request body valid. However, the card is unable to be found in the database.
 {
   "status": "Not Found",
   "data": {
-    "error": "Card with id d6bb1de8-96b0-4d04-a712-cdce145913dd not found."
+    "error": "Card with id 'd6bb1de8-96b0-4d04-a712-cdce145913dd' not found."
   }
 }
 ```

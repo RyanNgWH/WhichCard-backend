@@ -99,7 +99,7 @@ Request body valid. However, the user or card is unable to be found in the datab
 {
   "status": "Not Found",
   "data": {
-    "error": "User with id 6d214666-d05a-43c2-ac44-98210c64ad85 not found."
+    "error": "User with id '6d214666-d05a-43c2-ac44-98210c64ad85' not found."
   }
 }
 ```
