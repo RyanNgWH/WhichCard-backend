@@ -279,9 +279,10 @@ async function updateUserCardByName(req: Request, res: Response) {
         status: 'Bad Request',
         errors: [
           {
+            type: 'field',
             value: body,
             msg: 'If updating type or issuer, both must be provided',
-            param: 'body',
+            param: 'issuer/type',
             location: 'body',
           },
         ],
