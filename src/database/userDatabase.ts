@@ -297,6 +297,43 @@ async function updateUserCardByName(
 }
 
 /**
+ * Delete a user card by name
+ * @param userId Id of user to delete card for
+ * @param cardName Name of card to delete
+ */
+async function deleteUserCardByName(userId: string, cardName: string) {
+  try {
+    // Find the user to delete card for
+    const user = await UserModel.findById(userId);
+
+    // Check if user exists
+    if (!user) {
+      throw new UserNotFoundError(`User with id '${userId}' not found.`);
+    }
+
+    // Find the user's card
+    const cardIndex = user.cards.findIndex(
+      card => card.cardName?.toLowerCase() === cardName.toLowerCase(),
+    );
+
+    // Check if user's card exists
+    if (cardIndex !== -1) {
+      // Delete user's card
+      user.cards.splice(cardIndex, 1);
+
+      // Update last updated date
+      user.updatedAt = new Date().getTime();
+
+      // Save updated user to database
+      await user.save();
+    }
+  } catch (error) {
+    const appError = toApplicationError(error);
+    throw new DatabaseError(appError.message, appError.code);
+  }
+}
+
+/**
  * Login a user
  * @param email User email
  * @param password User password
@@ -329,5 +366,6 @@ export {
   addUserCard,
   getUserCardByName,
   updateUserCardByName,
+  deleteUserCardByName,
   login,
 };

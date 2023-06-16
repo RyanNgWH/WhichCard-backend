@@ -130,6 +130,18 @@ router
     (req: Request, res: Response) => {
       userController.updateUserCardByName(req, res);
     },
+  )
+  /**
+   * Delete a specific card for a user by name
+   * DELETE /api/v1/users/:userId/cards/:cardName
+   * @param req DELETE request for a specific card for a user by name
+   * @param res Response to send back
+   */
+  .delete(
+    userController.validate('deleteUserCardByName'),
+    (req: Request, res: Response) => {
+      userController.deleteUserCardByName(req, res);
+    },
   );
 
 // Methods for logging in

@@ -307,6 +307,34 @@ async function updateUserCardByName(req: Request, res: Response) {
 }
 
 /**
+ * Delete a card for a user by name
+ * @param req DELETE request for deleting a card for a user by name
+ * @param res Status code 204 and empty body or 404 if user does not exist
+ */
+async function deleteUserCardByName(req: Request, res: Response) {
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
+    return;
+  }
+
+  // Extract userId and cardName from validated request parameters
+  const { userId, cardName } = matchedData(req, { locations: ['params'] });
+
+  try {
+    // Pass userId and cardName to service to delete card for a user from database
+    await userService.deleteUserCardByName(userId, cardName);
+    res.status(204).send();
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
+  }
+}
+
+/**
  * Login a user
  * @param req POST request for user login
  * @param res Response to send back (200 with user data or 401)
@@ -421,6 +449,13 @@ function validate(method: String) {
           { fieldSchema: passwordSchema, optional: false, in: ['body'] },
         ]),
       );
+    case 'deleteUserCardByName':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: userIdSchema, optional: false, in: ['params'] },
+          { fieldSchema: cardNameSchema, optional: false, in: ['params'] },
+        ]),
+      );
     default:
       return [];
   }
@@ -436,6 +471,7 @@ export {
   addUserCard,
   getUserCardByName,
   updateUserCardByName,
+  deleteUserCardByName,
   login,
   validate,
 };

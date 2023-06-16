@@ -136,6 +136,15 @@ async function updateUserCardByName(
 }
 
 /**
+ * Delete a card for a user by name
+ * @param userId Id of user to delete card for
+ * @param cardName Name of card to delete
+ */
+async function deleteUserCardByName(userId: string, cardName: string) {
+  userDatabase.deleteUserCardByName(userId, cardName);
+}
+
+/**
  * Login a user
  * @param email Email of user to login
  * @param password Password of user to login
@@ -156,5 +165,6 @@ export {
   addUserCard,
   getUserCardByName,
   updateUserCardByName,
+  deleteUserCardByName,
   login,
 };
