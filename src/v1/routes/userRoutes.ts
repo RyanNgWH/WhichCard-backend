@@ -104,6 +104,22 @@ router
     },
   );
 
+// Methods for specific user card
+router
+  .route('/:userId/cards/:cardName')
+  /**
+   * Get a specific card for a user by name
+   * GET /api/v1/users/:userId/cards/:cardName
+   * @param req GET request for a specific card for a user by name
+   * @param res Response to send back
+   */
+  .get(
+    userController.validate('getUserCardByName'),
+    (req: Request, res: Response) => {
+      userController.getUserCardByName(req, res);
+    },
+  );
+
 // Methods for logging in
 router
   .route('/login')

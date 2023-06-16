@@ -228,6 +228,34 @@ async function addUserCard(req: Request, res: Response) {
 }
 
 /**
+ * Get a card for a user by name
+ * @param req GET request for a card for a user by name
+ * @param res Status code 200 and card for a user or 404 if user or card does not exist
+ */
+async function getUserCardByName(req: Request, res: Response) {
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
+    return;
+  }
+
+  // Extract userId and cardName from validated request parameters
+  const { userId, cardName } = matchedData(req, { locations: ['params'] });
+
+  try {
+    // Pass userId and cardName to service to get card for a user from database
+    const card = await userService.getUserCardByName(userId, cardName);
+    res.send({ status: 'OK', data: card });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
+  }
+}
+
+/**
  * Login a user
  * @param req POST request for user login
  * @param res Response to send back (200 with user data or 401)
@@ -314,6 +342,13 @@ function validate(method: String) {
           { fieldSchema: cardExpirySchema, optional: false, in: ['body'] },
         ]),
       );
+    case 'getUserCardByName':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: userIdSchema, optional: false, in: ['params'] },
+          { fieldSchema: cardNameSchema, optional: false, in: ['params'] },
+        ]),
+      );
     case 'login':
       return checkSchema(
         createSchema([
@@ -334,6 +369,7 @@ export {
   deleteUserById,
   getAllUserCards,
   addUserCard,
+  getUserCardByName,
   login,
   validate,
 };

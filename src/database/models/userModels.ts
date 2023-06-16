@@ -28,11 +28,18 @@ const UserModel = model(
     cards: [
       {
         _id: false,
-        cardName: String,
-        cardExpiry: Date,
+        cardName: {
+          type: String,
+          required: [true, 'Card name is required'],
+        },
+        cardExpiry: {
+          type: Date,
+          required: [true, 'Card expiry is required'],
+        },
         card: {
           type: String,
           ref: 'Card',
+          required: [true, 'Card is required'],
         },
       },
     ],

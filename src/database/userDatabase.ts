@@ -12,6 +12,7 @@ import UserModel from './models/userModels';
 import DatabaseError from '../shared/errors/database/databaseError';
 import toApplicationError from '../shared/errors/errorHelpers';
 import CardExistsError from '../shared/errors/database/card/cardExistsError';
+import CardNotFoundError from '../shared/errors/database/card/cardNotFoundError';
 
 /**
  * Return all users in database
@@ -163,7 +164,12 @@ async function addUserCard(userId: string, card: User['cards'][number]) {
       throw new UserNotFoundError(`User with id ${userId} not found.`);
     }
 
-    if (user.cards.find(userCard => userCard.cardName === card.cardName)) {
+    if (
+      user.cards.find(
+        userCard =>
+          userCard.cardName?.toLowerCase() === card.cardName.toLowerCase(),
+      )
+    ) {
       throw new CardExistsError(
         `Card with name '${card.cardName}' already exists in user's cards.`,
       );
@@ -175,6 +181,42 @@ async function addUserCard(userId: string, card: User['cards'][number]) {
     // Save updated user to database
     const updatedUser = await user.save();
     return updatedUser;
+  } catch (error) {
+    const appError = toApplicationError(error);
+    throw new DatabaseError(appError.message, appError.code);
+  }
+}
+
+/**
+ * Get a user card by name
+ * @param userId Id of user to get card for
+ * @param cardName Name of card to get
+ * @returns The user's card, or throws an error if user or card does not exist
+ */
+async function getUserCardByName(userId: string, cardName: string) {
+  try {
+    // Find the user to get card for
+    const user = await UserModel.findById(userId).populate('cards.card');
+
+    // Check if user exists
+    if (!user) {
+      throw new UserNotFoundError(`User with id '${userId}' not found.`);
+    }
+
+    // Find the user's card
+    const userCard = user.cards.find(
+      card => card.cardName?.toLowerCase() === cardName.toLowerCase(),
+    );
+
+    // Check if user's card exists
+    if (!userCard) {
+      throw new CardNotFoundError(
+        `User with id '${userId}' has no card with name '${cardName}'.`,
+      );
+    }
+
+    // Return user's card
+    return userCard;
   } catch (error) {
     const appError = toApplicationError(error);
     throw new DatabaseError(appError.message, appError.code);
@@ -212,5 +254,6 @@ export {
   deleteUserById,
   getAllUserCards,
   addUserCard,
+  getUserCardByName,
   login,
 };

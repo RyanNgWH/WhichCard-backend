@@ -103,6 +103,18 @@ async function addUserCard(
   const user = await userDatabase.addUserCard(userId, cardToAdd);
   return user;
 }
+
+/**
+ * Get a card for a user by name
+ * @param userId Id of user to get card for
+ * @param cardName Name of card to get
+ * @returns The card for the user with the given name, or throws an error if user or card does not exist
+ */
+async function getUserCardByName(userId: string, cardName: string) {
+  const card = await userDatabase.getUserCardByName(userId, cardName);
+  return card;
+}
+
 /**
  * Login a user
  * @param email Email of user to login
@@ -122,5 +134,6 @@ export {
   deleteUserById,
   getAllUserCards,
   addUserCard,
+  getUserCardByName,
   login,
 };
