@@ -10,6 +10,7 @@ import DatabaseError from '../shared/errors/database/databaseError';
 import toApplicationError from '../shared/errors/errorHelpers';
 import { Card } from '../shared/types';
 import CardModel from './models/cardModels';
+import UserModel from './models/userModels';
 
 /**
  * Return all cards in database
@@ -141,11 +142,23 @@ async function updateCardById(cardId: string, updates: Partial<Card>) {
  * @param cardId Id of card to delete
  */
 async function deleteCardById(cardId: string) {
-  // TODO: Ensure that card is not referenced by any users before deleting
-  CardModel.findByIdAndDelete(cardId).catch(error => {
+  try {
+    // Get all users that have this card
+    const users = await UserModel.find({ 'cards.card': cardId });
+
+    // Remove card from each user
+    users.forEach(async user => {
+      const index = user.cards.findIndex(card => card.card === cardId);
+      user.cards.splice(index, 1);
+      await user.save();
+    });
+
+    // Delete card from database
+    await CardModel.findByIdAndDelete(cardId);
+  } catch (error) {
     const appError = toApplicationError(error);
     throw new DatabaseError(appError.message, appError.code);
-  });
+  }
 }
 
 export {
