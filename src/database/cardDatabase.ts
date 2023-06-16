@@ -118,7 +118,7 @@ async function updateCardById(cardId: string, updates: Partial<Card>) {
         await CardModel.exists({ type: updates.type, issuer: updates.issuer })
       ) {
         throw new CardExistsError(
-          `Card with type ${updates.type} and issuer ${updates.issuer} already exists.`,
+          `Card with type '${updates.type}' and issuer '${updates.issuer}' already exists.`,
         );
       }
     }
