@@ -11,8 +11,8 @@ import DatabaseError from '../databaseError';
  * @extends DatabaseError
  */
 class CardNotFoundError extends DatabaseError {
-  constructor(message: string) {
-    super(message, 404);
+  constructor(message: string, code?: number) {
+    super(message, code || 404);
   }
 }
 
