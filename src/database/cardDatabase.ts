@@ -109,7 +109,7 @@ async function updateCardById(cardId: string, updates: Partial<Card>) {
 
     // Check if card exists
     if (!card) {
-      throw new CardNotFoundError(`Card with id ${cardId} not found.`);
+      throw new CardNotFoundError(`Card with id '${cardId}' not found.`);
     }
 
     // Check if updates would cause card to be a duplicate
