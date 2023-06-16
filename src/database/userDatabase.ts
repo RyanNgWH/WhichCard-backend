@@ -4,7 +4,7 @@
  * @format
  */
 
-import { User } from '../shared/types';
+import { User, UserCardRequest } from '../shared/types';
 import UserExistsError from '../shared/errors/database/user/userExistsError';
 import UserNotFoundError from '../shared/errors/database/user/userNotFoundError';
 import IncorrectCredentialsError from '../shared/errors/user/incorrectPasswordError';
@@ -13,6 +13,7 @@ import DatabaseError from '../shared/errors/database/databaseError';
 import toApplicationError from '../shared/errors/errorHelpers';
 import CardExistsError from '../shared/errors/database/card/cardExistsError';
 import CardNotFoundError from '../shared/errors/database/card/cardNotFoundError';
+import { getCardId } from './cardDatabase';
 
 /**
  * Return all users in database
@@ -224,6 +225,78 @@ async function getUserCardByName(userId: string, cardName: string) {
 }
 
 /**
+ * Update a user card by name
+ * @param userId Id of user to update card for
+ * @param cardName Name of card to update
+ * @param updates Updates to apply to card
+ * @returns The updated user card, or throws an error if user or card does not exist
+ */
+async function updateUserCardByName(
+  userId: string,
+  cardName: string,
+  updates: Partial<UserCardRequest>,
+) {
+  try {
+    // Find the user to update
+    const user = await UserModel.findById(userId);
+
+    // Check if user exists
+    if (!user) {
+      throw new UserNotFoundError(`User with id '${userId}' not found.`);
+    }
+
+    // Find the user's card
+    const userCard = user.cards.find(
+      card => card.cardName?.toLowerCase() === cardName.toLowerCase(),
+    );
+
+    // Check if user's card exists
+    if (!userCard) {
+      throw new CardNotFoundError(
+        `User with id '${userId}' has no card with name '${cardName}'.`,
+      );
+    }
+
+    // Update user's card with new values
+    if (updates.cardName) {
+      // Check if card name already exists in user's cards
+      const userCardWithName = user.cards.find(
+        card =>
+          card.cardName?.toLowerCase() === updates.cardName?.toLowerCase(),
+      );
+      if (userCardWithName) {
+        throw new CardExistsError(
+          `User with id '${userId}' already has a card with name '${updates.cardName}'.`,
+        );
+      }
+
+      // Update card name
+      userCard.cardName = updates.cardName;
+    }
+
+    if (updates.cardExpiry) {
+      // Update card expiry
+      userCard.cardExpiry = updates.cardExpiry;
+    }
+
+    if (updates.issuer && updates.type) {
+      // Update card issuer and type
+      userCard.card = await getCardId(updates.issuer, updates.type);
+    }
+
+    // Update last updated date
+    user.updatedAt = new Date().getTime();
+
+    // Save updated user to database
+    await user.save();
+    return userCard;
+  } catch (error) {
+    const appError = toApplicationError(error);
+    throw new DatabaseError(appError.message, appError.code);
+  }
+}
+
+/**
  * Login a user
  * @param email User email
  * @param password User password
@@ -255,5 +328,6 @@ export {
   getAllUserCards,
   addUserCard,
   getUserCardByName,
+  updateUserCardByName,
   login,
 };

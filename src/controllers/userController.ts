@@ -256,6 +256,57 @@ async function getUserCardByName(req: Request, res: Response) {
 }
 
 /**
+ * Update a card for a user by name
+ * @param req PUT request for updating a card for a user by name
+ * @param res Status code 200 and updated card or 404 if user or card does not exist
+ */
+async function updateUserCardByName(req: Request, res: Response) {
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
+    return;
+  }
+
+  // Extract userId, cardName and body from validated request
+  const { userId, cardName } = matchedData(req, { locations: ['params'] });
+  const body = matchedData(req, { locations: ['body'] });
+
+  // Check that body must contain both type and issuer or neither
+  if (body.type || body.issuer) {
+    if (!body.type || !body.issuer) {
+      res.status(400).send({
+        status: 'Bad Request',
+        errors: [
+          {
+            value: body,
+            msg: 'If updating type or issuer, both must be provided',
+            param: 'body',
+            location: 'body',
+          },
+        ],
+      });
+      return;
+    }
+  }
+
+  try {
+    // Pass userId, cardName and card details to service to update card for a user in database
+    const updatedCard = await userService.updateUserCardByName(
+      userId,
+      cardName,
+      body,
+    );
+    res.send({ status: 'OK', data: updatedCard });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
+  }
+}
+
+/**
  * Login a user
  * @param req POST request for user login
  * @param res Response to send back (200 with user data or 401)
@@ -349,6 +400,20 @@ function validate(method: String) {
           { fieldSchema: cardNameSchema, optional: false, in: ['params'] },
         ]),
       );
+    case 'updateUserCardByName':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: userIdSchema, optional: false, in: ['params'] },
+          {
+            fieldSchema: cardNameSchema,
+            optional: false,
+            in: ['params', 'body'],
+          },
+          { fieldSchema: typeSchema, optional: true, in: ['body'] },
+          { fieldSchema: issuerSchema, optional: true, in: ['body'] },
+          { fieldSchema: cardExpirySchema, optional: true, in: ['body'] },
+        ]),
+      );
     case 'login':
       return checkSchema(
         createSchema([
@@ -370,6 +435,7 @@ export {
   getAllUserCards,
   addUserCard,
   getUserCardByName,
+  updateUserCardByName,
   login,
   validate,
 };

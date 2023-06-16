@@ -118,6 +118,18 @@ router
     (req: Request, res: Response) => {
       userController.getUserCardByName(req, res);
     },
+  )
+  /**
+   * Update a specific card for a user by name
+   * PATCH /api/v1/users/:userId/cards/:cardName
+   * @param req PATCH request for a specific card for a user by name
+   * @param res Response to send back
+   */
+  .patch(
+    userController.validate('updateUserCardByName'),
+    (req: Request, res: Response) => {
+      userController.updateUserCardByName(req, res);
+    },
   );
 
 // Methods for logging in

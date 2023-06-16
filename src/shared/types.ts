@@ -18,6 +18,13 @@ type User = {
   updatedAt: number;
 };
 
+type UserCardRequest = {
+  cardName: string;
+  cardExpiry: Date;
+  type: string;
+  issuer: string;
+};
+
 type Card = {
   _id: string;
   type: string;
@@ -34,4 +41,4 @@ type Card = {
   updatedAt: number;
 };
 
-export { User, Card };
+export { User, Card, UserCardRequest };

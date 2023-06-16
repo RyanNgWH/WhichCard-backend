@@ -7,7 +7,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import * as cardDatabase from '../database/cardDatabase';
 import * as userDatabase from '../database/userDatabase';
-import { User } from '../shared/types';
+import { User, UserCardRequest } from '../shared/types';
 
 /**
  * Get all users
@@ -116,6 +116,26 @@ async function getUserCardByName(userId: string, cardName: string) {
 }
 
 /**
+ * Update a card for a user by name
+ * @param userId Id of user to update card for
+ * @param cardName Name of card to update
+ * @param updates Updates to apply to card
+ * @returns The updated user card, or throws an error if user or card does not exist
+ */
+async function updateUserCardByName(
+  userId: string,
+  cardName: string,
+  updates: Partial<UserCardRequest>,
+) {
+  const card = await userDatabase.updateUserCardByName(
+    userId,
+    cardName,
+    updates,
+  );
+  return card;
+}
+
+/**
  * Login a user
  * @param email Email of user to login
  * @param password Password of user to login
@@ -135,5 +155,6 @@ export {
   getAllUserCards,
   addUserCard,
   getUserCardByName,
+  updateUserCardByName,
   login,
 };
