@@ -8,6 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as cardDatabase from '../database/cardDatabase';
 import * as userDatabase from '../database/userDatabase';
 import { User, UserCardRequest } from '../shared/types';
+import CardNotFoundError from '../shared/errors/database/card/cardNotFoundError';
 
 /**
  * Get all users
@@ -94,14 +95,21 @@ async function addUserCard(
   cardIssuer: string,
   cardType: string,
 ) {
-  const cardToAdd = {
-    cardName,
-    cardExpiry,
-    card: await cardDatabase.getCardId(cardIssuer, cardType),
-  };
+  try {
+    const cardToAdd = {
+      cardName,
+      cardExpiry,
+      card: await cardDatabase.getCardId(cardIssuer, cardType),
+    };
 
-  const user = await userDatabase.addUserCard(userId, cardToAdd);
-  return user;
+    const user = await userDatabase.addUserCard(userId, cardToAdd);
+    return user;
+  } catch (error) {
+    if (error instanceof CardNotFoundError) {
+      throw new CardNotFoundError(error.message, 422);
+    }
+    throw error;
+  }
 }
 
 /**

@@ -124,7 +124,7 @@ Request body valid. However, the user is unable to be found in the database.
 
 ### 422 Unprocessable Entity - Unable to add card to user
 
-Request body valid. However, the card is unable to be added to the user's list of cards. This is usually due to the card name already being used.
+Request body valid. However, the card is unable to be added to the user's list of cards. This is usually due to the card name already being used or an invalid combination of type and issuer.
 
 #### Schema
 
@@ -139,6 +139,15 @@ Request body valid. However, the card is unable to be added to the user's list o
   "status": "Unprocessable Entity",
   "data": {
     "error": "Card with name 'My lovely OCBC' already exists in user's cards."
+  }
+}
+```
+
+```json
+{
+  "status": "Unprocessable Entity",
+  "data": {
+    "error": "Card with type 'everyday card' and issuer 'dbs' not found."
   }
 }
 ```
