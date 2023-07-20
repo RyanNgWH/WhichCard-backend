@@ -25,9 +25,17 @@ const MerchantModel = model(
       type: String,
       required: [true, 'Address is required'],
     },
-    MCC: {
+    mcc: {
       type: Number,
-      required: [true, 'Address is required'],
+      required: [true, 'MCC is required'],
+    },
+    longitude: {
+      type: Number,
+      required: [true, 'Longitude is required'],
+    },
+    latitude: {
+      type: Number,
+      required: [true, 'Latitude is required'],
     },
     createdAt: {
       type: Number,

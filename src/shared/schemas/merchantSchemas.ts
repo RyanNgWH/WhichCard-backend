@@ -47,4 +47,35 @@ const mccSchema: FieldSchema = {
   },
 };
 
-export { nameSchema, prettyNameSchema, addressSchema, mccSchema };
+const longitudeSchema: FieldSchema = {
+  name: 'longitude',
+  options: {
+    notEmpty: {
+      errorMessage: 'Longitude is required',
+    },
+    isFloat: {
+      errorMessage: 'Longitude must be a float',
+    },
+  },
+};
+
+const latitudeSchema: FieldSchema = {
+  name: 'latitude',
+  options: {
+    notEmpty: {
+      errorMessage: 'Latitude is required',
+    },
+    isFloat: {
+      errorMessage: 'Latitude must be a float',
+    },
+  },
+};
+
+export {
+  nameSchema,
+  prettyNameSchema,
+  addressSchema,
+  mccSchema,
+  longitudeSchema,
+  latitudeSchema,
+};
