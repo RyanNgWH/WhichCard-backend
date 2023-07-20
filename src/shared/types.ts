@@ -47,6 +47,8 @@ type Merchant = {
   prettyName: string;
   address: string;
   mcc: number;
+  longitude: number;
+  latitude: number;
   createdAt: number;
   updatedAt: number;
 };
