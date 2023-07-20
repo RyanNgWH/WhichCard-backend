@@ -28,7 +28,7 @@ async function createMerchant(
     'name' | 'prettyName' | 'address' | 'mcc' | 'longitude' | 'latitude'
   >,
 ) {
-  // Create new user object with id and timestamps
+  // Create new merchant object with id and timestamps
   const merchantToAdd = {
     ...newMerchant,
     _id: uuidv4(),
@@ -36,9 +36,19 @@ async function createMerchant(
     updatedAt: new Date().getTime(),
   };
 
-  // Pass new user to database to save user to database
+  // Pass new merchant to database to save merchant to database
   const createdMerchant = await merchantDatabase.createMerchant(merchantToAdd);
   return createdMerchant;
 }
 
-export { getAllMerchants, createMerchant };
+/**
+ * Get a merchant by id
+ * @param merchantId Id of merchant to get
+ * @returns The merchant with the given id, or throws an error if merchant does not exist
+ */
+async function getMerchantById(merchantId: string) {
+  const merchant = await merchantDatabase.getMerchantById(merchantId);
+  return merchant;
+}
+
+export { getAllMerchants, createMerchant, getMerchantById };

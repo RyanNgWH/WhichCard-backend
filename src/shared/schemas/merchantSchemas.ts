@@ -72,6 +72,18 @@ const latitudeSchema: FieldSchema = {
   },
 };
 
+const merchantIdSchema: FieldSchema = {
+  name: 'merchantId',
+  options: {
+    notEmpty: {
+      errorMessage: 'merchantId is required',
+    },
+    isUUID: {
+      errorMessage: 'merchantId must be a UUID',
+    },
+  },
+};
+
 export {
   nameSchema,
   prettyNameSchema,
@@ -79,4 +91,5 @@ export {
   mccSchema,
   longitudeSchema,
   latitudeSchema,
+  merchantIdSchema,
 };

@@ -36,111 +36,111 @@ router
     },
   );
 
-// // Methods for specific user
-// router
-//   .route('/:userId')
+// Methods for specific merchant
+router
+  .route('/:merchantId')
+  /**
+   * Get a Merchant by id
+   * GET /api/v1/merchants/:merchantId
+   * @param req GET request for merchant by id
+   * @param res Response to send back
+   */
+  .get(
+    merchantController.validate('getMerchantById'),
+    (req: Request, res: Response) => {
+      merchantController.getMerchantById(req, res);
+    },
+  );
 //   /**
-//    * Get a User by id
-//    * GET /api/v1/users/:userId
-//    * @param req GET request for user by id
-//    * @param res Response to send back
-//    */
-//   .get(
-//     userController.validate('getUserById'),
-//     (req: Request, res: Response) => {
-//       userController.getUserById(req, res);
-//     },
-//   )
-//   /**
-//    * Update a User by id
-//    * PATCH /api/v1/users/:userId
-//    * @param req PATCH request for user by id
+//    * Update a merchant by id
+//    * PATCH /api/v1/merchants/:merchantId
+//    * @param req PATCH request for merchant by id
 //    * @param res Response to send back
 //    */
 //   .patch(
-//     userController.validate('updateUserById'),
+//     merchantController.validate('updatemerchantById'),
 //     (req: Request, res: Response) => {
-//       userController.updateUserById(req, res);
+//       merchantController.updatemerchantById(req, res);
 //     },
 //   )
 //   /**
-//    * Delete a User by id
-//    * DELETE /api/v1/users/:userId
-//    * @param req DELETE request for user by id
+//    * Delete a merchant by id
+//    * DELETE /api/v1/merchants/:merchantId
+//    * @param req DELETE request for merchant by id
 //    * @param res Response to send back
 //    */
 //   .delete(
-//     userController.validate('deleteUserById'),
+//     merchantController.validate('deletemerchantById'),
 //     (req: Request, res: Response) => {
-//       userController.deleteUserById(req, res);
+//       merchantController.deletemerchantById(req, res);
 //     },
 //   );
 
-// // Methods for user cards
+// // Methods for merchant cards
 // router
-//   .route('/:userId/cards')
+//   .route('/:merchantId/cards')
 //   /**
-//    * Get all Cards for a User
-//    * GET /api/v1/users/:userId/cards
-//    * @param req GET request for all cards for a user
+//    * Get all Cards for a merchant
+//    * GET /api/v1/merchants/:merchantId/cards
+//    * @param req GET request for all cards for a merchant
 //    * @param res Response to send back
 //    */
 //   .get(
-//     userController.validate('getAllUserCards'),
+//     merchantController.validate('getAllmerchantCards'),
 //     (req: Request, res: Response) => {
-//       userController.getAllUserCards(req, res);
+//       merchantController.getAllmerchantCards(req, res);
 //     },
 //   )
 //   /**
-//    * Add a Card to a User
-//    * POST /api/v1/users/:userId/cards
-//    * @param req POST request for adding a card to a user
+//    * Add a Card to a merchant
+//    * POST /api/v1/merchants/:merchantId/cards
+//    * @param req POST request for adding a card to a merchant
 //    * @param res Response to send back
 //    */
 //   .post(
-//     userController.validate('addUserCard'),
+//     merchantController.validate('addmerchantCard'),
 //     (req: Request, res: Response) => {
-//       userController.addUserCard(req, res);
+//       merchantController.addmerchantCard(req, res);
 //     },
 //   );
 
-// // Methods for specific user card
+// // Methods for specific merchant card
 // router
-//   .route('/:userId/cards/:cardName')
+//   .route('/:merchantId/cards/:cardName')
 //   /**
-//    * Get a specific card for a user by name
-//    * GET /api/v1/users/:userId/cards/:cardName
-//    * @param req GET request for a specific card for a user by name
+//    * Get a specific card for a merchant by name
+//    * GET /api/v1/merchants/:merchantId/cards/:cardName
+//    * @param req GET request for a specific card for a merchant by name
 //    * @param res Response to send back
 //    */
 //   .get(
-//     userController.validate('getUserCardByName'),
+//     merchantController.validate('getmerchantCardByName'),
 //     (req: Request, res: Response) => {
-//       userController.getUserCardByName(req, res);
+//       merchantController.getmerchantCardByName(req, res);
 //     },
 //   )
 //   /**
-//    * Update a specific card for a user by name
-//    * PATCH /api/v1/users/:userId/cards/:cardName
-//    * @param req PATCH request for a specific card for a user by name
+//    * Update a specific card for a merchant by name
+//    * PATCH /api/v1/merchants/:merchantId/cards/:cardName
+//    * @param req PATCH request for a specific card for a merchant by name
 //    * @param res Response to send back
 //    */
 //   .patch(
-//     userController.validate('updateUserCardByName'),
+//     merchantController.validate('updatemerchantCardByName'),
 //     (req: Request, res: Response) => {
-//       userController.updateUserCardByName(req, res);
+//       merchantController.updatemerchantCardByName(req, res);
 //     },
 //   )
 //   /**
-//    * Delete a specific card for a user by name
-//    * DELETE /api/v1/users/:userId/cards/:cardName
-//    * @param req DELETE request for a specific card for a user by name
+//    * Delete a specific card for a merchant by name
+//    * DELETE /api/v1/merchants/:merchantId/cards/:cardName
+//    * @param req DELETE request for a specific card for a merchant by name
 //    * @param res Response to send back
 //    */
 //   .delete(
-//     userController.validate('deleteUserCardByName'),
+//     merchantController.validate('deletemerchantCardByName'),
 //     (req: Request, res: Response) => {
-//       userController.deleteUserCardByName(req, res);
+//       merchantController.deletemerchantCardByName(req, res);
 //     },
 //   );
 
@@ -148,11 +148,11 @@ router
 // router
 //   .route('/login')
 //   /**
-//    * Login a User
-//    * POST /api/v1/users/login
+//    * Login a merchant
+//    * POST /api/v1/merchants/login
 //    */
-//   .post(userController.validate('login'), (req: Request, res: Response) => {
-//     userController.login(req, res);
+//   .post(merchantController.validate('login'), (req: Request, res: Response) => {
+//     merchantController.login(req, res);
 //   });
 
 export default router;
