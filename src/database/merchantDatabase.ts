@@ -187,10 +187,31 @@ async function deleteMerchantById(merchantId: Merchant['_id']) {
   }
 }
 
+/**
+ * Return all active merchants in database
+ * @returns All active merchants in database
+ */
+async function getAllActiveMerchants() {
+  try {
+    const merchants = await MerchantModel.find({
+      status: 'active',
+    });
+    return merchants;
+  } catch (error) {
+    if (!(error instanceof ApplicationError)) {
+      const appError = toApplicationError(error);
+      throw new DatabaseError(appError.message, appError.code);
+    } else {
+      throw error;
+    }
+  }
+}
+
 export {
   getAllMerchants,
   createMerchant,
   getMerchantById,
   updateMerchantById,
   deleteMerchantById,
+  getAllActiveMerchants,
 };

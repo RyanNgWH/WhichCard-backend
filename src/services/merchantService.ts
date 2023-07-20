@@ -77,10 +77,20 @@ async function deleteMerchantById(merchantId: Merchant['_id']) {
   await merchantDatabase.deleteMerchantById(merchantId);
 }
 
+/**
+ * Get all active merchants
+ * @returns All active merchants
+ */
+async function getAllActiveMerchants() {
+  const merchants = await merchantDatabase.getAllActiveMerchants();
+  return merchants;
+}
+
 export {
   getAllMerchants,
   createMerchant,
   getMerchantById,
   updateMerchantById,
   deleteMerchantById,
+  getAllActiveMerchants,
 };

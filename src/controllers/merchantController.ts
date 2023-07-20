@@ -163,6 +163,23 @@ async function deleteMerchantById(req: Request, res: Response) {
 }
 
 /**
+ * Get all active merchants
+ * @param req GET request for all active merchants
+ * @param res Status code 200 and all active merchants in database
+ */
+async function getAllActiveMerchants(req: Request, res: Response) {
+  try {
+    const allActiveMerchants = await merchantService.getAllActiveMerchants();
+    res.send({ status: 'OK', data: allActiveMerchants });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
+  }
+}
+
+/**
  * Validate request body
  * @param method Method to validate
  * @returns Array of validation chains
@@ -216,4 +233,5 @@ export {
   getMerchantById,
   updateMerchantById,
   deleteMerchantById,
+  getAllActiveMerchants,
 };
