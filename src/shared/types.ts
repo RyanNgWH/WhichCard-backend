@@ -41,4 +41,17 @@ type Card = {
   updatedAt: number;
 };
 
-export { User, Card, UserCardRequest };
+type Merchant = {
+  _id: string;
+  name: string;
+  prettyName: string;
+  address: string;
+  mcc: number;
+  longitude: number;
+  latitude: number;
+  createdAt: number;
+  updatedAt: number;
+  status: 'active' | 'inactive';
+};
+
+export { User, Card, UserCardRequest, Merchant };

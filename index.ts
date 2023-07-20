@@ -8,6 +8,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import v1UserRouter from './src/v1/routes/userRoutes';
 import v1CardRouter from './src/v1/routes/cardRoutes';
+import v1MerchantRouter from './src/v1/routes/merchantRoutes';
 import connectToDatabase from './src/database/connection';
 
 // Initialize express app and api port
@@ -22,8 +23,10 @@ app.use(bodyParser.json());
 
 // User management routes
 app.use('/api/v1/users', v1UserRouter);
-// User management routes
+// Card management routes
 app.use('/api/v1/cards', v1CardRouter);
+// Merchant management routes
+app.use('/api/v1/merchants', v1MerchantRouter);
 
 app.listen(PORT, () => {
   console.log(`API is listening on port ${PORT}`);
