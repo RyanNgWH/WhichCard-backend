@@ -39,6 +39,7 @@ Successfully returns the merchant with the given id.
 | `latitude`   | number | Latitude of the merchant                                     |
 | `createdAt`  | number | Timestamp of when the merchant was created (in epoch)        |
 | `updatedAt`  | number | Timestamp of when the merchant was updated (in epoch)        |
+| `status`     | string | Status of the merchant (active or inactive)                  |
 | `__v`        | number | Version of the merchant                                      |
 
 #### Example
@@ -47,15 +48,16 @@ Successfully returns the merchant with the given id.
 {
   "status": "OK",
   "data": {
-    "_id": "38c1eb45-08da-4e5e-9ac6-9924fff7e070",
+    "_id": "e7a87fc0-54c8-42f1-b6ae-3dba30e9cbab",
     "name": "popular",
     "prettyName": "Popular Bookstore",
     "address": "21 Choa Chu Kang Ave 4, #03-13/14, Singapore 689812",
     "mcc": 5942,
-    "longitude": 103.74520449016518,
-    "latitude": 1.385489034729306,
-    "createdAt": 1689847324216,
-    "updatedAt": 1689847324216,
+    "longitude": 103.74516157441636,
+    "latitude": 1.3854997604285177,
+    "createdAt": 1689858006747,
+    "updatedAt": 1689858006747,
+    "status": "active",
     "__v": 0
   }
 }

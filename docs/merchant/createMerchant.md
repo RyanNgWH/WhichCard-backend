@@ -2,7 +2,7 @@
 
 ## Description
 
-Create a new merchant in the database.
+Create a new merchant in the database. If merchant already exists & is marked as inactive, the merchant will be marked as active instead of creating a new merchant.
 
 ## API Endpoint
 
@@ -29,7 +29,7 @@ Create a new merchant in the database.
 
 ### 200 OK - Successfully creates the merchant
 
-Successfully creates the merchant and returns the created merchant.
+Successfully creates the merchant and returns the created merchant. If the merchant already exists & is marked as inactive, the merchant will be marked as active instead of creating a new merchant.
 
 #### Schema
 
@@ -44,6 +44,7 @@ Successfully creates the merchant and returns the created merchant.
 | `latitude`   | number | Latitude of the merchant                                     |
 | `createdAt`  | number | Timestamp of when the merchant was created (in epoch)        |
 | `updatedAt`  | number | Timestamp of when the merchant was updated (in epoch)        |
+| `status`     | string | Status of the merchant (active or inactive)                  |
 | `__v`        | number | Version of the merchant                                      |
 
 #### Example
@@ -52,15 +53,16 @@ Successfully creates the merchant and returns the created merchant.
 {
   "status": "Created",
   "data": {
-    "_id": "d0639628-f9b7-4591-b893-f1c39772114b",
-    "name": "ikea_restaurant",
-    "prettyName": "IKEA Restaurant",
-    "address": "50 Jurong Gateway Rd, #04-20/21/22, Singapore 608549",
-    "mcc": 5814,
-    "longitude": 103.74366453177412,
-    "latitude": 1.3339052098055968,
-    "createdAt": 1689848120905,
-    "updatedAt": 1689848120905,
+    "_id": "e7a87fc0-54c8-42f1-b6ae-3dba30e9cbab",
+    "name": "popular",
+    "prettyName": "Popular Bookstore",
+    "address": "21 Choa Chu Kang Ave 4, #03-13/14, Singapore 689812",
+    "mcc": 5942,
+    "longitude": 103.74516157441636,
+    "latitude": 1.3854997604285177,
+    "createdAt": 1689858006747,
+    "updatedAt": 1689858006747,
+    "status": "active",
     "__v": 0
   }
 }

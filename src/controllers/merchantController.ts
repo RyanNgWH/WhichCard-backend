@@ -204,57 +204,6 @@ function validate(method: String) {
           { fieldSchema: merchantIdSchema, optional: false, in: ['params'] },
         ]),
       );
-    // case 'getAllmerchantmerchants':
-    //   return checkSchema(
-    //     createSchema([
-    //       { fieldSchema: merchantIdSchema, optional: false, in: ['params'] },
-    //     ]),
-    //   );
-    // case 'addmerchantmerchant':
-    //   return checkSchema(
-    //     createSchema([
-    //       { fieldSchema: merchantIdSchema, optional: false, in: ['params'] },
-    //       { fieldSchema: typeSchema, optional: false, in: ['body'] },
-    //       { fieldSchema: issuerSchema, optional: false, in: ['body'] },
-    //       { fieldSchema: merchantNameSchema, optional: false, in: ['body'] },
-    //       { fieldSchema: merchantExpirySchema, optional: false, in: ['body'] },
-    //     ]),
-    //   );
-    // case 'getmerchantmerchantByName':
-    //   return checkSchema(
-    //     createSchema([
-    //       { fieldSchema: merchantIdSchema, optional: false, in: ['params'] },
-    //       { fieldSchema: merchantNameSchema, optional: false, in: ['params'] },
-    //     ]),
-    //   );
-    // case 'updatemerchantmerchantByName':
-    //   return checkSchema(
-    //     createSchema([
-    //       { fieldSchema: merchantIdSchema, optional: false, in: ['params'] },
-    //       {
-    //         fieldSchema: merchantNameSchema,
-    //         optional: false,
-    //         in: ['params', 'body'],
-    //       },
-    //       { fieldSchema: typeSchema, optional: true, in: ['body'] },
-    //       { fieldSchema: issuerSchema, optional: true, in: ['body'] },
-    //       { fieldSchema: merchantExpirySchema, optional: true, in: ['body'] },
-    //     ]),
-    //   );
-    // case 'login':
-    //   return checkSchema(
-    //     createSchema([
-    //       { fieldSchema: emailSchema, optional: false, in: ['body'] },
-    //       { fieldSchema: passwordSchema, optional: false, in: ['body'] },
-    //     ]),
-    //   );
-    // case 'deletemerchantmerchantByName':
-    //   return checkSchema(
-    //     createSchema([
-    //       { fieldSchema: merchantIdSchema, optional: false, in: ['params'] },
-    //       { fieldSchema: merchantNameSchema, optional: false, in: ['params'] },
-    //     ]),
-    //   );
     default:
       return [];
   }

@@ -38,16 +38,25 @@ async function getAllMerchants() {
 async function createMerchant(newMerchant: Merchant) {
   try {
     // Check if merchant already exists in database (using name + lat + long as unique identifier)
-    if (
-      await MerchantModel.exists({
-        name: newMerchant.name,
-        latitude: newMerchant.latitude,
-        longitude: newMerchant.longitude,
-      })
-    ) {
+    const merchant = await MerchantModel.findOne({
+      name: newMerchant.name,
+      latitude: newMerchant.latitude,
+      longitude: newMerchant.longitude,
+    });
+
+    // Check status of merchant
+    if (merchant && merchant.status === 'active') {
       throw new MerchantExistsError(
         `Merchant with name '${newMerchant.name}' & latitude,longitude of '${newMerchant.latitude}/${newMerchant.longitude}' already exists.`,
       );
+    } else if (merchant && merchant.status === 'inactive') {
+      // If merchant exists but is inactive, update merchant to active
+      merchant.status = 'active';
+      merchant.updatedAt = new Date().getTime();
+
+      // Save updated merchant to database
+      const updatedMerchant = await merchant.save();
+      return updatedMerchant;
     }
 
     const createdMerchant = await MerchantModel.create(newMerchant);
@@ -135,8 +144,8 @@ async function updateMerchantById(
     merchant.updatedAt = new Date().getTime();
 
     // Save updated merchant to database
-    const updatedmerchant = await merchant.save();
-    return updatedmerchant;
+    const updatedMerchant = await merchant.save();
+    return updatedMerchant;
   } catch (error) {
     if (!(error instanceof ApplicationError)) {
       const appError = toApplicationError(error);

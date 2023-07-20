@@ -51,6 +51,7 @@ type Merchant = {
   latitude: number;
   createdAt: number;
   updatedAt: number;
+  status: 'active' | 'inactive';
 };
 
 export { User, Card, UserCardRequest, Merchant };

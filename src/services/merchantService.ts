@@ -34,7 +34,8 @@ async function createMerchant(
     _id: uuidv4(),
     createdAt: new Date().getTime(),
     updatedAt: new Date().getTime(),
-  };
+    status: 'active',
+  } as const;
 
   // Pass new merchant to database to save merchant to database
   const createdMerchant = await merchantDatabase.createMerchant(merchantToAdd);

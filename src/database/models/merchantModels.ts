@@ -45,6 +45,11 @@ const MerchantModel = model(
       type: Number,
       required: [true, 'Updated at timestamp is required'],
     },
+    status: {
+      type: String,
+      required: [true, 'Status is required'],
+      enum: ['active', 'inactive'],
+    },
   }),
 );
 
