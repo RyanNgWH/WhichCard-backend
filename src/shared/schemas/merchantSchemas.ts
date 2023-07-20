@@ -12,6 +12,7 @@ const nameSchema: FieldSchema = {
     notEmpty: {
       errorMessage: 'Name is required',
     },
+    toLowerCase: true,
     trim: true,
   },
 };
