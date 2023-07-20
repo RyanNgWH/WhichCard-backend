@@ -51,4 +51,21 @@ async function getMerchantById(merchantId: string) {
   return merchant;
 }
 
-export { getAllMerchants, createMerchant, getMerchantById };
+/**
+ * Update a merchant by id
+ * @param merchantId Id of merchant to update
+ * @param updates Updates to apply to merchant
+ * @returns The updated merchant, or throws an error if merchant does not exist
+ */
+async function updateMerchantById(
+  merchantId: string,
+  updates: Partial<Merchant>,
+) {
+  const merchant = await merchantDatabase.updateMerchantById(
+    merchantId,
+    updates,
+  );
+  return merchant;
+}
+
+export { getAllMerchants, createMerchant, getMerchantById, updateMerchantById };

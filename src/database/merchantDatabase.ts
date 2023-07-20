@@ -6,8 +6,8 @@
 
 import ApplicationError from '../shared/errors/application/applicationError';
 import DatabaseError from '../shared/errors/database/databaseError';
-import MerchantExistsError from '../shared/errors/database/merchant/MerchantExistsError';
-import MerchantNotFoundError from '../shared/errors/database/merchant/MerchantNotFoundError';
+import MerchantExistsError from '../shared/errors/database/merchant/merchantExistsError';
+import MerchantNotFoundError from '../shared/errors/database/merchant/merchantNotFoundError';
 import toApplicationError from '../shared/errors/errorHelpers';
 import { Merchant } from '../shared/types';
 import MerchantModel from './models/merchantModels';
@@ -90,4 +90,61 @@ async function getMerchantById(merchantId: string) {
   }
 }
 
-export { getAllMerchants, createMerchant, getMerchantById };
+/**
+ * Update a merchant in database
+ * @param merchantId Id of merchant to update
+ * @param updates Updates to apply to merchant
+ * @returns The updated merchant, or throws an error if merchant does not exist
+ */
+async function updateMerchantById(
+  merchantId: string,
+  updates: Partial<Merchant>,
+) {
+  try {
+    // Find merchant with matching id from database
+    const merchant = await MerchantModel.findById(merchantId);
+
+    // Check if merchant exists
+    if (!merchant) {
+      throw new MerchantNotFoundError(
+        `Merchant with id '${merchantId}' not found.`,
+      );
+    }
+
+    // Check if updates would cause merchant to be a duplicate
+    if (updates.name || updates.latitude || updates.longitude) {
+      if (
+        await MerchantModel.exists({
+          name: updates.name || merchant.name,
+          latitude: updates.latitude || merchant.latitude,
+          longitude: updates.longitude || merchant.longitude,
+        })
+      ) {
+        throw new MerchantExistsError(
+          `Merchant with name '${
+            updates.name || merchant.name
+          }' and latitude/longitude '${updates.latitude || merchant.latitude},${
+            updates.longitude || merchant.longitude
+          }' already exists.`,
+        );
+      }
+    }
+
+    // Update merchant with new values
+    merchant.set(updates);
+    merchant.updatedAt = new Date().getTime();
+
+    // Save updated merchant to database
+    const updatedmerchant = await merchant.save();
+    return updatedmerchant;
+  } catch (error) {
+    if (!(error instanceof ApplicationError)) {
+      const appError = toApplicationError(error);
+      throw new DatabaseError(appError.message, appError.code);
+    } else {
+      throw error;
+    }
+  }
+}
+
+export { getAllMerchants, createMerchant, getMerchantById, updateMerchantById };

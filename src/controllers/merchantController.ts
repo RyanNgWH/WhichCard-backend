@@ -103,6 +103,38 @@ async function getMerchantById(req: Request, res: Response) {
 }
 
 /**
+ * Update a merchant by id
+ * @param req PATCH request for updating a merchant by id
+ * @param res Status code 200 and updated merchant or error message if merchant could not be updated
+ */
+async function updateMerchantById(req: Request, res: Response) {
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
+    return;
+  }
+
+  // Extract merchant id and body from validated request parameters and body
+  const { merchantId } = matchedData(req, { locations: ['params'] });
+  const body = matchedData(req, { locations: ['body'] });
+
+  try {
+    // Pass merchantId and body to service to update merchant in database
+    const updatedMerchant = await merchantService.updateMerchantById(
+      merchantId,
+      body,
+    );
+    res.send({ status: 'OK', data: updatedMerchant });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
+  }
+}
+
+/**
  * Validate request body
  * @param method Method to validate
  * @returns Array of validation chains
@@ -126,57 +158,59 @@ function validate(method: String) {
           { fieldSchema: merchantIdSchema, optional: false, in: ['params'] },
         ]),
       );
-    // case 'updatemerchantById':
-    //   return checkSchema(
-    //     createSchema([
-    //       { fieldSchema: merchantIdSchema, optional: false, in: ['params'] },
-    //       { fieldSchema: nameSchema, optional: true, in: ['body'] },
-    //       // TODO: Decide if email should be updatable
-    //       // { fieldSchema: emailSchema, optional: true, in: ['body'] },
-    //       { fieldSchema: newPasswordSchema, optional: true, in: ['body'] },
-    //     ]),
-    //   );
+    case 'updateMerchantById':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: merchantIdSchema, optional: false, in: ['params'] },
+          { fieldSchema: nameSchema, optional: true, in: ['body'] },
+          { fieldSchema: prettyNameSchema, optional: true, in: ['body'] },
+          { fieldSchema: addressSchema, optional: true, in: ['body'] },
+          { fieldSchema: mccSchema, optional: true, in: ['body'] },
+          { fieldSchema: longitudeSchema, optional: true, in: ['body'] },
+          { fieldSchema: latitudeSchema, optional: true, in: ['body'] },
+        ]),
+      );
     // case 'deletemerchantById':
     //   return checkSchema(
     //     createSchema([
     //       { fieldSchema: merchantIdSchema, optional: false, in: ['params'] },
     //     ]),
     //   );
-    // case 'getAllmerchantCards':
+    // case 'getAllmerchantmerchants':
     //   return checkSchema(
     //     createSchema([
     //       { fieldSchema: merchantIdSchema, optional: false, in: ['params'] },
     //     ]),
     //   );
-    // case 'addmerchantCard':
+    // case 'addmerchantmerchant':
     //   return checkSchema(
     //     createSchema([
     //       { fieldSchema: merchantIdSchema, optional: false, in: ['params'] },
     //       { fieldSchema: typeSchema, optional: false, in: ['body'] },
     //       { fieldSchema: issuerSchema, optional: false, in: ['body'] },
-    //       { fieldSchema: cardNameSchema, optional: false, in: ['body'] },
-    //       { fieldSchema: cardExpirySchema, optional: false, in: ['body'] },
+    //       { fieldSchema: merchantNameSchema, optional: false, in: ['body'] },
+    //       { fieldSchema: merchantExpirySchema, optional: false, in: ['body'] },
     //     ]),
     //   );
-    // case 'getmerchantCardByName':
+    // case 'getmerchantmerchantByName':
     //   return checkSchema(
     //     createSchema([
     //       { fieldSchema: merchantIdSchema, optional: false, in: ['params'] },
-    //       { fieldSchema: cardNameSchema, optional: false, in: ['params'] },
+    //       { fieldSchema: merchantNameSchema, optional: false, in: ['params'] },
     //     ]),
     //   );
-    // case 'updatemerchantCardByName':
+    // case 'updatemerchantmerchantByName':
     //   return checkSchema(
     //     createSchema([
     //       { fieldSchema: merchantIdSchema, optional: false, in: ['params'] },
     //       {
-    //         fieldSchema: cardNameSchema,
+    //         fieldSchema: merchantNameSchema,
     //         optional: false,
     //         in: ['params', 'body'],
     //       },
     //       { fieldSchema: typeSchema, optional: true, in: ['body'] },
     //       { fieldSchema: issuerSchema, optional: true, in: ['body'] },
-    //       { fieldSchema: cardExpirySchema, optional: true, in: ['body'] },
+    //       { fieldSchema: merchantExpirySchema, optional: true, in: ['body'] },
     //     ]),
     //   );
     // case 'login':
@@ -186,11 +220,11 @@ function validate(method: String) {
     //       { fieldSchema: passwordSchema, optional: false, in: ['body'] },
     //     ]),
     //   );
-    // case 'deletemerchantCardByName':
+    // case 'deletemerchantmerchantByName':
     //   return checkSchema(
     //     createSchema([
     //       { fieldSchema: merchantIdSchema, optional: false, in: ['params'] },
-    //       { fieldSchema: cardNameSchema, optional: false, in: ['params'] },
+    //       { fieldSchema: merchantNameSchema, optional: false, in: ['params'] },
     //     ]),
     //   );
     default:
@@ -198,4 +232,10 @@ function validate(method: String) {
   }
 }
 
-export { getAllMerchants, validate, createMerchant, getMerchantById };
+export {
+  getAllMerchants,
+  validate,
+  createMerchant,
+  getMerchantById,
+  updateMerchantById,
+};
