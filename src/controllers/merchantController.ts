@@ -135,6 +135,34 @@ async function updateMerchantById(req: Request, res: Response) {
 }
 
 /**
+ * Delete a merchant by id
+ * @param req DELETE request for deleting a merchant by id
+ * @param res Status code 200 and deleted merchant or error message if merchant could not be deleted
+ */
+async function deleteMerchantById(req: Request, res: Response) {
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
+    return;
+  }
+
+  // Extract merchant id from validated request parameters
+  const { merchantId } = matchedData(req, { locations: ['params'] });
+
+  try {
+    // Pass merchantId to service to delete merchant from database
+    await merchantService.deleteMerchantById(merchantId);
+    res.status(204).send();
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
+  }
+}
+
+/**
  * Validate request body
  * @param method Method to validate
  * @returns Array of validation chains
@@ -170,12 +198,12 @@ function validate(method: String) {
           { fieldSchema: latitudeSchema, optional: true, in: ['body'] },
         ]),
       );
-    // case 'deletemerchantById':
-    //   return checkSchema(
-    //     createSchema([
-    //       { fieldSchema: merchantIdSchema, optional: false, in: ['params'] },
-    //     ]),
-    //   );
+    case 'deleteMerchantById':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: merchantIdSchema, optional: false, in: ['params'] },
+        ]),
+      );
     // case 'getAllmerchantmerchants':
     //   return checkSchema(
     //     createSchema([
@@ -238,4 +266,5 @@ export {
   createMerchant,
   getMerchantById,
   updateMerchantById,
+  deleteMerchantById,
 };

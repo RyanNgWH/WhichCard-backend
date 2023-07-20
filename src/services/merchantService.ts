@@ -46,7 +46,7 @@ async function createMerchant(
  * @param merchantId Id of merchant to get
  * @returns The merchant with the given id, or throws an error if merchant does not exist
  */
-async function getMerchantById(merchantId: string) {
+async function getMerchantById(merchantId: Merchant['_id']) {
   const merchant = await merchantDatabase.getMerchantById(merchantId);
   return merchant;
 }
@@ -58,7 +58,7 @@ async function getMerchantById(merchantId: string) {
  * @returns The updated merchant, or throws an error if merchant does not exist
  */
 async function updateMerchantById(
-  merchantId: string,
+  merchantId: Merchant['_id'],
   updates: Partial<Merchant>,
 ) {
   const merchant = await merchantDatabase.updateMerchantById(
@@ -68,4 +68,18 @@ async function updateMerchantById(
   return merchant;
 }
 
-export { getAllMerchants, createMerchant, getMerchantById, updateMerchantById };
+/**
+ * Delete a merchant by id
+ * @param merchantId Id of merchant to delete
+ */
+async function deleteMerchantById(merchantId: Merchant['_id']) {
+  await merchantDatabase.deleteMerchantById(merchantId);
+}
+
+export {
+  getAllMerchants,
+  createMerchant,
+  getMerchantById,
+  updateMerchantById,
+  deleteMerchantById,
+};

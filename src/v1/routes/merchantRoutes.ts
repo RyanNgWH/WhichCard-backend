@@ -62,19 +62,19 @@ router
     (req: Request, res: Response) => {
       merchantController.updateMerchantById(req, res);
     },
+  )
+  /**
+   * Delete a merchant by id
+   * DELETE /api/v1/merchants/:merchantId
+   * @param req DELETE request for merchant by id
+   * @param res Response to send back
+   */
+  .delete(
+    merchantController.validate('deleteMerchantById'),
+    (req: Request, res: Response) => {
+      merchantController.deleteMerchantById(req, res);
+    },
   );
-// /**
-//  * Delete a merchant by id
-//  * DELETE /api/v1/merchants/:merchantId
-//  * @param req DELETE request for merchant by id
-//  * @param res Response to send back
-//  */
-// .delete(
-//   merchantController.validate('deletemerchantById'),
-//   (req: Request, res: Response) => {
-//     merchantController.deletemerchantById(req, res);
-//   },
-// );
 
 // // Methods for merchant cards
 // router

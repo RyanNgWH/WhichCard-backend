@@ -67,7 +67,7 @@ async function createMerchant(newMerchant: Merchant) {
  * @param merchantId Id of merchant to get
  * @returns The merchant with the given id, or throws an error if merchant does not exist
  */
-async function getMerchantById(merchantId: string) {
+async function getMerchantById(merchantId: Merchant['_id']) {
   try {
     // Find merchant with matching id from database
     const merchant = await MerchantModel.findById(merchantId);
@@ -97,7 +97,7 @@ async function getMerchantById(merchantId: string) {
  * @returns The updated merchant, or throws an error if merchant does not exist
  */
 async function updateMerchantById(
-  merchantId: string,
+  merchantId: Merchant['_id'],
   updates: Partial<Merchant>,
 ) {
   try {
@@ -147,4 +147,41 @@ async function updateMerchantById(
   }
 }
 
-export { getAllMerchants, createMerchant, getMerchantById, updateMerchantById };
+/**
+ * Delete a merchant from database
+ * @param merchantId Id of merchant to delete
+ */
+async function deleteMerchantById(merchantId: Merchant['_id']) {
+  try {
+    // TODO: Implement validation that merchant is not in use by any transactions
+    // // Get all users that have this merchant
+    // const users = await UserModel.find({ 'merchants.merchant': merchantId });
+
+    // // Remove merchant from each user
+    // users.forEach(async user => {
+    //   // eslint-disable-next-line no-param-reassign
+    //   user.merchants = user.merchants.filter(
+    //     merchant => merchant.merchant !== merchantId,
+    //   );
+    //   await user.save();
+    // });
+
+    // Delete merchant from database
+    await MerchantModel.findByIdAndDelete(merchantId);
+  } catch (error) {
+    if (!(error instanceof ApplicationError)) {
+      const appError = toApplicationError(error);
+      throw new DatabaseError(appError.message, appError.code);
+    } else {
+      throw error;
+    }
+  }
+}
+
+export {
+  getAllMerchants,
+  createMerchant,
+  getMerchantById,
+  updateMerchantById,
+  deleteMerchantById,
+};
