@@ -68,6 +68,11 @@ async function createUser(
  * @returns The updated user, or throws an error user does not exist
  */
 async function updateUserById(userId: string, updates: Partial<User>) {
+  updates = {
+    ...(updates.password
+      ? { ...updates, password: await hashPassword(updates.password) }
+      : updates),
+  };
   const user = await userDatabase.updateUserById(userId, updates);
   return user;
 }
