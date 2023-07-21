@@ -62,18 +62,18 @@ router
     (req: Request, res: Response) => {
       transactionController.updateTransactionById(req, res);
     },
+  )
+  /**
+   * Delete a transaction by id
+   * DELETE /api/v1/transactions/:transactionId
+   * @param req DELETE request for transaction by id
+   * @param res Response to send back
+   */
+  .delete(
+    transactionController.validate('deleteTransactionById'),
+    (req: Request, res: Response) => {
+      transactionController.deleteTransactionById(req, res);
+    },
   );
-//   /**
-//    * Delete a transaction by id
-//    * DELETE /api/v1/transactions/:transactionId
-//    * @param req DELETE request for transaction by id
-//    * @param res Response to send back
-//    */
-//   .delete(
-//     transactionController.validate('deletetransactionById'),
-//     (req: Request, res: Response) => {
-//       transactionController.deletetransactionById(req, res);
-//     },
-//   );
 
 export default router;

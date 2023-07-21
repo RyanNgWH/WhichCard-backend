@@ -78,18 +78,18 @@ async function updateTransactionById(
   return transaction;
 }
 
-// /**
-//  * Delete a transaction by id
-//  * @param transactionId Id of transaction to delete
-//  */
-// async function deletetransactionById(transactionId: transaction['_id']) {
-//   await transactionDatabase.deletetransactionById(transactionId);
-// }
+/**
+ * Delete a transaction by id
+ * @param transactionId Id of transaction to delete
+ */
+async function deleteTransactionById(transactionId: Transaction['_id']) {
+  await transactionDatabase.deleteTransactionById(transactionId);
+}
 
 export {
   getAlltransactions,
   createTransaction,
   getTransactionById,
   updateTransactionById,
-  // deletetransactionById,
+  deleteTransactionById,
 };

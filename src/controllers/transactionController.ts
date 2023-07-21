@@ -140,33 +140,33 @@ async function updateTransactionById(req: Request, res: Response) {
   }
 }
 
-// /**
-//  * Delete a transaction by id
-//  * @param req DELETE request for deleting a transaction by id
-//  * @param res Status code 200 and deleted transaction or error message if transaction could not be deleted
-//  */
-// async function deletetransactionById(req: Request, res: Response) {
-//   // Check if validation errors exist
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//     res.status(400).send({ status: 'Bad Request', errors: errors.array() });
-//     return;
-//   }
+/**
+ * Delete a transaction by id
+ * @param req DELETE request for deleting a transaction by id
+ * @param res Status code 200 and deleted transaction or error message if transaction could not be deleted
+ */
+async function deleteTransactionById(req: Request, res: Response) {
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
+    return;
+  }
 
-//   // Extract transaction id from validated request parameters
-//   const { transactionId } = matchedData(req, { locations: ['params'] });
+  // Extract transaction id from validated request parameters
+  const { transactionId } = matchedData(req, { locations: ['params'] });
 
-//   try {
-//     // Pass transactionId to service to delete transaction from database
-//     await transactionService.deletetransactionById(transactionId);
-//     res.status(204).send();
-//   } catch (error) {
-//     const appError = toApplicationError(error);
-//     res
-//       .status(appError.code)
-//       .send({ status: appError.status, data: { error: appError.message } });
-//   }
-// }
+  try {
+    // Pass transactionId to service to delete transaction from database
+    await transactionService.deleteTransactionById(transactionId);
+    res.status(204).send();
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
+  }
+}
 
 /**
  * Validate request body
@@ -214,12 +214,12 @@ function validate(method: String) {
           },
         ]),
       );
-    // case 'deletetransactionById':
-    //   return checkSchema(
-    //     createSchema([
-    //       { fieldSchema: transactionIdSchema, optional: false, in: ['params'] },
-    //     ]),
-    //   );
+    case 'deleteTransactionById':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: transactionIdSchema, optional: false, in: ['params'] },
+        ]),
+      );
     default:
       return [];
   }
@@ -231,5 +231,5 @@ export {
   createTransaction,
   getTransactionById,
   updateTransactionById,
-  // deletetransactionById,
+  deleteTransactionById,
 };

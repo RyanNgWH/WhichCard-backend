@@ -177,61 +177,28 @@ async function updateTransactionById(
   }
 }
 
-// /**
-//  * Delete a transaction from database
-//  * @param transactionId Id of transaction to delete
-//  */
-// async function deletetransactionById(transactionId: transaction['_id']) {
-//   try {
-//     // TODO: Implement validation that transaction is not in use by any transactions
-//     // // Get all users that have this transaction
-//     // const users = await UserModel.find({ 'transactions.transaction': transactionId });
-
-//     // // Remove transaction from each user
-//     // users.forEach(async user => {
-//     //   // eslint-disable-next-line no-param-reassign
-//     //   user.transactions = user.transactions.filter(
-//     //     transaction => transaction.transaction !== transactionId,
-//     //   );
-//     //   await user.save();
-//     // });
-
-//     // Delete transaction from database
-//     await transactionModel.findByIdAndDelete(transactionId);
-//   } catch (error) {
-//     if (!(error instanceof ApplicationError)) {
-//       const appError = toApplicationError(error);
-//       throw new DatabaseError(appError.message, appError.code);
-//     } else {
-//       throw error;
-//     }
-//   }
-// }
-
-// /**
-//  * Return all active transactions in database
-//  * @returns All active transactions in database
-//  */
-// async function getAllActivetransactions() {
-//   try {
-//     const transactions = await transactionModel.find({
-//       status: 'active',
-//     });
-//     return transactions;
-//   } catch (error) {
-//     if (!(error instanceof ApplicationError)) {
-//       const appError = toApplicationError(error);
-//       throw new DatabaseError(appError.message, appError.code);
-//     } else {
-//       throw error;
-//     }
-//   }
-// }
+/**
+ * Delete a transaction from database
+ * @param transactionId Id of transaction to delete
+ */
+async function deleteTransactionById(transactionId: Transaction['_id']) {
+  try {
+    // Delete transaction from database
+    await TransactionModel.findByIdAndDelete(transactionId);
+  } catch (error) {
+    if (!(error instanceof ApplicationError)) {
+      const appError = toApplicationError(error);
+      throw new DatabaseError(appError.message, appError.code);
+    } else {
+      throw error;
+    }
+  }
+}
 
 export {
   getAlltransactions,
   createTransaction,
   getTransactionById,
   updateTransactionById,
-  // deletetransactionById,
+  deleteTransactionById,
 };
