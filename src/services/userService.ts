@@ -262,6 +262,8 @@ async function recommendCard(
     };
 
     return recommended;
+
+    // TODO: Add logic for minimum spend
   } catch (error) {
     if (!(error instanceof ApplicationError)) {
       throw toApplicationError(error);
