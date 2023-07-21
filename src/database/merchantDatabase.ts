@@ -11,6 +11,7 @@ import MerchantNotFoundError from '../shared/errors/database/merchant/merchantNo
 import toApplicationError from '../shared/errors/errorHelpers';
 import { Merchant } from '../shared/types';
 import MerchantModel from './models/merchantModels';
+import TransactionModel from './models/transactionModels';
 
 /**
  * Return all merchants in database
@@ -163,17 +164,15 @@ async function updateMerchantById(
 async function deleteMerchantById(merchantId: Merchant['_id']) {
   try {
     // TODO: Implement validation that merchant is not in use by any transactions
-    // // Get all users that have this merchant
-    // const users = await UserModel.find({ 'merchants.merchant': merchantId });
-
-    // // Remove merchant from each user
-    // users.forEach(async user => {
-    //   // eslint-disable-next-line no-param-reassign
-    //   user.merchants = user.merchants.filter(
-    //     merchant => merchant.merchant !== merchantId,
-    //   );
-    //   await user.save();
-    // });
+    // Check if merchant is in use by any transactions
+    if (await TransactionModel.exists({ merchant: merchantId })) {
+      // Mark merchant as inactive
+      await MerchantModel.findByIdAndUpdate(merchantId, {
+        status: 'inactive',
+        updatedAt: new Date().getTime(),
+      });
+      return;
+    }
 
     // Delete merchant from database
     await MerchantModel.findByIdAndDelete(merchantId);
