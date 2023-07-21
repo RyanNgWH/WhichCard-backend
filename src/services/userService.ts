@@ -4,7 +4,7 @@
  * @format
  */
 
-import crypto from "crypto";
+import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 import * as cardDatabase from '../database/cardDatabase';
 import * as userDatabase from '../database/userDatabase';
@@ -13,10 +13,11 @@ import CardNotFoundError from '../shared/errors/database/card/cardNotFoundError'
 
 /**
  * Hash Password
+ * @param password Password to hash
  * @returns Hashed password
  */
-async function hashPassword(str: string) {
-  return crypto.createHash("sha256").update(str).digest("hex");
+async function hashPassword(password: string) {
+  return crypto.createHash('sha256').update(password).digest('hex');
 }
 
 /**
@@ -68,12 +69,12 @@ async function createUser(
  * @returns The updated user, or throws an error user does not exist
  */
 async function updateUserById(userId: string, updates: Partial<User>) {
-  updates = {
+  const updatesWithHash = {
     ...(updates.password
       ? { ...updates, password: await hashPassword(updates.password) }
       : updates),
   };
-  const user = await userDatabase.updateUserById(userId, updates);
+  const user = await userDatabase.updateUserById(userId, updatesWithHash);
   return user;
 }
 
