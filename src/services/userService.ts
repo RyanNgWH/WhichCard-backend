@@ -4,11 +4,21 @@
  * @format
  */
 
+import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 import * as cardDatabase from '../database/cardDatabase';
 import * as userDatabase from '../database/userDatabase';
 import { User, UserCardRequest } from '../shared/types';
 import CardNotFoundError from '../shared/errors/database/card/cardNotFoundError';
+
+/**
+ * Hash Password
+ * @param password Password to hash
+ * @returns Hashed password
+ */
+async function hashPassword(password: string) {
+  return crypto.createHash('sha256').update(password).digest('hex');
+}
 
 /**
  * Get all users
@@ -38,9 +48,11 @@ async function createUser(
   newUser: Pick<User, 'name' | 'email' | 'password' | 'cards'>,
 ) {
   // Create new user object with id and timestamps
+  const passwordHash = await hashPassword(newUser.password);
   const userToAdd = {
     ...newUser,
     _id: uuidv4(),
+    password: passwordHash,
     createdAt: new Date().getTime(),
     updatedAt: new Date().getTime(),
   };
@@ -57,7 +69,12 @@ async function createUser(
  * @returns The updated user, or throws an error user does not exist
  */
 async function updateUserById(userId: string, updates: Partial<User>) {
-  const user = await userDatabase.updateUserById(userId, updates);
+  const updatesWithHash = {
+    ...(updates.password
+      ? { ...updates, password: await hashPassword(updates.password) }
+      : updates),
+  };
+  const user = await userDatabase.updateUserById(userId, updatesWithHash);
   return user;
 }
 
@@ -159,7 +176,8 @@ async function deleteUserCardByName(userId: string, cardName: string) {
  * @returns The logged in user, or undefined if user does not exist
  */
 async function login(email: string, password: string) {
-  const user = await userDatabase.login(email, password);
+  const passwordHash = await hashPassword(password);
+  const user = await userDatabase.login(email, passwordHash);
   return user;
 }
 
