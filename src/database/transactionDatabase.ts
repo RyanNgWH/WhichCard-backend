@@ -105,62 +105,77 @@ async function getTransactionById(transactionId: Transaction['_id']) {
   }
 }
 
-// /**
-//  * Update a transaction in database
-//  * @param transactionId Id of transaction to update
-//  * @param updates Updates to apply to transaction
-//  * @returns The updated transaction, or throws an error if transaction does not exist
-//  */
-// async function updatetransactionById(
-//   transactionId: transaction['_id'],
-//   updates: Partial<transaction>,
-// ) {
-//   try {
-//     // Find transaction with matching id from database
-//     const transaction = await transactionModel.findById(transactionId);
+/**
+ * Update a transaction in database
+ * @param transactionId Id of transaction to update
+ * @param updates Updates to apply to transaction
+ * @returns The updated transaction, or throws an error if transaction does not exist
+ */
+async function updateTransactionById(
+  transactionId: Transaction['_id'],
+  updates: Partial<Transaction>,
+) {
+  try {
+    // Find transaction with matching id from database
+    const transaction = await TransactionModel.findById(transactionId);
 
-//     // Check if transaction exists
-//     if (!transaction) {
-//       throw new transactionNotFoundError(
-//         `transaction with id '${transactionId}' not found.`,
-//       );
-//     }
+    // Check if transaction exists
+    if (!transaction) {
+      throw new TransactionNotFoundError(
+        `Transaction with id '${transactionId}' not found.`,
+      );
+    }
 
-//     // Check if updates would cause transaction to be a duplicate
-//     if (updates.name || updates.latitude || updates.longitude) {
-//       if (
-//         await transactionModel.exists({
-//           name: updates.name || transaction.name,
-//           latitude: updates.latitude || transaction.latitude,
-//           longitude: updates.longitude || transaction.longitude,
-//         })
-//       ) {
-//         throw new transactionExistsError(
-//           `transaction with name '${
-//             updates.name || transaction.name
-//           }' and latitude/longitude '${updates.latitude || transaction.latitude},${
-//             updates.longitude || transaction.longitude
-//           }' already exists.`,
-//         );
-//       }
-//     }
+    const user = updates.user || transaction.user;
+    const merchant = updates.merchant || transaction.merchant;
+    const dateTime = updates.dateTime || transaction.dateTime;
+    const amount = updates.amount || transaction.amount;
 
-//     // Update transaction with new values
-//     transaction.set(updates);
-//     transaction.updatedAt = new Date().getTime();
+    // Check if updates would cause transaction to be a duplicate
+    if (
+      updates.user ||
+      updates.merchant ||
+      updates.dateTime ||
+      updates.amount
+    ) {
+      if (
+        await TransactionModel.exists({
+          user,
+          merchant,
+          dateTime,
+          amount,
+        })
+      ) {
+        throw new TransactionExistsError(
+          `Transaction with user '${user}', merchant '${merchant}', dateTime '${dateTime}' & amount '${amount}' already exists.`,
+        );
+      }
+    }
 
-//     // Save updated transaction to database
-//     const updatedtransaction = await transaction.save();
-//     return updatedtransaction;
-//   } catch (error) {
-//     if (!(error instanceof ApplicationError)) {
-//       const appError = toApplicationError(error);
-//       throw new DatabaseError(appError.message, appError.code);
-//     } else {
-//       throw error;
-//     }
-//   }
-// }
+    // Update transaction with new values
+    transaction.set(updates);
+    transaction.updatedAt = new Date().getTime();
+
+    // Check if user, userCard & merchant exists in database
+    await userDatabase.getUserById(transaction.user as string);
+    await userDatabase.getUserCardByName(
+      transaction.user as string,
+      transaction.userCard as string,
+    );
+    await merchantDatabase.getMerchantById(transaction.merchant as string);
+
+    // Save updated transaction to database
+    const updatedtransaction = await transaction.save();
+    return updatedtransaction;
+  } catch (error) {
+    if (!(error instanceof ApplicationError)) {
+      const appError = toApplicationError(error);
+      throw new DatabaseError(appError.message, appError.code);
+    } else {
+      throw error;
+    }
+  }
+}
 
 // /**
 //  * Delete a transaction from database
@@ -217,6 +232,6 @@ export {
   getAlltransactions,
   createTransaction,
   getTransactionById,
-  // updatetransactionById,
+  updateTransactionById,
   // deletetransactionById,
 };

@@ -50,19 +50,19 @@ router
     (req: Request, res: Response) => {
       transactionController.getTransactionById(req, res);
     },
+  )
+  /**
+   * Update a transaction by id
+   * PATCH /api/v1/transactions/:transactionId
+   * @param req PATCH request for transaction by id
+   * @param res Response to send back
+   */
+  .patch(
+    transactionController.validate('updateTransactionById'),
+    (req: Request, res: Response) => {
+      transactionController.updateTransactionById(req, res);
+    },
   );
-//   /**
-//    * Update a transaction by id
-//    * PATCH /api/v1/transactions/:transactionId
-//    * @param req PATCH request for transaction by id
-//    * @param res Response to send back
-//    */
-//   .patch(
-//     transactionController.validate('updatetransactionById'),
-//     (req: Request, res: Response) => {
-//       transactionController.updatetransactionById(req, res);
-//     },
-//   )
 //   /**
 //    * Delete a transaction by id
 //    * DELETE /api/v1/transactions/:transactionId

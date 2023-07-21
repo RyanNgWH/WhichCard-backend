@@ -61,22 +61,22 @@ async function getTransactionById(transactionId: Transaction['_id']) {
   return transaction;
 }
 
-// /**
-//  * Update a transaction by id
-//  * @param transactionId Id of transaction to update
-//  * @param updates Updates to apply to transaction
-//  * @returns The updated transaction, or throws an error if transaction does not exist
-//  */
-// async function updatetransactionById(
-//   transactionId: transaction['_id'],
-//   updates: Partial<transaction>,
-// ) {
-//   const transaction = await transactionDatabase.updatetransactionById(
-//     transactionId,
-//     updates,
-//   );
-//   return transaction;
-// }
+/**
+ * Update a transaction by id
+ * @param transactionId Id of transaction to update
+ * @param updates Updates to apply to transaction
+ * @returns The updated transaction, or throws an error if transaction does not exist
+ */
+async function updateTransactionById(
+  transactionId: Transaction['_id'],
+  updates: Partial<Transaction>,
+) {
+  const transaction = await transactionDatabase.updateTransactionById(
+    transactionId,
+    updates,
+  );
+  return transaction;
+}
 
 // /**
 //  * Delete a transaction by id
@@ -90,6 +90,6 @@ export {
   getAlltransactions,
   createTransaction,
   getTransactionById,
-  // updatetransactionById,
+  updateTransactionById,
   // deletetransactionById,
 };

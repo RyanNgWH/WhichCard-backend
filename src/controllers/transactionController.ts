@@ -108,37 +108,37 @@ async function getTransactionById(req: Request, res: Response) {
   }
 }
 
-// /**
-//  * Update a transaction by id
-//  * @param req PATCH request for updating a transaction by id
-//  * @param res Status code 200 and updated transaction or error message if transaction could not be updated
-//  */
-// async function updatetransactionById(req: Request, res: Response) {
-//   // Check if validation errors exist
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//     res.status(400).send({ status: 'Bad Request', errors: errors.array() });
-//     return;
-//   }
+/**
+ * Update a transaction by id
+ * @param req PATCH request for updating a transaction by id
+ * @param res Status code 200 and updated transaction or error message if transaction could not be updated
+ */
+async function updateTransactionById(req: Request, res: Response) {
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
+    return;
+  }
 
-//   // Extract transaction id and body from validated request parameters and body
-//   const { transactionId } = matchedData(req, { locations: ['params'] });
-//   const body = matchedData(req, { locations: ['body'] });
+  // Extract transaction id and body from validated request parameters and body
+  const { transactionId } = matchedData(req, { locations: ['params'] });
+  const body = matchedData(req, { locations: ['body'] });
 
-//   try {
-//     // Pass transactionId and body to service to update transaction in database
-//     const updatedtransaction = await transactionService.updatetransactionById(
-//       transactionId,
-//       body,
-//     );
-//     res.send({ status: 'OK', data: updatedtransaction });
-//   } catch (error) {
-//     const appError = toApplicationError(error);
-//     res
-//       .status(appError.code)
-//       .send({ status: appError.status, data: { error: appError.message } });
-//   }
-// }
+  try {
+    // Pass transactionId and body to service to update transaction in database
+    const updatedTransaction = await transactionService.updateTransactionById(
+      transactionId,
+      body,
+    );
+    res.send({ status: 'OK', data: updatedTransaction });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
+  }
+}
 
 // /**
 //  * Delete a transaction by id
@@ -197,18 +197,23 @@ function validate(method: String) {
           { fieldSchema: transactionIdSchema, optional: false, in: ['params'] },
         ]),
       );
-    // case 'updatetransactionById':
-    //   return checkSchema(
-    //     createSchema([
-    //       { fieldSchema: transactionIdSchema, optional: false, in: ['params'] },
-    //       { fieldSchema: nameSchema, optional: true, in: ['body'] },
-    //       { fieldSchema: prettyNameSchema, optional: true, in: ['body'] },
-    //       { fieldSchema: addressSchema, optional: true, in: ['body'] },
-    //       { fieldSchema: mccSchema, optional: true, in: ['body'] },
-    //       { fieldSchema: longitudeSchema, optional: true, in: ['body'] },
-    //       { fieldSchema: latitudeSchema, optional: true, in: ['body'] },
-    //     ]),
-    //   );
+    case 'updateTransactionById':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: transactionIdSchema, optional: false, in: ['params'] },
+          { fieldSchema: userIdSchema, optional: true, in: ['body'] },
+          { fieldSchema: cardNameSchema, optional: true, in: ['body'] },
+          { fieldSchema: merchantIdSchema, optional: true, in: ['body'] },
+          { fieldSchema: dateTimeSchema, optional: true, in: ['body'] },
+          { fieldSchema: amountSchema, optional: true, in: ['body'] },
+          { fieldSchema: cashbackAmountSchema, optional: true, in: ['body'] },
+          {
+            fieldSchema: cashbackCategorySchema,
+            optional: true,
+            in: ['body'],
+          },
+        ]),
+      );
     // case 'deletetransactionById':
     //   return checkSchema(
     //     createSchema([
@@ -225,6 +230,6 @@ export {
   validate,
   createTransaction,
   getTransactionById,
-  // updatetransactionById,
+  updateTransactionById,
   // deletetransactionById,
 };
