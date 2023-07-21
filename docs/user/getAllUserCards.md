@@ -10,9 +10,9 @@ Get all cards of a user in the database.
 
 ## Query Parameters
 
-| Field | Type | Description | Required |
-| ----- | ---- | ----------- | -------- |
-| -     | -    | -           | -        |
+| Field    | Type   | Description           | Required |
+| -------- | ------ | --------------------- | -------- |
+| `userId` | string | ID of the user (UUID) | ✅       |
 
 ## Request Body
 
