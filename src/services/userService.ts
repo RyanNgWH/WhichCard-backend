@@ -247,10 +247,9 @@ async function recommendCard(
         new Date().getFullYear(),
       );
       if (accumulatedCashback + expectedCashback > (cashbackLimit as number)) {
-        cashbackAmounts[i] =
-          accumulatedCashback + expectedCashback - (cashbackLimit as number);
+        cashbackAmounts[i] = (cashbackLimit as number) - accumulatedCashback;
       } else {
-        cashbackAmounts[i] = transaction.amount * (cashbackRate / 100);
+        cashbackAmounts[i] = expectedCashback;
       }
     }
 

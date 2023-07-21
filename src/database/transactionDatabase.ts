@@ -57,13 +57,20 @@ async function createTransaction(newTransaction: Transaction) {
 
     // Check if user, userCard & merchant exists in database
     await userDatabase.getUserById(newTransaction.user);
-    await userDatabase.getUserCardByName(
-      newTransaction.user,
-      newTransaction.userCard,
-    );
+    const userCard = (
+      await userDatabase.getUserCardByName(
+        newTransaction.user,
+        newTransaction.userCard,
+      )
+    ).cardName as string;
     await merchantDatabase.getMerchantById(newTransaction.merchant);
 
-    const createdTransaction = await TransactionModel.create(newTransaction);
+    const transactionToAdd = {
+      ...newTransaction,
+      userCard,
+    };
+
+    const createdTransaction = await TransactionModel.create(transactionToAdd);
     return createdTransaction;
   } catch (error) {
     if (!(error instanceof ApplicationError)) {
@@ -221,8 +228,8 @@ async function getUserCardCashback(
       user: userId,
       userCard: cardName,
       dateTime: {
-        $gte: new Date(year, month - 1, 1).getTime(),
-        $lt: new Date(year, month, 1).getTime(),
+        $gte: new Date(year, month),
+        $lt: new Date(year, month + 1),
       },
     });
 
