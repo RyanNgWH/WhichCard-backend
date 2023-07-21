@@ -8,8 +8,14 @@ import crypto from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
 import * as cardDatabase from '../database/cardDatabase';
 import * as userDatabase from '../database/userDatabase';
-import { User, UserCardRequest } from '../shared/types';
+import * as merchantDatabase from '../database/merchantDatabase';
+import * as transactionDatabase from '../database/transactionDatabase';
+import { Transaction, User, UserCardRequest } from '../shared/types';
 import CardNotFoundError from '../shared/errors/database/card/cardNotFoundError';
+import NoCardsError from '../shared/errors/user/noCardsError';
+import ApplicationError from '../shared/errors/application/applicationError';
+import toApplicationError from '../shared/errors/errorHelpers';
+import getCategory from '../shared/categories';
 
 /**
  * Hash Password
@@ -173,12 +179,96 @@ async function deleteUserCardByName(userId: string, cardName: string) {
  * Login a user
  * @param email Email of user to login
  * @param password Password of user to login
- * @returns The logged in user, or undefined if user does not exist
+ * @returns The logged in user, or throws an error if user does not exist
  */
 async function login(email: string, password: string) {
   const passwordHash = await hashPassword(password);
   const user = await userDatabase.login(email, passwordHash);
   return user;
+}
+
+/**
+ * Recommend a card for a user's transaction
+ * @param userId Id of user to recommend card for
+ * @param transaction Transaction to recommend card for
+ * @returns The recommended card and cashback amount, or throws an error if user does not exist
+ */
+async function recommendCard(
+  userId: string,
+  transaction: Pick<Transaction, 'amount' | 'merchant'>,
+) {
+  try {
+    // Get all cards for user
+    const userCards = await userDatabase.getAllUserCards(userId);
+    if (userCards.length === 0) {
+      throw new NoCardsError('User has no cards');
+    }
+
+    // Extract mcc from transaction
+    const { mcc } = await merchantDatabase.getMerchantById(
+      transaction.merchant,
+    );
+
+    // Get cashback amount for each card
+    const cashbackAmounts = [];
+    for (let i = 0; i < userCards.length; i += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      const { benefits, exclusions, cashbackLimit } =
+        // eslint-disable-next-line no-await-in-loop
+        await cardDatabase.getCardById(userCards[i].card as string);
+
+      // Check if mcc is in card exclusions
+      if ((mcc as number) in exclusions) {
+        cashbackAmounts[i] = 0;
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+
+      let cashbackRate = 0;
+      // eslint-disable-next-line no-await-in-loop
+      const category = await getCategory(mcc as number);
+
+      for (let j = 0; j < benefits.length; j += 1) {
+        if (
+          benefits[j].mccs.includes(mcc as number) ||
+          category.toLowerCase() === benefits[j].category?.toLowerCase()
+        ) {
+          cashbackRate = benefits[j].cashbackRate as number;
+          break;
+        }
+      }
+
+      const expectedCashback = transaction.amount * (cashbackRate / 100);
+      // eslint-disable-next-line no-await-in-loop
+      const accumulatedCashback = await transactionDatabase.getUserCardCashback(
+        userId,
+        userCards[i].cardName as string,
+        new Date().getMonth(),
+        new Date().getFullYear(),
+      );
+      if (accumulatedCashback + expectedCashback > (cashbackLimit as number)) {
+        cashbackAmounts[i] =
+          accumulatedCashback + expectedCashback - (cashbackLimit as number);
+      } else {
+        cashbackAmounts[i] = transaction.amount * (cashbackRate / 100);
+      }
+    }
+
+    // Find card with highest cashback amount
+    const maxCashback = Math.max(...cashbackAmounts);
+    const recommended = {
+      card: userCards[cashbackAmounts.indexOf(maxCashback)].cardName,
+      cashbackAmount: maxCashback,
+    };
+
+    return recommended;
+  } catch (error) {
+    if (!(error instanceof ApplicationError)) {
+      throw toApplicationError(error);
+    } else {
+      throw error;
+    }
+  }
 }
 
 export {
@@ -193,4 +283,5 @@ export {
   updateUserCardByName,
   deleteUserCardByName,
   login,
+  recommendCard,
 };
