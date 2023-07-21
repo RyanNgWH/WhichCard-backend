@@ -31,6 +31,21 @@ Successfully add card to user.
 
 #### Schema
 
+<<<<<<< HEAD
+| Field              | Type   | Description                                              |
+| ------------------ | ------ | -------------------------------------------------------- |
+| `_id`              | string | ID of the user (UUID)                                    |
+| `name`             | string | Full name of the user                                    |
+| `email`            | string | Email of the user                                        |
+| `password`         | string | Password of the user                                     |
+| `cards`            | array  | List of cards of the user                                |
+| `cards.cardName`   | string | Name of the card of the user                             |
+| `cards.cardExpiry` | string | Expiry date of the card of the user (in ISO 8601 format) |
+| `cards.card`       | string | ID of the card (in UUID format)                          |
+| `createdAt`        | number | Timestamp of when the user was created (in epoch)        |
+| `updatedAt`        | number | Timestamp of when the user was updated (in epoch)        |
+| `__v`              | number | Version of the user                                      |
+=======
 | Field              | Type   | Description                                                |
 | ------------------ | ------ | ---------------------------------------------------------- |
 | `_id`              | string | ID of the user (UUID)                                      |
@@ -44,6 +59,7 @@ Successfully add card to user.
 | `createdAt`        | number | Timestamp of when the user was created (in epoch)          |
 | `updatedAt`        | number | Timestamp of when the user was updated (in epoch)          |
 | `__v`              | number | Version of the user                                        |
+>>>>>>> master
 
 #### Example
 

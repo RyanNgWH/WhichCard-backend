@@ -28,13 +28,11 @@ Returns all cards for the user in the database.
 
 #### Schema
 
-| Field   | Type  | Description         |
-| ------- | ----- | ------------------- |
-| `cards` | array | Array of card uuids |
+| Field   | Type  | Description    |
+| ------- | ----- | -------------- |
+| `cards` | array | Array of cards |
 
 #### Example
-
-// TODO: Populate with example
 
 ```json
 {
