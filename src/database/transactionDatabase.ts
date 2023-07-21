@@ -50,7 +50,7 @@ async function createTransaction(newTransaction: Transaction) {
       })
     ) {
       throw new TransactionExistsError(
-        `Transaction with user '${newTransaction.user}', merchant '${newTransaction.merchant}', dateTime' ${newTransaction.dateTime}' & amount '${newTransaction.amount}' already exists.`,
+        `Transaction with user '${newTransaction.user}', merchant '${newTransaction.merchant}', dateTime '${newTransaction.dateTime}' & amount '${newTransaction.amount}' already exists.`,
       );
     }
 
