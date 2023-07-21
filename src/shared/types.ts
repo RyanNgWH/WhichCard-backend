@@ -12,7 +12,7 @@ type User = {
   cards: {
     cardName: string;
     cardExpiry: Date;
-    card: string;
+    card: Card['_id'];
   }[];
   createdAt: number;
   updatedAt: number;
@@ -54,4 +54,17 @@ type Merchant = {
   status: 'active' | 'inactive';
 };
 
-export { User, Card, UserCardRequest, Merchant };
+type Transaction = {
+  _id: string;
+  user: User['_id'];
+  userCard: User['cards'][0]['card'];
+  merchant: Merchant['_id'];
+  dateTime: Date;
+  amount: number;
+  cashbackAmount: number;
+  cashbackCategory: string;
+  createdAt: number;
+  updatedAt: number;
+};
+
+export { User, Card, UserCardRequest, Merchant, Transaction };
