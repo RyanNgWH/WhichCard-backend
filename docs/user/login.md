@@ -34,7 +34,7 @@ Successfully login the user with the given email and password. Returns the user.
 | `id`        | string | ID of the user (UUID)                             |
 | `name`      | string | Full name of the user                             |
 | `email`     | string | Email of the user                                 |
-| `password`  | string | Password of the user                              |
+| `password`  | string | Hash (SHA-256) of the password of the user        |
 | `createdAt` | number | Timestamp of when the user was created (in epoch) |
 | `updatedAt` | number | Timestamp of when the user was updated (in epoch) |
 
@@ -44,12 +44,14 @@ Successfully login the user with the given email and password. Returns the user.
 {
   "status": "OK",
   "data": {
-    "name": "Luna",
-    "email": "luna@tinynamoo.com",
-    "password": "P@ssw0rd",
-    "id": "d2d827db-4095-4a4a-a12d-5bcf2c77eeaa",
-    "createdAt": 1686230808254,
-    "updatedAt": 1686230808254
+    "_id": "3618ddc6-3c4c-48b3-9dfd-5242b0fbf897",
+    "name": "Jang Man Wol",
+    "email": "jmwl160493@kakaot.com",
+    "password": "b03ddf3ca2e714a6548e7495e2a03f5e824eaac9837cd7f159c67b90fb4b7342",
+    "cards": [],
+    "createdAt": 1689916468269,
+    "updatedAt": 1689916468269,
+    "__v": 0
   }
 }
 ```

@@ -36,7 +36,7 @@ Successfully add card to user.
 | `_id`              | string | ID of the user (UUID)                                      |
 | `name`             | string | Full name of the user                                      |
 | `email`            | string | Email of the user                                          |
-| `password`         | string | Password of the user                                       |
+| `password`         | string | Hash (SHA-256) of the password of the user                 |
 | `cards`            | array  | List of cards of the user                                  |
 | `cards.cardName`   | string | Name of the card of the user                               |
 | `cards.cardExpiry` | string | Expiry date of the card of the user (in YYYY-MM-DD format) |
@@ -49,22 +49,16 @@ Successfully add card to user.
 
 ```json
 {
-  "status": "OK",
+  "status": "Created",
   "data": {
-    "_id": "6d214666-d05a-44c2-ac44-98210c64ad85",
-    "name": "test",
-    "email": "test@test.com",
-    "password": "P@ssw0rd",
-    "createdAt": 1686473842460,
-    "updatedAt": 1686929223875,
-    "__v": 11,
-    "cards": [
-      {
-        "cardName": "My lovely OCBC",
-        "cardExpiry": "2027-05-01T00:00:00.000Z",
-        "card": "4d4c4b8f-1ad5-4eb5-9ad6-abef702d49f6"
-      }
-    ]
+    "_id": "3618ddc6-3c4c-48b3-9dfd-5242b0fbf897",
+    "name": "Jang Man Wol",
+    "email": "jmwl160493@kakaot.com",
+    "password": "b03ddf3ca2e714a6548e7495e2a03f5e824eaac9837cd7f159c67b90fb4b7342",
+    "cards": [],
+    "createdAt": 1689916468269,
+    "updatedAt": 1689916468269,
+    "__v": 0
   }
 }
 ```
