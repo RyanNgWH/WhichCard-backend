@@ -49,15 +49,17 @@ async function createTransaction(
   return createdTransaction;
 }
 
-// /**
-//  * Get a transaction by id
-//  * @param transactionId Id of transaction to get
-//  * @returns The transaction with the given id, or throws an error if transaction does not exist
-//  */
-// async function gettransactionById(transactionId: transaction['_id']) {
-//   const transaction = await transactionDatabase.gettransactionById(transactionId);
-//   return transaction;
-// }
+/**
+ * Get a transaction by id
+ * @param transactionId Id of transaction to get
+ * @returns The transaction with the given id, or throws an error if transaction does not exist
+ */
+async function getTransactionById(transactionId: Transaction['_id']) {
+  const transaction = await transactionDatabase.getTransactionById(
+    transactionId,
+  );
+  return transaction;
+}
 
 // /**
 //  * Update a transaction by id
@@ -84,20 +86,10 @@ async function createTransaction(
 //   await transactionDatabase.deletetransactionById(transactionId);
 // }
 
-// /**
-//  * Get all active transactions
-//  * @returns All active transactions
-//  */
-// async function getAllActivetransactions() {
-//   const transactions = await transactionDatabase.getAllActivetransactions();
-//   return transactions;
-// }
-
 export {
   getAlltransactions,
   createTransaction,
-  // gettransactionById,
+  getTransactionById,
   // updatetransactionById,
   // deletetransactionById,
-  // getAllActivetransactions,
 };

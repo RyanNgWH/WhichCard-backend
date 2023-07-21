@@ -12,6 +12,7 @@ import { Transaction } from '../shared/types';
 import TransactionModel from './models/transactionModels';
 import * as userDatabase from './userDatabase';
 import * as merchantDatabase from './merchantDatabase';
+import TransactionNotFoundError from '../shared/errors/database/transaction/transactionNotFoundError';
 
 /**
  * Return all transactions in database
@@ -74,33 +75,35 @@ async function createTransaction(newTransaction: Transaction) {
   }
 }
 
-// /**
-//  * Get a transaction by id
-//  * @param transactionId Id of transaction to get
-//  * @returns The transaction with the given id, or throws an error if transaction does not exist
-//  */
-// async function gettransactionById(transactionId: transaction['_id']) {
-//   try {
-//     // Find transaction with matching id from database
-//     const transaction = await transactionModel.findById(transactionId);
+/**
+ * Get a transaction by id
+ * @param transactionId Id of transaction to get
+ * @returns The transaction with the given id, or throws an error if transaction does not exist
+ */
+async function getTransactionById(transactionId: Transaction['_id']) {
+  try {
+    // Find transaction with matching id from database
+    const transaction = await TransactionModel.findById(transactionId)
+      .populate('user')
+      .populate('merchant');
 
-//     // Check if transaction exists
-//     if (!transaction) {
-//       throw new transactionNotFoundError(
-//         `transaction with id '${transactionId}' not found.`,
-//       );
-//     }
+    // Check if transaction exists
+    if (!transaction) {
+      throw new TransactionNotFoundError(
+        `Transaction with id '${transactionId}' not found.`,
+      );
+    }
 
-//     return transaction;
-//   } catch (error) {
-//     if (!(error instanceof ApplicationError)) {
-//       const appError = toApplicationError(error);
-//       throw new DatabaseError(appError.message, appError.code);
-//     } else {
-//       throw error;
-//     }
-//   }
-// }
+    return transaction;
+  } catch (error) {
+    if (!(error instanceof ApplicationError)) {
+      const appError = toApplicationError(error);
+      throw new DatabaseError(appError.message, appError.code);
+    } else {
+      throw error;
+    }
+  }
+}
 
 // /**
 //  * Update a transaction in database
@@ -213,7 +216,7 @@ async function createTransaction(newTransaction: Transaction) {
 export {
   getAlltransactions,
   createTransaction,
-  // gettransactionById,
+  getTransactionById,
   // updatetransactionById,
   // deletetransactionById,
 };

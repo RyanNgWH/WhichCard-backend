@@ -16,6 +16,7 @@ import {
   cashbackCategorySchema,
   dateTimeSchema,
   merchantIdSchema,
+  transactionIdSchema,
   userIdSchema,
 } from '../shared/schemas/transactionSchemas';
 
@@ -39,7 +40,7 @@ async function getAlltransactions(req: Request, res: Response) {
 /**
  * Create a new transaction
  * @param req POST request for new transaction
- * @param res Status code 201 and created transaction or 422 if transaction already exists
+ * @param res Status code 201 and created transaction, 404 if user/merchant/user card not found or 422 if transaction already exists
  */
 async function createTransaction(req: Request, res: Response) {
   // Check if validation errors exist
@@ -77,33 +78,35 @@ async function createTransaction(req: Request, res: Response) {
   }
 }
 
-// /**
-//  * Get a transaction by id
-//  * @param req GET request for transaction by id
-//  * @param res Status code 200 and transaction with given id or 404 if transaction does not exist
-//  */
-// async function gettransactionById(req: Request, res: Response) {
-//   // Check if validation errors exist
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//     res.status(400).send({ status: 'Bad Request', errors: errors.array() });
-//     return;
-//   }
+/**
+ * Get a transaction by id
+ * @param req GET request for transaction by id
+ * @param res Status code 200 and transaction with given id or 404 if transaction does not exist
+ */
+async function getTransactionById(req: Request, res: Response) {
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
+    return;
+  }
 
-//   // Extract transactionId from request parameters
-//   const { transactionId } = req.params;
+  // Extract transactionId from request parameters
+  const { transactionId } = req.params;
 
-//   try {
-//     // Pass transactionId to service to get transaction from database
-//     const transaction = await transactionService.gettransactionById(transactionId);
-//     res.send({ status: 'OK', data: transaction });
-//   } catch (error) {
-//     const appError = toApplicationError(error);
-//     res
-//       .status(appError.code)
-//       .send({ status: appError.status, data: { error: appError.message } });
-//   }
-// }
+  try {
+    // Pass transactionId to service to get transaction from database
+    const transaction = await transactionService.getTransactionById(
+      transactionId,
+    );
+    res.send({ status: 'OK', data: transaction });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
+  }
+}
 
 // /**
 //  * Update a transaction by id
@@ -165,23 +168,6 @@ async function createTransaction(req: Request, res: Response) {
 //   }
 // }
 
-// /**
-//  * Get all active transactions
-//  * @param req GET request for all active transactions
-//  * @param res Status code 200 and all active transactions in database
-//  */
-// async function getAllActivetransactions(req: Request, res: Response) {
-//   try {
-//     const allActivetransactions = await transactionService.getAllActivetransactions();
-//     res.send({ status: 'OK', data: allActivetransactions });
-//   } catch (error) {
-//     const appError = toApplicationError(error);
-//     res
-//       .status(appError.code)
-//       .send({ status: appError.status, data: { error: appError.message } });
-//   }
-// }
-
 /**
  * Validate request body
  * @param method Method to validate
@@ -205,12 +191,12 @@ function validate(method: String) {
           },
         ]),
       );
-    // case 'gettransactionById':
-    //   return checkSchema(
-    //     createSchema([
-    //       { fieldSchema: transactionIdSchema, optional: false, in: ['params'] },
-    //     ]),
-    //   );
+    case 'getTransactionById':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: transactionIdSchema, optional: false, in: ['params'] },
+        ]),
+      );
     // case 'updatetransactionById':
     //   return checkSchema(
     //     createSchema([
@@ -238,8 +224,7 @@ export {
   getAlltransactions,
   validate,
   createTransaction,
-  // gettransactionById,
+  getTransactionById,
   // updatetransactionById,
   // deletetransactionById,
-  // getAllActivetransactions,
 };

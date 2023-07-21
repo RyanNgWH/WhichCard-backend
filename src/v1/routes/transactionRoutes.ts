@@ -36,34 +36,21 @@ router
     },
   );
 
-// // Methods for active transactions
-// router
-//   .route('/active')
-//   /**
-//    * Get all active transactions
-//    * GET /api/v1/transactions/active
-//    * @param req GET request for all active transactions
-//    * @param res Response to send back
-//    */
-//   .get((req: Request, res: Response) => {
-//     transactionController.getAllActivetransactions(req, res);
-//   });
-
-// // Methods for specific transaction
-// router
-//   .route('/:transactionId')
-//   /**
-//    * Get a transaction by id
-//    * GET /api/v1/transactions/:transactionId
-//    * @param req GET request for transaction by id
-//    * @param res Response to send back
-//    */
-//   .get(
-//     transactionController.validate('gettransactionById'),
-//     (req: Request, res: Response) => {
-//       transactionController.gettransactionById(req, res);
-//     },
-//   )
+// Methods for specific transaction
+router
+  .route('/:transactionId')
+  /**
+   * Get a transaction by id
+   * GET /api/v1/transactions/:transactionId
+   * @param req GET request for transaction by id
+   * @param res Response to send back
+   */
+  .get(
+    transactionController.validate('getTransactionById'),
+    (req: Request, res: Response) => {
+      transactionController.getTransactionById(req, res);
+    },
+  );
 //   /**
 //    * Update a transaction by id
 //    * PATCH /api/v1/transactions/:transactionId

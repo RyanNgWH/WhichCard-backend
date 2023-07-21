@@ -98,6 +98,18 @@ const cashbackCategorySchema: FieldSchema = {
   },
 };
 
+const transactionIdSchema: FieldSchema = {
+  name: 'transactionId',
+  options: {
+    notEmpty: {
+      errorMessage: 'Transaction ID is required',
+    },
+    isUUID: {
+      errorMessage: 'Transaction ID must be a UUID',
+    },
+  },
+};
+
 export {
   userIdSchema,
   merchantIdSchema,
@@ -106,4 +118,5 @@ export {
   cashbackAmountSchema,
   cashbackCategorySchema,
   cardNameSchema,
+  transactionIdSchema,
 };
