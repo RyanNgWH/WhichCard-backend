@@ -22,19 +22,19 @@ router
    */
   .get((req: Request, res: Response) => {
     transactionController.getAlltransactions(req, res);
-  });
-//   /**
-//    * Create a new transaction
-//    * POST /api/v1/transactions
-//    * @param req POST request for new transaction
-//    * @param res Response to send back
-//    */
-//   .post(
-//     transactionController.validate('createtransaction'),
-//     (req: Request, res: Response) => {
-//       transactionController.createtransaction(req, res);
-//     },
-//   );
+  })
+  /**
+   * Create a new transaction
+   * POST /api/v1/transactions
+   * @param req POST request for a new transaction
+   * @param res Response to send back
+   */
+  .post(
+    transactionController.validate('createTransaction'),
+    (req: Request, res: Response) => {
+      transactionController.createTransaction(req, res);
+    },
+  );
 
 // // Methods for active transactions
 // router

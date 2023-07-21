@@ -5,8 +5,19 @@
  */
 
 import { Request, Response } from 'express';
+import { checkSchema, matchedData, validationResult } from 'express-validator';
 import * as transactionService from '../services/transactionService';
 import toApplicationError from '../shared/errors/errorHelpers';
+import { createSchema } from '../shared/schemas/schemas';
+import {
+  amountSchema,
+  cardNameSchema,
+  cashbackAmountSchema,
+  cashbackCategorySchema,
+  dateTimeSchema,
+  merchantIdSchema,
+  userIdSchema,
+} from '../shared/schemas/transactionSchemas';
 
 /**
  * Get all transactions
@@ -25,43 +36,46 @@ async function getAlltransactions(req: Request, res: Response) {
   }
 }
 
-// /**
-//  * Create a new transaction
-//  * @param req POST request for new transaction
-//  * @param res Status code 201 and created transaction or 422 if transaction already exists
-//  */
-// async function createtransaction(req: Request, res: Response) {
-//   // Check if validation errors exist
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//     res.status(400).send({ status: 'Bad Request', errors: errors.array() });
-//     return;
-//   }
+/**
+ * Create a new transaction
+ * @param req POST request for new transaction
+ * @param res Status code 201 and created transaction or 422 if transaction already exists
+ */
+async function createTransaction(req: Request, res: Response) {
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
+    return;
+  }
 
-//   // Extract body from verified request
-//   const body = matchedData(req, { locations: ['body'] });
+  // Extract body from verified request
+  const body = matchedData(req, { locations: ['body'] });
 
-//   // Create new transaction
-//   const newtransaction = {
-//     name: body.name,
-//     prettyName: body.prettyName,
-//     address: body.address,
-//     mcc: body.mcc,
-//     longitude: body.longitude,
-//     latitude: body.latitude,
-//   };
+  // Create new transaction
+  const newTransaction = {
+    user: body.user,
+    userCard: body.userCard,
+    merchant: body.merchant,
+    dateTime: body.dateTime,
+    amount: body.amount,
+    cashbackAmount: body.cashbackAmount,
+    cashbackCategory: body.cashbackCategory,
+  };
 
-//   try {
-//     // Pass new transaction to service to save transaction to database
-//     const createdtransaction = await transactionService.createtransaction(newtransaction);
-//     res.status(201).send({ status: 'Created', data: createdtransaction });
-//   } catch (error) {
-//     const appError = toApplicationError(error);
-//     res
-//       .status(appError.code)
-//       .send({ status: appError.status, data: { error: appError.message } });
-//   }
-// }
+  try {
+    // Pass new transaction to service to save transaction to database
+    const createdTransaction = await transactionService.createTransaction(
+      newTransaction,
+    );
+    res.status(201).send({ status: 'Created', data: createdTransaction });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
+  }
+}
 
 // /**
 //  * Get a transaction by id
@@ -175,17 +189,22 @@ async function getAlltransactions(req: Request, res: Response) {
  */
 function validate(method: String) {
   switch (method) {
-    // case 'createtransaction':
-    //   return checkSchema(
-    //     createSchema([
-    //       { fieldSchema: nameSchema, optional: false, in: ['body'] },
-    //       { fieldSchema: prettyNameSchema, optional: false, in: ['body'] },
-    //       { fieldSchema: addressSchema, optional: false, in: ['body'] },
-    //       { fieldSchema: mccSchema, optional: false, in: ['body'] },
-    //       { fieldSchema: longitudeSchema, optional: false, in: ['body'] },
-    //       { fieldSchema: latitudeSchema, optional: false, in: ['body'] },
-    //     ]),
-    //   );
+    case 'createTransaction':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: userIdSchema, optional: false, in: ['body'] },
+          { fieldSchema: cardNameSchema, optional: false, in: ['body'] },
+          { fieldSchema: merchantIdSchema, optional: false, in: ['body'] },
+          { fieldSchema: dateTimeSchema, optional: false, in: ['body'] },
+          { fieldSchema: amountSchema, optional: false, in: ['body'] },
+          { fieldSchema: cashbackAmountSchema, optional: false, in: ['body'] },
+          {
+            fieldSchema: cashbackCategorySchema,
+            optional: false,
+            in: ['body'],
+          },
+        ]),
+      );
     // case 'gettransactionById':
     //   return checkSchema(
     //     createSchema([
@@ -218,7 +237,7 @@ function validate(method: String) {
 export {
   getAlltransactions,
   validate,
-  // createtransaction,
+  createTransaction,
   // gettransactionById,
   // updatetransactionById,
   // deletetransactionById,

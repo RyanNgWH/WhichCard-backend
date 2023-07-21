@@ -6,8 +6,12 @@
 
 import ApplicationError from '../shared/errors/application/applicationError';
 import DatabaseError from '../shared/errors/database/databaseError';
+import TransactionExistsError from '../shared/errors/database/transaction/transactionExistsError';
 import toApplicationError from '../shared/errors/errorHelpers';
+import { Transaction } from '../shared/types';
 import TransactionModel from './models/transactionModels';
+import * as userDatabase from './userDatabase';
+import * as merchantDatabase from './merchantDatabase';
 
 /**
  * Return all transactions in database
@@ -27,46 +31,46 @@ async function getAlltransactions() {
   }
 }
 
-// /**
-//  * Create a new transaction and save to database
-//  * @param newtransaction transaction to create
-//  * @returns The created transaction, or throws an error if transaction already exists
-//  */
-// async function createtransaction(newtransaction: transaction) {
-//   try {
-//     // Check if transaction already exists in database (using name + lat + long as unique identifier)
-//     const transaction = await transactionModel.findOne({
-//       name: newtransaction.name,
-//       latitude: newtransaction.latitude,
-//       longitude: newtransaction.longitude,
-//     });
+/**
+ * Create a new transaction and save to database
+ * @param newTransaction transaction to create
+ * @returns The created transaction, or throws an error if transaction already exists
+ */
+async function createTransaction(newTransaction: Transaction) {
+  try {
+    // Check if transaction already exists in database (using user + merchant + dateTime + amount as unique identifier)
+    if (
+      await TransactionModel.exists({
+        user: newTransaction.user,
+        merchant: newTransaction.merchant,
+        dateTime: newTransaction.dateTime,
+        amount: newTransaction.amount,
+      })
+    ) {
+      throw new TransactionExistsError(
+        `Transaction with user '${newTransaction.user}', merchant '${newTransaction.merchant}', dateTime' ${newTransaction.dateTime}' & amount '${newTransaction.amount}' already exists.`,
+      );
+    }
 
-//     // Check status of transaction
-//     if (transaction && transaction.status === 'active') {
-//       throw new transactionExistsError(
-//         `transaction with name '${newtransaction.name}' & latitude,longitude of '${newtransaction.latitude}/${newtransaction.longitude}' already exists.`,
-//       );
-//     } else if (transaction && transaction.status === 'inactive') {
-//       // If transaction exists but is inactive, update transaction to active
-//       transaction.status = 'active';
-//       transaction.updatedAt = new Date().getTime();
+    // Check if user, userCard & merchant exists in database
+    await userDatabase.getUserById(newTransaction.user);
+    await userDatabase.getUserCardByName(
+      newTransaction.user,
+      newTransaction.userCard,
+    );
+    await merchantDatabase.getMerchantById(newTransaction.merchant);
 
-//       // Save updated transaction to database
-//       const updatedtransaction = await transaction.save();
-//       return updatedtransaction;
-//     }
-
-//     const createdtransaction = await transactionModel.create(newtransaction);
-//     return createdtransaction;
-//   } catch (error) {
-//     if (!(error instanceof ApplicationError)) {
-//       const appError = toApplicationError(error);
-//       throw new DatabaseError(appError.message, appError.code);
-//     } else {
-//       throw error;
-//     }
-//   }
-// }
+    const createdTransaction = await TransactionModel.create(newTransaction);
+    return createdTransaction;
+  } catch (error) {
+    if (!(error instanceof ApplicationError)) {
+      const appError = toApplicationError(error);
+      throw new DatabaseError(appError.message, appError.code);
+    } else {
+      throw error;
+    }
+  }
+}
 
 // /**
 //  * Get a transaction by id
@@ -206,7 +210,7 @@ async function getAlltransactions() {
 
 export {
   getAlltransactions,
-  // createtransaction,
+  createTransaction,
   // gettransactionById,
   // updatetransactionById,
   // deletetransactionById,

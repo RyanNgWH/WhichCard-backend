@@ -6,6 +6,7 @@
 
 import { v4 as uuidv4 } from 'uuid';
 import * as transactionDatabase from '../database/transactionDatabase';
+import { Transaction } from '../shared/types';
 
 /**
  * Get all transactions
@@ -16,30 +17,37 @@ async function getAlltransactions() {
   return transactions;
 }
 
-// /**
-//  * Create a new transaction
-//  * @param newtransaction transaction to create
-//  * @returns The created transaction, or throws an error if transaction already exists
-//  */
-// async function createtransaction(
-//   newtransaction: Pick<
-//     transaction,
-//     'name' | 'prettyName' | 'address' | 'mcc' | 'longitude' | 'latitude'
-//   >,
-// ) {
-//   // Create new transaction object with id and timestamps
-//   const transactionToAdd = {
-//     ...newtransaction,
-//     _id: uuidv4(),
-//     createdAt: new Date().getTime(),
-//     updatedAt: new Date().getTime(),
-//     status: 'active',
-//   } as const;
+/**
+ * Create a new transaction
+ * @param newTransaction transaction to create
+ * @returns The created transaction, or throws an error if transaction already exists
+ */
+async function createTransaction(
+  newTransaction: Pick<
+    Transaction,
+    | 'user'
+    | 'userCard'
+    | 'merchant'
+    | 'dateTime'
+    | 'amount'
+    | 'cashbackAmount'
+    | 'cashbackCategory'
+  >,
+) {
+  // Create new transaction object with id and timestamps
+  const transactionToAdd = {
+    ...newTransaction,
+    _id: uuidv4(),
+    createdAt: new Date().getTime(),
+    updatedAt: new Date().getTime(),
+  };
 
-//   // Pass new transaction to database to save transaction to database
-//   const createdtransaction = await transactionDatabase.createtransaction(transactionToAdd);
-//   return createdtransaction;
-// }
+  // Pass new transaction to database to save transaction to database
+  const createdTransaction = await transactionDatabase.createTransaction(
+    transactionToAdd,
+  );
+  return createdTransaction;
+}
 
 // /**
 //  * Get a transaction by id
@@ -87,7 +95,7 @@ async function getAlltransactions() {
 
 export {
   getAlltransactions,
-  // createtransaction,
+  createTransaction,
   // gettransactionById,
   // updatetransactionById,
   // deletetransactionById,
