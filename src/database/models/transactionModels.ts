@@ -28,14 +28,14 @@ const TransactionModel = model(
       required: [true, 'Merchant is required'],
     },
     dateTime: {
-      type: Number,
+      type: Date,
       required: [true, 'DateTime is required'],
     },
     amount: {
       type: Number,
       required: [true, 'Transaction amount is required'],
     },
-    cashBackAmount: {
+    cashbackAmount: {
       type: Number,
       required: [true, 'Transaction cashback amount is required'],
     },
