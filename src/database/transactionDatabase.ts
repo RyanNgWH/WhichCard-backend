@@ -19,7 +19,9 @@ import * as merchantDatabase from './merchantDatabase';
  */
 async function getAlltransactions() {
   try {
-    const transactions = await TransactionModel.find();
+    const transactions = await TransactionModel.find()
+      .populate('user')
+      .populate('merchant');
     return transactions;
   } catch (error) {
     if (!(error instanceof ApplicationError)) {
