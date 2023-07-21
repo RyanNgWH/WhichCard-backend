@@ -20,13 +20,13 @@ Create a new card in the database.
 | ----------------------- | --------------- | ------------------------------------------------- | -------- |
 | `type`                  | string          | Card type (e.g. "365 credit", "frank credit")     | ✅       |
 | `issuer`                | string          | Issuer of the card (e.g. "ocbc", "dbs")           | ✅       |
-| `benefits`              | list of objects | List of benefits of the card                      |
-| `benefits.category`     | string          | Category of the benefit (e.g. "dining", "travel") |
-| `benefits.mccs`         | list of numbers | List of MCCs of the benefit                       |
-| `benefits.cashbackRate` | number          | Rate of the cashback in percentages (e.g. 1.5)    |
-| `exclusions`            | list of numbers | List of exclusions (MCCs) of the card             |
-| `cashbackLimit`         | number          | Limit of the cashback in dollars (e.g. 100)       |
-| `minimumSpend`          | number          | Minimum spend in dollars (e.g. 500)               |
+| `benefits`              | list of objects | List of benefits of the card                      |          |
+| `benefits.category`     | string          | Category of the benefit (e.g. "dining", "travel") |          |
+| `benefits.mccs`         | list of numbers | List of MCCs of the benefit                       |          |
+| `benefits.cashbackRate` | number          | Rate of the cashback in percentages (e.g. 1.5)    |          |
+| `exclusions`            | list of numbers | List of exclusions (MCCs) of the card             |          |
+| `cashbackLimit`         | number          | Limit of the cashback in dollars (e.g. 100)       |          |
+| `minimumSpend`          | number          | Minimum spend in dollars (e.g. 500)               |          |
 
 ## Responses
 
