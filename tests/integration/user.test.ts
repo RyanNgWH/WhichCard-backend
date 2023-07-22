@@ -31,4 +31,72 @@ describe('User management API endpoints', () => {
       );
     });
   });
+
+  // Test get user by id endpoint
+  describe('Get user by id', () => {
+    // Test successful get user by id request
+    it('should return a specific user', async () => {
+      const response = await request.get(
+        '/api/v1/users/3618ddc6-3c4c-48b3-9dfd-5242b0fbf897',
+      );
+      expect(response.status).toBe(200);
+      expect(response.body.data._id).toBe(
+        '3618ddc6-3c4c-48b3-9dfd-5242b0fbf897',
+      );
+      expect(response.body.data.name).toBe('Jang Man Wol');
+      expect(response.body.data.email).toBe('jmwl160493@kakaot.com');
+    });
+
+    // Test get user by id request with bad request
+    it('should return an error message for bad request', async () => {
+      const response = await request.get('/api/v1/users/123');
+      expect(response.status).toBe(400);
+      expect(response.body.errors[0].msg).toBe('userId must be a UUID');
+    });
+
+    // Test get user by id request with non-existent user
+    it('should return an error message for non-existent user', async () => {
+      const response = await request.get(
+        '/api/v1/users/3618ddc6-3c4c-48b3-9dfd-5242b0fbf898',
+      );
+      expect(response.status).toBe(404);
+      expect(response.body.data.error).toBe(
+        "User with id '3618ddc6-3c4c-48b3-9dfd-5242b0fbf898' not found.",
+      );
+    });
+  });
+
+  // Test get user by id endpoint
+  describe('Get user by id', () => {
+    // Test successful get user by id request
+    it('should return a specific user', async () => {
+      const response = await request.get(
+        '/api/v1/users/3618ddc6-3c4c-48b3-9dfd-5242b0fbf897',
+      );
+      expect(response.status).toBe(200);
+      expect(response.body.data._id).toBe(
+        '3618ddc6-3c4c-48b3-9dfd-5242b0fbf897',
+      );
+      expect(response.body.data.name).toBe('Jang Man Wol');
+      expect(response.body.data.email).toBe('jmwl160493@kakaot.com');
+    });
+
+    // Test get user by id request with bad request
+    it('should return an error message for bad request', async () => {
+      const response = await request.get('/api/v1/users/123');
+      expect(response.status).toBe(400);
+      expect(response.body.errors[0].msg).toBe('userId must be a UUID');
+    });
+
+    // Test get user by id request with non-existent user
+    it('should return an error message for non-existent user', async () => {
+      const response = await request.get(
+        '/api/v1/users/3618ddc6-3c4c-48b3-9dfd-5242b0fbf898',
+      );
+      expect(response.status).toBe(404);
+      expect(response.body.data.error).toBe(
+        "User with id '3618ddc6-3c4c-48b3-9dfd-5242b0fbf898' not found.",
+      );
+    });
+  });
 });
