@@ -281,6 +281,7 @@ describe('User wallet (Cards) management API endpoints', () => {
       );
     });
 
+    // TODO: Fix this test
     // // Test with non-existent user
     // it('should return an error message for non-existent user', async () => {
     //   const response = await request.delete(

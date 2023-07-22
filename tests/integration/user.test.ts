@@ -155,6 +155,7 @@ describe('User management API endpoints', () => {
       );
     });
 
+    // TODO: Fix this test
     // Test with duplicate user
     // it('should return an error message for duplicate user', async () => {
     //   const response = await request.post('/api/v1/users').send({
