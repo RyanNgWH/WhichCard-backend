@@ -8,7 +8,11 @@ import mongoose from 'mongoose';
 import DatabaseConnectionFailedError from '../shared/errors/database/databaseConnectionFailedError';
 
 function connectToDatabase() {
-  const MONGO_URL = process.env.MONGO_URL || '';
+  // Set database connection path based on environment
+  const MONGO_URL =
+    process.env.NODE_ENV === 'test'
+      ? process.env.MONGO_URL_TEST || ''
+      : process.env.MONGO_URL || '';
 
   mongoose.connect(MONGO_URL);
   const database = mongoose.connection;

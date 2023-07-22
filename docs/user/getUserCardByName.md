@@ -165,24 +165,3 @@ Request body valid. However, the user or card is unable to be found in the datab
   }
 }
 ```
-
-### 422 Unprocessable Entity - Unable to update user's card
-
-Request body valid. However, the user's card is unable to be updated in the database. This is likely due to a duplicate card name or an invalid combination of type and issuer.
-
-#### Schema
-
-| Field   | Type   | Description                           |
-| ------- | ------ | ------------------------------------- |
-| `error` | string | Message describing error that occured |
-
-#### Example
-
-```json
-{
-  "status": "Unprocessable Entity",
-  "data": {
-    "error": "Card with type 'everyday card' and issuer 'dbs' not found."
-  }
-}
-```

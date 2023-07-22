@@ -38,7 +38,7 @@ const Electricity = [4900];
  * @returns The category of the transaction.
  */
 async function getCategory(mcc: number) {
-  if (Dining) {
+  if (Dining.includes(mcc)) {
     return 'dining';
   }
 
