@@ -4,7 +4,7 @@
  * @format
  */
 
-const merchants = [
+module.exports = [
   {
     _id: 'e7a87fc0-54c8-42f1-b6ae-3dba30e9cbab',
     name: 'popular',
@@ -46,5 +46,3 @@ const merchants = [
     __v: 0,
   },
 ];
-
-export default merchants;

@@ -4,7 +4,7 @@
  * @format
  */
 
-const cards = [
+module.exports = [
   {
     _id: 'dba21fa7-ec07-47d0-9e14-66afe3157829',
     type: '365 credit',
@@ -63,5 +63,3 @@ const cards = [
     __v: 0,
   },
 ];
-
-export default cards;

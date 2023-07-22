@@ -4,7 +4,7 @@
  * @format
  */
 
-const users = [
+module.exports = [
   {
     _id: '3618ddc6-3c4c-48b3-9dfd-5242b0fbf897',
     name: 'Jang Man Wol',
@@ -45,5 +45,3 @@ const users = [
     __v: 0,
   },
 ];
-
-export default users;
