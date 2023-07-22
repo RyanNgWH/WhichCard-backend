@@ -12,25 +12,32 @@ import v1MerchantRouter from './src/v1/routes/merchantRoutes';
 import v1TransactionRouter from './src/v1/routes/transactionRoutes';
 import connectToDatabase from './src/database/connection';
 
-// Initialize express app and api port
-const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Connect to database
-connectToDatabase();
+function application() {
+  // Initialize express app
+  const app = express();
 
-// Load JSON body parser middleware
-app.use(bodyParser.json());
+  // Connect to database
+  connectToDatabase();
 
-// User management routes
-app.use('/api/v1/users', v1UserRouter);
-// Card management routes
-app.use('/api/v1/cards', v1CardRouter);
-// Merchant management routes
-app.use('/api/v1/merchants', v1MerchantRouter);
-// Transaction management routes
-app.use('/api/v1/transactions', v1TransactionRouter);
+  // Load JSON body parser middleware
+  app.use(bodyParser.json());
 
-app.listen(PORT, () => {
+  // User management routes
+  app.use('/api/v1/users', v1UserRouter);
+  // Card management routes
+  app.use('/api/v1/cards', v1CardRouter);
+  // Merchant management routes
+  app.use('/api/v1/merchants', v1MerchantRouter);
+  // Transaction management routes
+  app.use('/api/v1/transactions', v1TransactionRouter);
+
+  return app;
+}
+
+application().listen(PORT, () => {
   console.log(`API is listening on port ${PORT}`);
 });
+
+export default application;
