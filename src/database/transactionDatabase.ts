@@ -57,13 +57,20 @@ async function createTransaction(newTransaction: Transaction) {
 
     // Check if user, userCard & merchant exists in database
     await userDatabase.getUserById(newTransaction.user);
-    await userDatabase.getUserCardByName(
-      newTransaction.user,
-      newTransaction.userCard,
-    );
+    const userCard = (
+      await userDatabase.getUserCardByName(
+        newTransaction.user,
+        newTransaction.userCard,
+      )
+    ).cardName as string;
     await merchantDatabase.getMerchantById(newTransaction.merchant);
 
-    const createdTransaction = await TransactionModel.create(newTransaction);
+    const transactionToAdd = {
+      ...newTransaction,
+      userCard,
+    };
+
+    const createdTransaction = await TransactionModel.create(transactionToAdd);
     return createdTransaction;
   } catch (error) {
     if (!(error instanceof ApplicationError)) {
@@ -195,10 +202,59 @@ async function deleteTransactionById(transactionId: Transaction['_id']) {
   }
 }
 
+/**
+ * Get total cashback earned by a user for a card in a given month and year
+ * @param userId Id of user to get transactions for
+ * @param cardName Name of card to get transactions for
+ * @param month Month to get transactions for
+ * @param year Year to get transactions for
+ * @returns All transactions for the user with the given card name in the given month and year, or throws an error if user or card does not exist
+ */
+async function getUserCardCashback(
+  userId: string,
+  cardName: string,
+  month: number,
+  year: number,
+) {
+  try {
+    // Check if user exists in database
+    await userDatabase.getUserById(userId);
+
+    // Check if card exists in database
+    await userDatabase.getUserCardByName(userId, cardName);
+
+    // Get all transactions for the user with the given card name in the given month and year
+    const transactions = await TransactionModel.find({
+      user: userId,
+      userCard: cardName,
+      dateTime: {
+        $gte: new Date(year, month),
+        $lt: new Date(year, month + 1),
+      },
+    });
+
+    // Calculate total cashback earned by the user for the card in the given month and year
+    let totalCashback = 0;
+    transactions.forEach(transaction => {
+      totalCashback += transaction.cashbackAmount as number;
+    });
+
+    return totalCashback;
+  } catch (error) {
+    if (!(error instanceof ApplicationError)) {
+      const appError = toApplicationError(error);
+      throw new DatabaseError(appError.message, appError.code);
+    } else {
+      throw error;
+    }
+  }
+}
+
 export {
   getAlltransactions,
   createTransaction,
   getTransactionById,
   updateTransactionById,
   deleteTransactionById,
+  getUserCardCashback,
 };

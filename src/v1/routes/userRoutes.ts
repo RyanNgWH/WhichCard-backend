@@ -76,6 +76,22 @@ router
     },
   );
 
+// Methods for card recommendations
+router
+  .route('/:userId/recommend')
+  /**
+   * Recommend a Card for a transaction
+   * POST /api/v1/users/:userId/recommend
+   * @param req POST request for recommending a card for a transaction
+   * @param res Response to send back
+   */
+  .post(
+    userController.validate('recommendCard'),
+    (req: Request, res: Response) => {
+      userController.recommendCard(req, res);
+    },
+  );
+
 // Methods for user cards
 router
   .route('/:userId/cards')

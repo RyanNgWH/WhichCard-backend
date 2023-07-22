@@ -10,9 +10,9 @@ Delete a user from the database with the given id.
 
 ## Query Parameters
 
-| Field    | Type | Description              | Required |
-| -------- | ---- | ------------------------ | -------- |
-| `userId` | uuid | id of user to be updated | ✅       |
+| Field    | Type   | Description           | Required |
+| -------- | ------ | --------------------- | -------- |
+| `userId` | string | ID of the user (UUID) | ✅       |
 
 ## Request Body
 

@@ -23,6 +23,10 @@ import {
 } from '../shared/schemas/userSchemas';
 import { createSchema } from '../shared/schemas/schemas';
 import { issuerSchema, typeSchema } from '../shared/schemas/cardSchemas';
+import {
+  amountSchema,
+  merchantIdSchema,
+} from '../shared/schemas/transactionSchemas';
 
 /**
  * Get all users
@@ -366,6 +370,43 @@ async function login(req: Request, res: Response) {
 }
 
 /**
+ * Recommend a card for a user's transaction
+ * @param req POST request for recommending a card for a user's transaction
+ * @param res Response to send back (200 with recommended card or 404)
+ */
+async function recommendCard(req: Request, res: Response) {
+  // Check if validation errors exist
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.status(400).send({ status: 'Bad Request', errors: errors.array() });
+    return;
+  }
+
+  // Extract userId and body from validated request
+  const { userId } = matchedData(req, { locations: ['params'] });
+  const body = matchedData(req, { locations: ['body'] });
+
+  const transaction = {
+    amount: body.amount,
+    merchant: body.merchant,
+  };
+
+  try {
+    // Pass userId and transaction details to service to get recommended card for a user
+    const recommendedCard = await userService.recommendCard(
+      userId,
+      transaction,
+    );
+    res.send({ status: 'OK', data: recommendedCard });
+  } catch (error) {
+    const appError = toApplicationError(error);
+    res
+      .status(appError.code)
+      .send({ status: appError.status, data: { error: appError.message } });
+  }
+}
+
+/**
  * Validate request body
  * @param method Method to validate
  * @returns Array of validation chains
@@ -457,6 +498,14 @@ function validate(method: String) {
           { fieldSchema: cardNameSchema, optional: false, in: ['params'] },
         ]),
       );
+    case 'recommendCard':
+      return checkSchema(
+        createSchema([
+          { fieldSchema: userIdSchema, optional: false, in: ['params'] },
+          { fieldSchema: merchantIdSchema, optional: false, in: ['body'] },
+          { fieldSchema: amountSchema, optional: false, in: ['body'] },
+        ]),
+      );
     default:
       return [];
   }
@@ -475,4 +524,5 @@ export {
   deleteUserCardByName,
   login,
   validate,
+  recommendCard,
 };
