@@ -44,4 +44,15 @@ module.exports = [
     updatedAt: 1689916672071,
     __v: 0,
   },
+  {
+    _id: '71833fdb-2b31-4d1c-8d00-1c39d8d78b32',
+    name: 'Aiyu',
+    email: 'aiyu@jelly.com',
+    password:
+      '4fd455c22af4635770a9fcc777f8bc1a49366c5f244da33de5d01dbede6fa5de',
+    cards: [],
+    createdAt: 1690046886376,
+    updatedAt: 1690046886376,
+    __v: 0,
+  },
 ];
