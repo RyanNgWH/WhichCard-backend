@@ -7,7 +7,7 @@
 import { agent } from 'supertest';
 import { Seeder } from 'mongo-seeding';
 import path from 'path';
-import app from '../index';
+import app from '../app';
 
 const req = agent(app());
 
