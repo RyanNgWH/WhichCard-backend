@@ -29,6 +29,10 @@ const MerchantModel = model(
       type: Number,
       required: [true, 'MCC is required'],
     },
+    category: {
+      type: String,
+      required: [true, 'Category is required'],
+    },
     longitude: {
       type: Number,
       required: [true, 'Longitude is required'],

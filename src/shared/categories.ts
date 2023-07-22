@@ -4,6 +4,8 @@
  * @format
  */
 
+import { Category } from "./types";
+
 const Dining = [5812, 5814, 5813, 5811, 5499];
 
 const Grocery = [5411, 5422, 5441, 5451, 5462, 5499];
@@ -37,7 +39,7 @@ const Electricity = [4900];
  * @param mcc The MCC of the transaction.
  * @returns The category of the transaction.
  */
-async function getCategory(mcc: number) {
+async function getCategory(mcc: number) : Promise<Category> {
   if (Dining.includes(mcc)) {
     return 'dining';
   }
