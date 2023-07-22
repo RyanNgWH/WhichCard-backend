@@ -17,6 +17,11 @@ module.exports = [
         cardExpiry: '2027-05-01T00:00:00.000Z',
         card: 'dba21fa7-ec07-47d0-9e14-66afe3157829',
       },
+      {
+        cardName: 'My second ocbc',
+        cardExpiry: '2027-06-01T00:00:00.000+00:00',
+        card: 'dba21fa7-ec07-47d0-9e14-66afe3157829',
+      },
     ],
     createdAt: 1689916468269,
     updatedAt: 1689916809294,

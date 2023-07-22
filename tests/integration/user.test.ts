@@ -19,7 +19,7 @@ describe('User management API endpoints', () => {
     it('should return an array of existing users', async () => {
       const response = await request.get('/api/v1/users');
       expect(response.status).toBe(200);
-      expect(response.body.data.length).toBe(3);
+      expect(response.body.data.length).toBe(4);
       expect(response.body.data[0]._id).toBe(
         '3618ddc6-3c4c-48b3-9dfd-5242b0fbf897',
       );
@@ -28,6 +28,9 @@ describe('User management API endpoints', () => {
       );
       expect(response.body.data[2]._id).toBe(
         'aea01230-7f6a-4e46-acc8-7643f1ea126e',
+      );
+      expect(response.body.data[3]._id).toBe(
+        '71833fdb-2b31-4d1c-8d00-1c39d8d78b32',
       );
     });
   });
@@ -183,6 +186,41 @@ describe('User management API endpoints', () => {
       );
       expect(response.status).toBe(400);
       expect(response.body.errors[0].msg).toBe('userId must be a UUID');
+    });
+  });
+
+  // Test login endpoint
+  describe('Login', () => {
+    // Test successful request
+    it('should return the user to login', async () => {
+      const response = await request.post('/api/v1/users/login').send({
+        email: 'jmwl160493@kakaot.com',
+        password: 'P@ssw0rd',
+      });
+      expect(response.status).toBe(200);
+      expect(response.body.data._id).toBe(
+        '3618ddc6-3c4c-48b3-9dfd-5242b0fbf897',
+      );
+    });
+
+    // Test invalid request
+    it('should return an error message for bad request', async () => {
+      const response = await request.post('/api/v1/users/login').send({
+        email: 'jmwl160493@',
+        password: 'P@ssw0rd',
+      });
+      expect(response.status).toBe(400);
+      expect(response.body.errors[0].msg).toBe('Email is invalid');
+    });
+
+    // Test invalid credentials
+    it('should return an error message for invalid credentials', async () => {
+      const response = await request.post('/api/v1/users/login').send({
+        email: 'jmwl160493@kakaot.com',
+        password: 'wrongPassword',
+      });
+      expect(response.status).toBe(401);
+      expect(response.body.data.error).toBe('Incorrect credentials.');
     });
   });
 });
