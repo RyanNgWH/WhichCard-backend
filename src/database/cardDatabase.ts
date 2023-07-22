@@ -69,7 +69,7 @@ async function getCardId(issuer: string, type: string) {
     const card = await CardModel.findOne({ type, issuer });
     if (!card) {
       throw new CardNotFoundError(
-        `Card with type '${type}' and issuer' ${issuer}' not found.`,
+        `Card with type '${type}' and issuer '${issuer}' not found.`,
       );
     }
 
