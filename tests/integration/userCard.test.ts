@@ -25,26 +25,26 @@ describe('User wallet (Cards) management API endpoints', () => {
       expect(response.body.data[0].cardName).toBe('My lovely ocbc');
       expect(response.body.data[1].cardName).toBe('My second ocbc');
     });
-  });
 
-  // Test bad request
-  it('should return an error message for bad request', async () => {
-    const response = await request.get(
-      '/api/v1/users/3618ddc6-3c4c-48b3-9dfd-5242b0fbf89s/cards',
-    );
-    expect(response.status).toBe(400);
-    expect(response.body.errors[0].msg).toBe('userId must be a UUID');
-  });
+    // Test bad request
+    it('should return an error message for bad request', async () => {
+      const response = await request.get(
+        '/api/v1/users/3618ddc6-3c4c-48b3-9dfd-5242b0fbf89s/cards',
+      );
+      expect(response.status).toBe(400);
+      expect(response.body.errors[0].msg).toBe('userId must be a UUID');
+    });
 
-  // Test with non-existent user
-  it('should return an error message for non-existent user', async () => {
-    const response = await request.get(
-      '/api/v1/users/3618ddc6-3c4c-48b3-9dfd-5242b0fbf898/cards',
-    );
-    expect(response.status).toBe(404);
-    expect(response.body.data.error).toBe(
-      "User with id '3618ddc6-3c4c-48b3-9dfd-5242b0fbf898' not found.",
-    );
+    // Test with non-existent user
+    it('should return an error message for non-existent user', async () => {
+      const response = await request.get(
+        '/api/v1/users/3618ddc6-3c4c-48b3-9dfd-5242b0fbf898/cards',
+      );
+      expect(response.status).toBe(404);
+      expect(response.body.data.error).toBe(
+        "User with id '3618ddc6-3c4c-48b3-9dfd-5242b0fbf898' not found.",
+      );
+    });
   });
 
   // Test add user card endpoint
@@ -66,73 +66,73 @@ describe('User wallet (Cards) management API endpoints', () => {
         'dba21fa7-ec07-47d0-9e14-66afe3157829',
       );
     });
-  });
 
-  // Test with bad request
-  it('should return an error message for bad request', async () => {
-    const response = await request
-      .post('/api/v1/users/a3cec349-8d87-411e-8430-f3e4e16c8054/cards')
-      .send({
-        cardName: 'Yay OCBC @',
-        cardExpiry: '2028-01-012',
-        issuer: 'OCBC',
-        type: '365 credit',
-      });
-    expect(response.status).toBe(400);
-    expect(response.body.errors[0].msg).toBe(
-      'Card name must be alphanumeric, spaces and dashes allowed',
-    );
-    expect(response.body.errors[1].msg).toBe(
-      'Card expiry must be a valid date in YYYY-MM-DD format',
-    );
-  });
+    // Test with bad request
+    it('should return an error message for bad request', async () => {
+      const response = await request
+        .post('/api/v1/users/a3cec349-8d87-411e-8430-f3e4e16c8054/cards')
+        .send({
+          cardName: 'Yay OCBC @',
+          cardExpiry: '2028-01-012',
+          issuer: 'OCBC',
+          type: '365 credit',
+        });
+      expect(response.status).toBe(400);
+      expect(response.body.errors[0].msg).toBe(
+        'Card name must be alphanumeric, spaces and dashes allowed',
+      );
+      expect(response.body.errors[1].msg).toBe(
+        'Card expiry must be a valid date in YYYY-MM-DD format',
+      );
+    });
 
-  // Test with non-existent user
-  it('should return an error message for non-existent user', async () => {
-    const response = await request
-      .post('/api/v1/users/a3cec349-8d87-411e-8430-f3e4e16c8055/cards')
-      .send({
-        cardName: 'Yay OCBC',
-        cardExpiry: '2028-01-01',
-        issuer: 'OCBC',
-        type: '365 credit',
-      });
-    expect(response.status).toBe(404);
-    expect(response.body.data.error).toBe(
-      "User with id 'a3cec349-8d87-411e-8430-f3e4e16c8055' not found.",
-    );
-  });
+    // Test with non-existent user
+    it('should return an error message for non-existent user', async () => {
+      const response = await request
+        .post('/api/v1/users/a3cec349-8d87-411e-8430-f3e4e16c8055/cards')
+        .send({
+          cardName: 'Yay OCBC',
+          cardExpiry: '2028-01-01',
+          issuer: 'OCBC',
+          type: '365 credit',
+        });
+      expect(response.status).toBe(404);
+      expect(response.body.data.error).toBe(
+        "User with id 'a3cec349-8d87-411e-8430-f3e4e16c8055' not found.",
+      );
+    });
 
-  // Test with duplicate card
-  it("should return an error message for duplicate card in user's wallet", async () => {
-    const response = await request
-      .post('/api/v1/users/3618ddc6-3c4c-48b3-9dfd-5242b0fbf897/cards')
-      .send({
-        cardName: 'My lovely ocbc',
-        cardExpiry: '2028-01-01',
-        issuer: 'OCBC',
-        type: '365 credit',
-      });
-    expect(response.status).toBe(422);
-    expect(response.body.data.error).toBe(
-      "Card with name 'My lovely ocbc' already exists in user's cards.",
-    );
-  });
+    // Test with duplicate card
+    it("should return an error message for duplicate card in user's wallet", async () => {
+      const response = await request
+        .post('/api/v1/users/3618ddc6-3c4c-48b3-9dfd-5242b0fbf897/cards')
+        .send({
+          cardName: 'My lovely ocbc',
+          cardExpiry: '2028-01-01',
+          issuer: 'OCBC',
+          type: '365 credit',
+        });
+      expect(response.status).toBe(422);
+      expect(response.body.data.error).toBe(
+        "Card with name 'My lovely ocbc' already exists in user's cards.",
+      );
+    });
 
-  // Test with invalid issuer and type combination
-  it('should return an error message for invalid issuer and type combination', async () => {
-    const response = await request
-      .post('/api/v1/users/a3cec349-8d87-411e-8430-f3e4e16c8054/cards')
-      .send({
-        cardName: 'Yay OCBC',
-        cardExpiry: '2028-01-01',
-        issuer: 'DBS',
-        type: '365 credit',
-      });
-    expect(response.status).toBe(422);
-    expect(response.body.data.error).toBe(
-      "Card with type '365 credit' and issuer 'dbs' not found.",
-    );
+    // Test with invalid issuer and type combination
+    it('should return an error message for invalid issuer and type combination', async () => {
+      const response = await request
+        .post('/api/v1/users/a3cec349-8d87-411e-8430-f3e4e16c8054/cards')
+        .send({
+          cardName: 'Yay OCBC',
+          cardExpiry: '2028-01-01',
+          issuer: 'DBS',
+          type: '365 credit',
+        });
+      expect(response.status).toBe(422);
+      expect(response.body.data.error).toBe(
+        "Card with type '365 credit' and issuer 'dbs' not found.",
+      );
+    });
   });
 
   // Test get user card by name endpoint
@@ -147,40 +147,40 @@ describe('User wallet (Cards) management API endpoints', () => {
         'dba21fa7-ec07-47d0-9e14-66afe3157829',
       );
     });
-  });
 
-  // Test bad request
-  it('should return an error message for bad request', async () => {
-    const response = await request.get(
-      '/api/v1/users/3618ddc6-3c4c-48b3-9dfd-5242b0fbf89s/cards/My lovely ocbc @',
-    );
-    expect(response.status).toBe(400);
-    expect(response.body.errors[0].msg).toBe('userId must be a UUID');
-    expect(response.body.errors[1].msg).toBe(
-      'Card name must be alphanumeric, spaces and dashes allowed',
-    );
-  });
+    // Test bad request
+    it('should return an error message for bad request', async () => {
+      const response = await request.get(
+        '/api/v1/users/3618ddc6-3c4c-48b3-9dfd-5242b0fbf89s/cards/My lovely ocbc @',
+      );
+      expect(response.status).toBe(400);
+      expect(response.body.errors[0].msg).toBe('userId must be a UUID');
+      expect(response.body.errors[1].msg).toBe(
+        'Card name must be alphanumeric, spaces and dashes allowed',
+      );
+    });
 
-  // Test with non-existent user
-  it('should return an error message for non-existent user', async () => {
-    const response = await request.get(
-      '/api/v1/users/3618ddc6-3c4c-48b3-9dfd-5242b0fbf898/cards/My lovely ocbc',
-    );
-    expect(response.status).toBe(404);
-    expect(response.body.data.error).toBe(
-      "User with id '3618ddc6-3c4c-48b3-9dfd-5242b0fbf898' not found.",
-    );
-  });
+    // Test with non-existent user
+    it('should return an error message for non-existent user', async () => {
+      const response = await request.get(
+        '/api/v1/users/3618ddc6-3c4c-48b3-9dfd-5242b0fbf898/cards/My lovely ocbc',
+      );
+      expect(response.status).toBe(404);
+      expect(response.body.data.error).toBe(
+        "User with id '3618ddc6-3c4c-48b3-9dfd-5242b0fbf898' not found.",
+      );
+    });
 
-  // Test with non-existent user card
-  it('should return an error message for non-existent user', async () => {
-    const response = await request.get(
-      '/api/v1/users/3618ddc6-3c4c-48b3-9dfd-5242b0fbf897/cards/My sweet ocbc',
-    );
-    expect(response.status).toBe(404);
-    expect(response.body.data.error).toBe(
-      "User with id '3618ddc6-3c4c-48b3-9dfd-5242b0fbf897' has no card with name 'My sweet ocbc'.",
-    );
+    // Test with non-existent user card
+    it('should return an error message for non-existent user', async () => {
+      const response = await request.get(
+        '/api/v1/users/3618ddc6-3c4c-48b3-9dfd-5242b0fbf897/cards/My sweet ocbc',
+      );
+      expect(response.status).toBe(404);
+      expect(response.body.data.error).toBe(
+        "User with id '3618ddc6-3c4c-48b3-9dfd-5242b0fbf897' has no card with name 'My sweet ocbc'.",
+      );
+    });
   });
 
   // Test update user card by name endpoint
