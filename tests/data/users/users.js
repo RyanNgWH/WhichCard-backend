@@ -44,7 +44,13 @@ module.exports = [
     email: 'sanchez@pizzaalvolo.com',
     password:
       '84d615bdedbcec705efc5e5a90a07b914d0a36d0e56185df29022d8fda22dae6',
-    cards: [],
+    cards: [
+      {
+        cardName: 'Sanchez ocbc',
+        cardExpiry: '2027-12-01T00:00:00.000+00:00',
+        card: 'dba21fa7-ec07-47d0-9e14-66afe3157829',
+      },
+    ],
     createdAt: 1689916672071,
     updatedAt: 1689916672071,
     __v: 0,
