@@ -24,7 +24,7 @@ Create a new user in the database.
 
 ## Responses
 
-### 200 OK - Successfully creates the user
+### 201 OK - Successfully creates the user
 
 Successfully creates the user and returns the created user.
 
