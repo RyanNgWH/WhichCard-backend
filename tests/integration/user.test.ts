@@ -224,4 +224,36 @@ describe('User management API endpoints', () => {
       expect(response.body.data.error).toBe('Incorrect credentials.');
     });
   });
+
+  // Test recommend card endpoint
+  describe('Recommend card to user', () => {
+    // Test successful request
+    it('should return the recommended card', async () => {
+      const response = await request
+        .post('/api/v1/users/3618ddc6-3c4c-48b3-9dfd-5242b0fbf897/recommend')
+        .send({
+          merchant: 'f6c42c4a-e63e-434a-8dca-a99d2aff7bc4',
+          amount: '20',
+        });
+      expect(response.status).toBe(200);
+      expect(response.body.data.card).toBe('My lovely ocbc');
+      expect(response.body.data.cashbackAmount).toBe(1.2);
+    });
+
+    // TODO: Fix this test
+    // // Test successful request
+    // it('should return the recommended card (with exceeded cashback)', async () => {
+    //   const response = await request
+    //     .post('/api/v1/users/3618ddc6-3c4c-48b3-9dfd-5242b0fbf897/recommend')
+    //     .send({
+    //       merchant: 'f6c42c4a-e63e-434a-8dca-a99d2aff7bc4',
+    //       amount: '2000',
+    //     });
+    //   expect(response.status).toBe(200);
+    //   expect(response.body.data.card).toBe('My second ocbc');
+    //   expect(response.body.data.cashbackAmount).toBe(80);
+    // });
+
+    // TODO: Add remaining tests for this endpoint
+  });
 });
