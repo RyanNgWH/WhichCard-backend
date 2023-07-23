@@ -219,8 +219,9 @@ async function recommendCard(
         await cardDatabase.getCardById(userCards[i].card as string);
 
       // Check if mcc is in card exclusions
-      if ((mcc as number) in exclusions) {
+      if (exclusions.includes(mcc as number)) {
         cashbackAmounts[i] = 0;
+        cashbackRates[i] = 0;
         // eslint-disable-next-line no-continue
         continue;
       }
