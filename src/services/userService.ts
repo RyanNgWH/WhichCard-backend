@@ -228,6 +228,7 @@ async function recommendCard(
       // eslint-disable-next-line no-await-in-loop
       const category = await getCategory(mcc as number);
 
+      cashbackRates[i] = -1;
       for (let j = 0; j < benefits.length; j += 1) {
         if (
           benefits[j].mccs.includes(mcc as number) ||
@@ -236,6 +237,9 @@ async function recommendCard(
           cashbackRates[i] = benefits[j].cashbackRate as number;
           break;
         }
+      }
+      if (cashbackRates[i] === -1) {
+        cashbackRates[i] = 0;
       }
 
       let cashbackRate = cashbackRates[i];
@@ -247,11 +251,13 @@ async function recommendCard(
         new Date().getMonth(),
         new Date().getFullYear(),
       );
+
       if (accumulatedCashback + expectedCashback > (cashbackLimit as number)) {
         cashbackAmounts[i] = (cashbackLimit as number) - accumulatedCashback;
       } else {
         cashbackAmounts[i] = expectedCashback;
       }
+
       cashbackAmounts[i] = parseFloat(cashbackAmounts[i].toFixed(2));
     }
 
