@@ -56,14 +56,14 @@ async function createTransaction(newTransaction: Transaction) {
     }
 
     // Check if user, userCard & merchant exists in database
-    await userDatabase.getUserById(newTransaction.user);
+    const user = await userDatabase.getUserById(newTransaction.user);
     const userCard = (
       await userDatabase.getUserCardByName(
         newTransaction.user,
         newTransaction.userCard,
       )
     ).cardName as string;
-    await merchantDatabase.getMerchantById(newTransaction.merchant);
+    const merchant = await merchantDatabase.getMerchantById(newTransaction.merchant);
 
     const transactionToAdd = {
       ...newTransaction,
@@ -71,6 +71,9 @@ async function createTransaction(newTransaction: Transaction) {
     };
 
     const createdTransaction = await TransactionModel.create(transactionToAdd);
+    await createdTransaction.populate("user");
+    await createdTransaction.populate("merchant");
+
     return createdTransaction;
   } catch (error) {
     if (!(error instanceof ApplicationError)) {
