@@ -7,6 +7,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import * as merchantDatabase from '../database/merchantDatabase';
 import { Merchant } from '../shared/types';
+import getCategory from '../shared/categories';
 
 /**
  * Get all merchants
@@ -31,6 +32,7 @@ async function createMerchant(
   // Create new merchant object with id and timestamps
   const merchantToAdd = {
     ...newMerchant,
+    category: await getCategory(newMerchant.mcc),
     _id: uuidv4(),
     createdAt: new Date().getTime(),
     updatedAt: new Date().getTime(),
@@ -64,7 +66,7 @@ async function updateMerchantById(
 ) {
   const merchant = await merchantDatabase.updateMerchantById(
     merchantId,
-    updates,
+    updates.mcc ? { ...updates, category: await getCategory(updates.mcc) } : updates,
   );
   return merchant;
 }

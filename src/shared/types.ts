@@ -41,12 +41,15 @@ type Card = {
   updatedAt: number;
 };
 
+type Category = 'dining' | 'grocery' | 'petrol' | 'travel' | 'entertainment' | 'shopping' | 'transport' | 'telecommunications' | 'education' | 'electricity' | 'others';
+
 type Merchant = {
   _id: string;
   name: string;
   prettyName: string;
   address: string;
   mcc: number;
+  category: Category;
   longitude: number;
   latitude: number;
   createdAt: number;
@@ -67,4 +70,4 @@ type Transaction = {
   updatedAt: number;
 };
 
-export { User, Card, UserCardRequest, Merchant, Transaction };
+export { User, Card, UserCardRequest, Category, Merchant, Transaction };
