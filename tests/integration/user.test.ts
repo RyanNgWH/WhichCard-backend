@@ -236,8 +236,11 @@ describe('User management API endpoints', () => {
           amount: '20',
         });
       expect(response.status).toBe(200);
-      expect(response.body.data.card).toBe('My lovely ocbc');
-      expect(response.body.data.cashbackAmount).toBe(1.2);
+      expect(response.body.data.length).toBe(2);
+      expect(response.body.data[0].cardName).toBe('My second ocbc');
+      expect(response.body.data[0].cashbackAmount).toBe(1.2);
+      expect(response.body.data[1].cardName).toBe('My lovely ocbc');
+      expect(response.body.data[1].cashbackAmount).toBe(1.2);
     });
 
     // TODO: Fix this test
@@ -250,8 +253,11 @@ describe('User management API endpoints', () => {
     //       amount: '2000',
     //     });
     //   expect(response.status).toBe(200);
-    //   expect(response.body.data.card).toBe('My second ocbc');
-    //   expect(response.body.data.cashbackAmount).toBe(80);
+    //   expect(response.body.data.length).toBe(2);
+    //   expect(response.body.data[0].cardName).toBe('My second ocbc');
+    //   expect(response.body.data[0].cashbackAmount).toBe(80);
+    //   expect(response.body.data[1].cardName).toBe('My lovely ocbc');
+    //   expect(response.body.data[1].cashbackAmount).toBe(20);
     // });
 
     // TODO: Add remaining tests for this endpoint
