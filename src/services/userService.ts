@@ -210,7 +210,8 @@ async function recommendCard(
     );
 
     // Get cashback amount for each card
-    const cashbackAmounts = [];
+    const cashbackAmounts: number[] = [];
+    const cashbackRates: number[] = [];
     for (let i = 0; i < userCards.length; i += 1) {
       // eslint-disable-next-line no-await-in-loop
       const { benefits, exclusions, cashbackLimit } =
@@ -224,7 +225,6 @@ async function recommendCard(
         continue;
       }
 
-      let cashbackRate = 0;
       // eslint-disable-next-line no-await-in-loop
       const category = await getCategory(mcc as number);
 
@@ -233,11 +233,12 @@ async function recommendCard(
           benefits[j].mccs.includes(mcc as number) ||
           category.toLowerCase() === benefits[j].category?.toLowerCase()
         ) {
-          cashbackRate = benefits[j].cashbackRate as number;
+          cashbackRates[i] = benefits[j].cashbackRate as number;
           break;
         }
       }
 
+      let cashbackRate = cashbackRates[i];
       const expectedCashback = transaction.amount * (cashbackRate / 100);
       // eslint-disable-next-line no-await-in-loop
       const accumulatedCashback = await transactionDatabase.getUserCardCashback(
@@ -251,14 +252,24 @@ async function recommendCard(
       } else {
         cashbackAmounts[i] = expectedCashback;
       }
+      cashbackAmounts[i] = parseFloat(cashbackAmounts[i].toFixed(2));
     }
 
-    // Find card with highest cashback amount
-    const maxCashback = Math.max(...cashbackAmounts);
-    const recommended = {
-      card: userCards[cashbackAmounts.indexOf(maxCashback)].cardName,
-      cashbackAmount: maxCashback,
-    };
+    // Return all cards with their corresponding cashbacks. Sorted in descending order.
+    const recommended = userCards.map((card, i) => ({
+      cardName: card.cardName,
+      cashbackRate: cashbackRates[i],
+      cashbackAmount: cashbackAmounts[i],
+    })).sort((card1, card2) => {
+      const diff = card1.cashbackAmount - card2.cashbackAmount;
+      if (diff > 0) {
+        return 1;
+      } else if (diff === 0) {
+        return 0;
+      } else {
+        return -1;
+      }
+    }).reverse();
 
     return recommended;
 
